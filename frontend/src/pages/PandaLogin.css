@@ -1,0 +1,155 @@
+/* App.css */
+
+@import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,700');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css');
+
+.login {
+  /* background: rgba(47,100,90,1); */
+  /* background: -moz-linear-gradient(left, rgba(47,100,90,1) 0%, rgba(111,161,123,1) 100%); */
+  /* background: -webkit-linear-gradient(left, rgba(47,100,90,1) 0%, rgba(111,161,123,1) 100%); */
+  /* background: -webkit-linear-gradient(left, rgb(0, 0, 0) 0%, rgb(255, 255, 255) 100%); */
+background-color: black;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: 'Quicksand', sans-serif;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  opacity: .3;
+  /* background-image: linear-gradient(to right, rgba(255,255,255,.2), rgba(255,255,255,1), rgba(255,255,255,.2)); */
+}
+
+.login, .sign-up {
+  opacity: 1;
+  visibility: visible;
+  position: absolute;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  margin-top: -230px;
+  margin-left: -210px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: rgba(255,255,255,.3);
+  height: 440px;
+  width: 400px;
+  color: black;
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: 10px 10px 15px -6px rgba(0,0,0,0.25);
+  transition: opacity .3s ease-in .3s, visibility .3s ease-in .3s;
+  transform: scale(.9);
+}
+
+.sign-up {
+  height: 640px;
+  z-index: 2000;
+}
+
+.login-closed {
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  margin-left: -400px;
+  transition: opacity .3s ease-out, visibility .3s ease-out, margin .3s cubic-bezier(0.600, -0.280, 0.735, 0.045);
+}
+
+.sign-up-closed {
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  margin-left: -400px;
+  transition: opacity .3s ease-out, visibility .3s ease-out, margin .3s cubic-bezier(0.600, -0.280, 0.735, 0.045);
+}
+
+.field {
+  margin: 20px;
+  margin-left: 50px;
+  text-align: left;
+}
+
+.input {
+  margin: 5px;
+  width: 300px;
+  margin-left: -5px;
+  height: 40px;
+  border: 1px solid #e3e3e3;
+  border-radius: 5px;
+  font-size: 20px;
+  color: #646464;
+  padding: 10px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #2f665a;
+}
+
+.label {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.field-in {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .3s ease-in, visibility .3s ease-in;
+}
+
+.field-out {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease-out, visibility .3s ease-out;
+}
+
+.submit-button {
+  background: #009B77;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  height: 50px;
+  width: 300px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background: #007b65;
+}
+
+.in-out {
+  font-size: 18px;
+}
+
+.signup-link {
+  margin-top: 20px;
+}
+
+.signup-link a {
+  color: #7ad02a;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  color: #009b77;
+  font-weight: bold;
+}
+
+.animate-check {
+  color: green;
+  margin-left: 5px;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity .5s ease-in, transform .5s ease-in;
+}
+
+.input:focus + .label .animate-check {
+  opacity: 1;
+  transform: scale(1);
+}

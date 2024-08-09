@@ -1,0 +1,40 @@
+.app {
+    display: flex;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 78px;
+    background: #11101d;
+    padding: 6px 14px;
+    z-index: 99;
+    transition: all 0.5s ease;
+  }
+  
+  .sidebar.open {
+    width: 250px;
+  }
+  
+  .content {
+    margin-left: 78px;
+    /* padding: 20px; */
+    transition: all 0.5s ease;
+  }
+  
+  .sidebar.open ~ .content {
+    margin-left: 250px;
+  }
+  
+  /* Additional styles */
+  .content h1 {
+    /* font-size: 24px; */
+    /* font-weight: bold; */
+  }
+  
+  /* .content p {
+    font-size: 18px;
+  } */
+  

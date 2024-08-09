@@ -1,0 +1,247 @@
+/* .mygigs-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.mygigs-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.mygigs-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.mygigs-tabs button {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 5px;
+  color: #007bff;
+  transition: background-color 0.2s;
+}
+
+.mygigs-tabs button.mygigs-active {
+  border-bottom: 2px solid #007bff;
+}
+
+.mygigs-tabs button:hover {
+  background-color: #f1f1f1;
+}
+
+.mygigs-gigs-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mygigs-gig-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 20px;
+  width: 80%;
+  text-align: left;
+}
+
+.mygigs-gig-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.mygigs-gig-description {
+  font-size: 14px;
+  color: #666;
+} */
+
+
+/* MyGigs.css */
+
+/* .mygigs-container {
+  padding: 20px;
+  background-color: #f4f4f9;
+  font-family: Arial, sans-serif;
+}
+
+.mygigs-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.mygigs-tabs button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background-color: #ddd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.mygigs-tabs button.mygigs-active {
+  background-color: #28a745;
+  color: white;
+}
+
+.mygigs-tabs button:hover:not(.mygigs-active) {
+  background-color: #ccc;
+}
+
+.mygigs-gigs-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.mygigs-gig-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.mygigs-gig-title {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #333;
+}
+
+.mygigs-gig-description {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.mygigs-complete-btn {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.mygigs-complete-btn:hover {
+  background-color: #0056b3;
+} */
+
+
+/* MyGigs.css */
+.mygigs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.mygigs-container h2 {
+  font-size: 2em;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.mygigs-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.mygigs-tabs button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  color: #333;
+}
+
+.mygigs-tabs button:hover,
+.mygigs-tabs .mygigs-active {
+  background-color: #333;
+  color: #fff;
+}
+
+.mygigs-gigs-content {
+  display: flex;
+  width: 80vw;
+  /* grid-template-columns: repeat(auto-fit, minmax(300px, 0fr)); */
+  gap: 20px;
+}
+
+.mygigs-gig-card {
+  background-color: #fff;
+  width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.mygigs-gig-card:hover {
+  transform: translateY(-5px);
+}
+
+.mygigs-gig-title {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.mygigs-gig-description {
+  padding: 15px;
+  color: #555;
+}
+
+.gig-details {
+  padding: 0 15px 15px;
+  color: #777;
+}
+
+.gig-details span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.mygigs-complete-btn {
+  display: block;
+  width: calc(100% - 30px);
+  margin: 0 15px 15px;
+  padding: 10px 0;
+  text-align: center;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mygigs-complete-btn:hover {
+  background-color: #218838;
+}
+
+.study-details{
+  display: flex;
+  flex-direction: column;
+ padding: 0px 15px;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}

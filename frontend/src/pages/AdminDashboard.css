@@ -1,0 +1,128 @@
+/* AdminDashboard.css */
+.admin-dashboard {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f5f5f5;
+    align-items: center;
+    width: 80vw;
+  }
+  
+  .admin-dashboard h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .pie-chart-container {
+    text-align: center;
+    align-items: center;
+display:flex;
+flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .pie-chart-container h2 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .status-section {
+    margin-top: 20px;
+  }
+  
+  .status-section h2 {
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .gig-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .astudy-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    height: 400px;
+    width: 350px;
+   
+    overflow: hidden; /* Hide overflow content */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s;
+    
+  }
+  
+  .astudy-card:hover {
+    transform: scale(1.01);
+  }
+  
+  .astudy-card h2 {
+    font-size: 1.5em;
+    color: #007bff;
+    /* margin-bottom: 10px; */
+  }
+  
+  .astudy-card p {
+    color: #666;
+    margin: 5px 0;
+  }
+  
+  .applicant-list {
+    flex-grow: 1; /* Allow the list to grow and take available space */
+    overflow-y: auto; /* Add vertical scrollbar */
+  }
+  
+  .applicant-card {
+    background: #e9ecef;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: background 0.3s;
+  }
+  
+  .applicant-card:hover {
+    background: #dee2e6;
+  }
+  
+  .applicant-card h3 {
+    margin: 0;
+    color: #007bff;
+  }
+  
+  .applicant-card p {
+    margin: 5px 0;
+    color: #333;
+  }
+  
+  .applicant-card button {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .applicant-card button:hover {
+    background: #218838;
+  }
+  
+  .recharts-legend-wrapper {
+    background: rgba(255, 255, 255, 0.75);
+    color: #333;
+    border-radius: 5px;
+    padding: 5px;
+  }
+  
+  .recharts-legend-item text {
+    fill: #333;
+    font-weight: bold;
+  }
+  

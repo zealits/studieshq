@@ -1,0 +1,75 @@
+/* ManagePayout.css */
+
+.manage-user-payout {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .user-payout-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-payout-table th, .user-payout-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .user-payout-table th {
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  .user-payout-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .user-payout-table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .status-requested {
+    color: #ff9800; /* Orange color for 'requested' status */
+    background-color: #fff3e0; /* Light orange background */
+  }
+  
+  .status-approved {
+    color: #4caf50; /* Green color for 'approved' status */
+    background-color: #e8f5e9; /* Light green background */
+  }
+  
+  .status-not-requested {
+    color: #9e9e9e; /* Gray color for 'not requested' status */
+    background-color: #e0e0e0; /* Light gray background */
+  }
+  
+  .payment-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+  
+  .btn-info {
+    background-color: #007bff; /* Blue color for the button */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-info:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .btn-info:disabled {
+    background-color: #ccc; /* Gray color for disabled button */
+    cursor: not-allowed;
+  }
+  
