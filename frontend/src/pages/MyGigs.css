@@ -225,7 +225,7 @@
   margin: 0 15px 15px;
   padding: 10px 0;
   text-align: center;
-  background-color: #28a745;
+  background-color: #333;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -234,7 +234,8 @@
 }
 
 .mygigs-complete-btn:hover {
-  background-color: #218838;
+  background-color: #555; /* Slightly lighter shade of black for hover effect */
+  
 }
 
 .study-details{
@@ -245,3 +246,25 @@
   color: #999;
   margin-bottom: 10px;
 }
+
+.completion-modal {
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.completion-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+

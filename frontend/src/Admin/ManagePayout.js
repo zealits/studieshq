@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadAllUsers } from "../Services/Actions/userAction"; // Adjust the path based on your project structure
 import Loader from "../components/Loading"; // A loader component if you have one
 import axios from "axios"; // You need to install axios if you haven't
+import Modal from "react-modal";
 
 const ManagePayout = () => {
   const dispatch = useDispatch();
   const { users, loading } = useSelector((state) => state.admin); // Assuming adminReducer is used for state management
   const [email, setEmail] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   useEffect(() => {
     dispatch(loadAllUsers());
@@ -16,7 +19,7 @@ const ManagePayout = () => {
 
   const handleSendEmail = async () => {
     if (!email) {
-      alert("Please enter an email address.");
+      setPopupMessage("Please enter an email address.");
       return;
     }
 
@@ -96,10 +99,10 @@ const ManagePayout = () => {
           },
         }
       );
-      alert(`Table data sent successfully to ${email}`);
+
+      setPopupMessage(`Table data sent successfully to ${email}`);
     } catch (error) {
-      console.error("Error sending email:", error);
-      alert("Failed to send table data.");
+      setPopupMessage("Failed to send table data.");
     }
   };
 
@@ -116,14 +119,19 @@ const ManagePayout = () => {
           },
         }
       );
-      alert("Gift card approved successfully!");
+
+      setPopupMessage("Gift card approved successfully!");
       // Optionally, dispatch an action to reload users or update the state
       dispatch(loadAllUsers());
     } catch (error) {
       console.error("Error approving gift card:", error);
-      alert("Failed to approve gift card.");
+
+      setPopupMessage("Failed to approve gift card.");
     }
   };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="manage-user-payout">
@@ -191,7 +199,7 @@ const ManagePayout = () => {
       ) : (
         <p>No users found.</p>
       )}
-      <div>
+      <div className="sendmail">
         <input
           type="email"
           placeholder="Enter email address"
@@ -202,6 +210,20 @@ const ManagePayout = () => {
           Send Table Data
         </button>
       </div>
+
+      <Modal
+        isOpen={!!popupMessage}
+        onRequestClose={() => setPopupMessage("")}
+        className="popup-modal"
+        overlayClassName="overlay"
+      >
+        <div className="modal-content">
+          <h2>Notification</h2>
+          <p>{popupMessage}</p>
+          <button className="btn btn-info" onClick={() => setPopupMessage("")}>Close</button>
+        </div>
+      </Modal>
+
       {/* add here field so admin take email address send button after click on that button all the data in table will send to specfic email address in form of table as it is in table so i will need to make backend route and api in usercontroller for that as well */}
     </div>
   );

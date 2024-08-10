@@ -15,6 +15,8 @@ const ManageStudies = () => {
   const [selectedStudy, setSelectedStudy] = useState(null);
   const [formData, setFormData] = useState({ title: "", description: "", budget: "", deadline: "" });
   const [loadingAction, setLoadingAction] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [studyToDelete, setStudyToDelete] = useState(null);
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
@@ -43,13 +45,19 @@ const ManageStudies = () => {
       completed: 0,
     };
 
+    if (!applicants) {
+      return [];
+    }
+
     applicants.forEach((applicant) => {
-      applicant.gigs.forEach((gigDetail) => {
-        const status = gigDetail.status ? gigDetail.status.toLowerCase() : null;
-        if (status && statusCounts[status] !== undefined) {
-          statusCounts[status]++;
-        }
-      });
+      if (applicant.gigs) {
+        applicant.gigs.forEach((gigDetail) => {
+          const status = gigDetail.status ? gigDetail.status.toLowerCase() : null;
+          if (status && statusCounts[status] !== undefined) {
+            statusCounts[status]++;
+          }
+        });
+      }
     });
 
     return Object.keys(statusCounts).map((status) => ({
@@ -68,20 +76,31 @@ const ManageStudies = () => {
     });
   };
 
-  const handleDelete = async (studyId) => {
-    if (window.confirm("Are you sure you want to delete this study?")) {
+  const openDeleteModal = (study) => {
+    setStudyToDelete(study);
+    setDeleteModalIsOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalIsOpen(false);
+    setStudyToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    if (studyToDelete) {
       setLoadingAction(true);
       try {
-        await axios.delete(`/aak/l1/admin/gig/${studyId}`, {
+        await axios.delete(`/aak/l1/admin/gig/${studyToDelete._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setGigs(gigs.filter((gig) => gig._id !== studyId));
+        setGigs(gigs.filter((gig) => gig._id !== studyToDelete._id));
       } catch (error) {
         setError("Error deleting study");
       } finally {
         setLoadingAction(false);
+        closeDeleteModal();
       }
     }
   };
@@ -111,7 +130,12 @@ const ManageStudies = () => {
     setSelectedStudy(null);
   };
 
-  if (loading) return <div><Loading /></div>;
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   if (error) return <div className="error-message">{error}</div>;
 
   return (
@@ -123,10 +147,23 @@ const ManageStudies = () => {
         <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" />
         <input type="text" name="budget" value={formData.budget} onChange={handleChange} placeholder="Gift Card" />
         <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} placeholder="Deadline" />
-        <button onClick={handleUpdate} disabled={loadingAction}>
+        <button className="btn btn-info" onClick={handleUpdate} disabled={loadingAction}>
           {loadingAction ? "Saving..." : "Save"}
         </button>
-        <button onClick={closeModal}>Cancel</button>
+        <button className="btn btn-info" onClick={closeModal}>
+          Cancel
+        </button>
+      </Modal>
+
+      <Modal isOpen={deleteModalIsOpen} onRequestClose={closeDeleteModal} className="modal" overlayClassName="overlay">
+        <h2>Confirm Deletion</h2>
+        <p>Are you sure you want to delete this study?</p>
+        <button className="btn btn-danger" onClick={handleDelete} disabled={loadingAction}>
+          {loadingAction ? "Deleting..." : "Delete"}
+        </button>
+        <button className="btn btn-secondary" onClick={closeDeleteModal}>
+          Cancel
+        </button>
       </Modal>
       <div className="studies-list">
         {gigs.length === 0 ? (
@@ -159,8 +196,10 @@ const ManageStudies = () => {
                 </PieChart>
               </div>
               <div className="study-actions">
-                <button onClick={() => handleEdit(study)}>Edit</button>
-                <button onClick={() => handleDelete(study._id)} disabled={loadingAction}>
+                <button className="btn btn-info" onClick={() => handleEdit(study)}>
+                  Edit
+                </button>
+                <button className="btn btn-danger" onClick={() => openDeleteModal(study)} disabled={loadingAction}>
                   {loadingAction ? "Deleting..." : "Delete"}
                 </button>
               </div>

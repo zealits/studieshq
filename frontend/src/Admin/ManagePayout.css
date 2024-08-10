@@ -55,7 +55,7 @@
   }
   
   .btn-info {
-    background-color: #007bff; /* Blue color for the button */
+    background-color: #333; /* Blue color for the button */
     color: #fff;
     border: none;
     padding: 10px 15px;
@@ -65,11 +65,137 @@
   }
   
   .btn-info:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #555; /* Slightly lighter shade of black for hover effect */
+    transform: scale(1.05);
+  }
+  
+  .btn-info:active {
+    background-color: #111; /* Darker shade of black for active effect */
+    transform: scale(0.95);
   }
   
   .btn-info:disabled {
     background-color: #ccc; /* Gray color for disabled button */
     cursor: not-allowed;
+  }
+  
+
+  .sendmail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sendmail input[type="email"] {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .sendmail input[type="email"]:focus {
+    border-color: #000000;
+    outline: none;
+  }
+  
+ 
+  
+ 
+  
+  @media (max-width: 600px) {
+    .sendmail {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .sendmail input[type="email"] {
+      width: 100%;
+    }
+  
+    .sendmail .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal h2 {
+    margin-top: 0;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .modal p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+  
+  .popup-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    text-align: center;
   }
   

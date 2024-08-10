@@ -8,7 +8,7 @@ const Popup = ({ message, onClose }) => {
       <div className="popup-content">
         <h2>Notification</h2>
         <p>{message}</p>
-        <button className="close-button" onClick={onClose}>
+        <button className="btn btn-info" onClick={onClose}>
           Close
         </button>
       </div>

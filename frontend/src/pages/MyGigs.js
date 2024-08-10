@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "../Services/Actions/userAction";
 import axios from "axios";
+import Modal from "react-modal";
 import "./MyGigs.css";
 
 const MyGigs = () => {
@@ -9,17 +10,13 @@ const MyGigs = () => {
   const gigs = useSelector((state) => state.user.user.gigs);
   const token = useSelector((state) => state.user.token);
   const [activeTab, setActiveTab] = useState("applied");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const allocatedGigs = gigs.filter((gig) => gig.status === "allocated");
   const completedGigs = gigs.filter((gig) => gig.status === "completed");
   const appliedGigs = gigs.filter((gig) => gig.status === "applied");
 
-  // useEffect(() => {
-  //   dispatch(loadUser());
-  // }, [dispatch]);
-
   const markAsCompleted = async (gigId) => {
-    console.log(gigId);
     try {
       await axios.put(
         `/aak/l1/gig/complete/${gigId}`,
@@ -30,15 +27,14 @@ const MyGigs = () => {
           },
         }
       );
-      // Show pop-up message
-      window.alert('Study marked as completed successfully!');
-      // Refresh the page
-      window.location.reload();
+      // Show modal message
+      setModalIsOpen(true);
+      // Optionally, reload user data instead of reloading the page
+      // dispatch(loadUser());
     } catch (error) {
       console.error("Error marking gig as completed", error);
     }
   };
-  
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -86,6 +82,19 @@ const MyGigs = () => {
         {activeTab === "completed" && renderGigs(completedGigs)}
         {activeTab === "applied" && renderGigs(appliedGigs)}
       </div>
+
+      {/* Modal for completion confirmation */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        className="completion-modal"
+        overlayClassName="completion-overlay"
+      >
+        <h2>Study marked as completed successfully!</h2>
+        <button onClick={() => setModalIsOpen(false)} className="btn btn-info">
+          Close
+        </button>
+      </Modal>
     </div>
   );
 };

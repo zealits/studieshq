@@ -73,9 +73,9 @@ const AdminDashboard = () => {
           },
         }
       );
-      setPopupMessage("Gig approved successfully!");
+      setPopupMessage("Study approved successfully!");
     } catch (error) {
-      console.error("Error approving gig", error);
+      console.error("Error approving study", error);
     }
   };
 
@@ -161,7 +161,7 @@ const AdminDashboard = () => {
       {popupMessage && (
         <Modal isOpen={!!popupMessage} onRequestClose={closeModal} className="modal" overlayClassName="overlay">
           <h2>{popupMessage}</h2>
-          <button onClick={closeModal}>Close</button>
+          <button className="btn btn-info" onClick={closeModal}>Close</button>
         </Modal>
       )}
     </div>

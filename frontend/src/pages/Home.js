@@ -74,7 +74,7 @@ const Home = () => {
           <div className="study-list">
             {gigs && gigs.length > 0 ? (
               gigs.map((gig) => (
-                <div key={gig._id} className="homestudy-card">
+                <div key={gig._id} className="homestudy-card" onClick={handleGetStarted}>
                   <h3 className="study-title">{gig.title}</h3>
                   <div className={`study-description ${expandedGigId === gig._id ? "expanded" : ""}`}>
                 {expandedGigId === gig._id ? gig.description : `${gig.description.substring(0, 100)}.`}

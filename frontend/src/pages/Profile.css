@@ -1,62 +1,63 @@
-/* General Styles */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
-  color: #333;
-}
 
-.container-fluid {
-  padding: 40px 15px;
-}
 
 .card1 {
-  width: 70vw;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 80vw;
+  /* max-width: 800px; */
+  padding: 40px;
+  background-color: #f4f4f4;
+  /* border-radius: 15px; */
+  /* box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); */
+  /* margin: 20px auto; */
 }
 
 p {
-  font-size: 1.2em;
+  font-size: 1.1em;
   margin-bottom: 20px;
+  color: #ccc;
 }
 
 /* Section Tabs */
 #section-tabs {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   list-style-type: none;
   padding: 0;
   margin-bottom: 30px;
-  border-bottom: 2px solid #e0e0e0;
+  /* border-bottom: 2px solid #444; */
 }
 
 #section-tabs li {
   cursor: pointer;
-  padding: 10px 15px;
-  transition: all 0.3s;
+  padding: 10px 20px;
+  transition: color 0.3s, background-color 0.3s;
   position: relative;
+  font-weight: 500;
+  color: #aaa;
+  border-radius: 10px 10px 0 0;
 }
 
 #section-tabs li.active {
-  color: #007bff;
+  color: #fff;
   font-weight: bold;
+  background-color: #333;
+  border-bottom: 2px solid transparent;
 }
 
 #section-tabs li.active::after {
   content: '';
   display: block;
   height: 3px;
-  background: #007bff;
+  background: #fff;
   position: absolute;
   bottom: -2px;
   left: 0;
   right: 0;
+  border-radius: 0 0 5px 5px;
 }
 
 #section-tabs li:hover {
-  color: #007bff;
+  color: #fff;
+  background-color: #3a3a3a;
 }
 
 /* Form Card */
@@ -65,63 +66,72 @@ p {
 }
 
 .form-card h2 {
-  font-size: 1.4em;
-  margin-bottom: 20px;
-  color: #007bff;
+  font-size: 1.6em;
+  margin-bottom: 25px;
+  color: #040404;
+  border-bottom: 2px solid #444;
+  padding-bottom: 10px;
 }
 
 .fieldlabels {
   margin-bottom: 10px;
   display: block;
-  font-weight: bold;
-  color: #555;
+  font-weight: 600;
+  color: black;
 }
 
 input[type="text"], input[type="email"], input[type="date"], textarea {
-  width: calc(100% - 20px);
-  padding: 10px;
+  width: 100%;
+  padding: 12px;
   margin: 10px 0 20px 0;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
   border-radius: 5px;
-  transition: border-color 0.3s;
+  background-color: #f4f4f4;
+  /* color: #ddd;  */
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, textarea:focus {
-  border-color: #007bff;
+  border-color: #666;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
 }
 
 textarea {
-  height: 100px;
+  height: 120px;
+  resize: vertical;
 }
 
 .row .col-md-4, .row .col-md-6, .row .col-md-12 {
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .row .col-md-4 input, .row .col-md-6 input, .row .col-md-12 input {
-  width: 90%; /* Adjust width to fit within the column */
+  width: 95%; /* Adjust width to fit within the column */
 }
 
 input.full-width {
-  width: calc(100% - 20px);
+  width: 100%;
 }
 
 /* Buttons */
 .action-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #444;
+  color: #fff;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 12px 25px;
+  border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
   display: inline-block;
   margin: 10px 5px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .action-button:hover {
-  background-color: #0056b3;
+  background-color: #555;
   transform: translateY(-2px);
 }
 
@@ -130,13 +140,113 @@ input.full-width {
 }
 
 .action-button-previous {
-  background-color: #6c757d;
+  background-color: #666;
 }
 
 .action-button-previous:hover {
-  background-color: #5a6268;
+  background-color: #777;
 }
 
 fieldset {
   border: none;
+  padding: 0;
+  margin: 0;
 }
+
+/* Media Queries */
+@media (max-width: 768px) {
+  #section-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #section-tabs li {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .card1 {
+    padding: 30px;
+  }
+
+  .action-button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1em;
+  }
+}
+
+
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Adjust the gap between rows */
+}
+
+.form-row {
+  display: flex;
+  gap: 20px; /* Adjust the gap between fields */
+}
+
+.form-row input {
+  flex: 1; /* Ensure all inputs in the row take up equal space */
+}
+
+.fieldlabels {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input[type="text"], input[type="date"], input[type="email"] {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.action-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between rows */
+}
+
+.form-row {
+  display: flex;
+  gap: 20px; /* Space between fields in the same row */
+}
+
+.form-group {
+  flex: 1; /* Ensures each input takes up equal space */
+}
+
+.fieldlabels {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block; /* Ensure labels are on their own line */
+}
+
+input[type="text"], input[type="date"], input[type="email"] {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.action-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+
