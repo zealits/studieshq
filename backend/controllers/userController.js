@@ -491,6 +491,7 @@ exports.requestGiftCard = async (req, res, next) => {
 exports.approveGiftCard = async (req, res, next) => {
   try {
     const { userId, gigId } = req.params;
+    const { giftCardOption } = req.body; // Get giftCardOption from the request body
 
     const user = await User.findById(userId);
 
@@ -498,6 +499,7 @@ exports.approveGiftCard = async (req, res, next) => {
     if (gig && gig.paymentStatus === "requested") {
       gig.paymentStatus = "approved";
       gig.giftCardApprovedAt = Date.now();
+      gig.giftCardOption = giftCardOption; // Store the giftCardOption in the gig
     }
 
     await user.save();
@@ -513,6 +515,7 @@ exports.approveGiftCard = async (req, res, next) => {
     });
   }
 };
+
 exports.sendTableDataEmail = catchAsyncErrors(async (req, res, next) => {
   // Log the request body for debugging
   console.log("Request body:", req.body);

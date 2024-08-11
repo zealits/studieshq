@@ -42,7 +42,7 @@ const gigSchema = new mongoose.Schema({
   },
   giftCardOption: {
     type: String,
-    enum: ["visa", "master", "none"],
+    // enum: ["visa", "master", "none"],
   },
   requestGiftCardAt: Date,
   giftCardApprovedAt: Date,

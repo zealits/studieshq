@@ -12,6 +12,13 @@ const ManagePayout = () => {
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [selectedGiftCardOptions, setSelectedGiftCardOptions] = useState({});
+  const handleGiftCardOptionChange = (userId, gigId, value) => {
+    setSelectedGiftCardOptions((prevOptions) => ({
+      ...prevOptions,
+      [`${userId}-${gigId}`]: value,
+    }));
+  };
 
   useEffect(() => {
     dispatch(loadAllUsers());
@@ -107,25 +114,31 @@ const ManagePayout = () => {
   };
 
   // Function to handle gift card approval
+  // Function to handle gift card approval
   const handleApproveGiftCard = async (userId, gigId) => {
     try {
+      const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
+
+      // Check if giftCardOption is not selected or set to "None"
+      if (!giftCardOption || giftCardOption === "") {
+        setPopupMessage("Please select a gift card option before approving.");
+        return;
+      }
+
       await axios.put(
         `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
-        {},
+        { giftCardOption }, // Send giftCardOption in the request body
         {
           headers: {
-            // Include any required headers, such as Authorization
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Example, adjust as needed
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
       setPopupMessage("Gift card approved successfully!");
-      // Optionally, dispatch an action to reload users or update the state
       dispatch(loadAllUsers());
     } catch (error) {
       console.error("Error approving gift card:", error);
-
       setPopupMessage("Failed to approve gift card.");
     }
   };
@@ -178,7 +191,11 @@ const ManagePayout = () => {
                   </td>
 
                   <td>
-                    <select className="payment-select">
+                    <select
+                      className="payment-select"
+                      value={selectedGiftCardOptions[`${user._id}-${gig._id}`] || gig.giftCardOption || ""}
+                      onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
+                    >
                       <option value="">None</option>
                       <option value="visa">Visa</option>
                       <option value="mastercard">MasterCard</option>
@@ -220,7 +237,9 @@ const ManagePayout = () => {
         <div className="modal-content">
           <h2>Notification</h2>
           <p>{popupMessage}</p>
-          <button className="btn btn-info" onClick={() => setPopupMessage("")}>Close</button>
+          <button className="btn btn-info" onClick={() => setPopupMessage("")}>
+            Close
+          </button>
         </div>
       </Modal>
 
