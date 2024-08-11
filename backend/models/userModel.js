@@ -49,6 +49,62 @@ const gigSchema = new mongoose.Schema({
   giftCardPaidAt: Date,
 });
 
+const educationSchema = new mongoose.Schema({
+  college: {
+    type: String,
+    required: true,
+  },
+  year: {
+    type: String,
+    required: true,
+  },
+  specialization: {
+    type: String,
+    required: true,
+  },
+});
+
+
+const experienceSchema = new mongoose.Schema({
+  company: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+  },
+  duration: {
+    type: String,
+    required: true,
+  },
+  description: String,
+});
+
+const languageSchema = new mongoose.Schema({
+  language: {
+    type: String,
+    required: true,
+  },
+  proficiency: {
+    type: String,
+    required: true,
+  },
+});
+
+
+const skillSchema = new mongoose.Schema({
+  skill: {
+    type: String,
+    required: true,
+  },
+  proficiency: {
+    type: String,
+    required: true,
+  },
+});
+
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -68,6 +124,44 @@ const userSchema = new mongoose.Schema({
     minLength: [8, "Password should be greater than 8 characters"],
     select: false,
   },
+  firstName: {
+    type: String,
+    trim: true,
+  },
+  middleName: {
+    type: String,
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    trim: true,
+  },
+  gender: {
+    type: String,
+  },
+  dateOfBirth: {
+    type: String,
+   
+  },
+  country: {
+    type: String,
+   
+    trim: true,
+  },
+  state: {
+    type: String,
+  
+    trim: true,
+  },
+  city: {
+    type: String,
+
+    trim: true,
+  },
+  contactNumber: {
+    type: String,
+    trim: true,
+  },
   role: {
     type: String,
     default: "user",
@@ -77,6 +171,10 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   gigs: [gigSchema],
+  education: [educationSchema],
+  experience: [experienceSchema],
+  languages: [languageSchema],
+  skills: [skillSchema],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });

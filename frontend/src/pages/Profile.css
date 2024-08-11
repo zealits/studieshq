@@ -116,7 +116,7 @@ input.full-width {
 }
 
 /* Buttons */
-.action-button {
+/* .action-button {
   background-color: #444;
   color: #fff;
   border: none;
@@ -126,14 +126,11 @@ input.full-width {
   transition: background-color 0.3s, transform 0.3s;
   display: inline-block;
   margin: 10px 5px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
+  
 
-.action-button:hover {
-  background-color: #555;
-  transform: translateY(-2px);
-}
+} */
+
+
 
 .action-button:active {
   transform: translateY(1px);
@@ -204,7 +201,7 @@ input[type="text"], input[type="date"], input[type="email"] {
 }
 
 .action-button {
-  margin-top: 20px;
+  /* margin-top: 20px; */
   padding: 10px 20px;
   background-color: black;
   color: white;
@@ -241,12 +238,20 @@ input[type="text"], input[type="date"], input[type="email"] {
 }
 
 .action-button {
-  margin-top: 20px;
+  width: 200px;
+  /* margin-top: 20px; */
   padding: 10px 20px;
   background-color: black;
   color: white;
   border: none;
+  border-radius: 30px;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+.action-button:hover {
+  background-color: #555;
+  transform: translateY(-2px);
+}
 

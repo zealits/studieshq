@@ -555,3 +555,159 @@ exports.sendTableDataEmail = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander(error.message, 500));
   }
 });
+
+// Update User Basic Info
+exports.updateBasicInfo = catchAsyncErrors(async (req, res, next) => {
+  const {
+    firstName,
+    middleName,
+    lastName,
+    gender,
+    dateOfBirth,
+    country,
+    state,
+    city,
+    contactNumber,
+    education, // Include education in the request body
+    experience,
+    languages,
+    skills,
+  } = req.body;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      firstName,
+      middleName,
+      lastName,
+      gender,
+      dateOfBirth,
+      country,
+      state,
+      city,
+      contactNumber,
+      education, // Update education as well
+      experience,
+      languages,
+      skills,
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedUser) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User basic information and education updated successfully",
+    user: updatedUser,
+  });
+});
+
+// Controller to update user education
+exports.updateEducation = catchAsyncErrors(async (req, res, next) => {
+  const { education } = req.body; // Assuming education is an array of education objects
+
+  // Find user and update education details
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  // Update education details
+  user.education = education;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Education updated successfully",
+    education: user.education,
+  });
+});
+
+// Controller to update user experience
+exports.updateExperience = catchAsyncErrors(async (req, res, next) => {
+  const { experience } = req.body; // Assuming experience is an array of experience objects
+
+  // Find user and update experience details
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  // Update experience details
+  user.experience = experience;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Experience updated successfully",
+    experience: user.experience,
+  });
+});
+
+// Controller to update user skills
+exports.updateSkills = catchAsyncErrors(async (req, res, next) => {
+  const { skills } = req.body; // Assuming skills is an array of skill objects
+
+  // Find user and update skills details
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  // Update skills details
+  user.skills = skills;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Skills updated successfully",
+    skills: user.skills,
+  });
+});
+
+// Controller to update user languages
+exports.updateLanguages = catchAsyncErrors(async (req, res, next) => {
+  const { languages } = req.body; // Assuming languages is an array of language objects
+
+  // Find user and update languages details
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  // Update languages details
+  user.languages = languages;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Languages updated successfully",
+    languages: user.languages,
+  });
+});
