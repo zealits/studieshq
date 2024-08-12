@@ -491,8 +491,11 @@ exports.requestGiftCard = async (req, res, next) => {
 exports.approveGiftCard = async (req, res, next) => {
   try {
     const { userId, gigId } = req.params;
-    const { giftCardOption } = req.body; // Get giftCardOption from the request body
 
+    const { giftCardOption } = req.body; // Get giftCardOption from the request body
+    console.log(userId);
+    console.log(gigId);
+    console.log(giftCardOption);
     const user = await User.findById(userId);
 
     const gig = user.gigs.id(gigId);
@@ -512,6 +515,61 @@ exports.approveGiftCard = async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: "Error approving gift card request. Please try again later.",
+    });
+  }
+};
+
+exports.sendGiftCard = async (req, res, next) => {
+  try {
+    const { userId, gigId } = req.params;
+    const { giftCardOption } = req.body; // Get giftCardOption from the request body
+
+    const user = await User.findById(userId);
+
+    const gig = user.gigs.id(gigId);
+    if (gig && gig.paymentStatus === "approved") {
+      // Send gift card using Giftbit API
+      console.log(user.email);
+      const response = await axios.post(
+        "https://api-testbed.giftbit.com/papi/v1/campaign",
+        {
+          recipients: [{ email: `aniketkhillare172002@gmail.com` }], // Send to user's email
+          brand_codes: [giftCardOption], // Use the selected gift card option
+          value_in_cents: 1000, // Assuming gig.amount is in dollars, convert to cents
+          delivery_method: "EMAIL",
+          template_id: process.env.GIFTBIT_TEMPLATE_ID, // Use your Giftbit template ID
+          expiry_date: "2025-12-31", // Optional expiry date
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Optionally, update the gig with details of the sent gift card
+      gig.giftCardSentAt = Date.now();
+      gig.giftCardResponse = response.data; // Store the response data if needed
+
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Gift card sent successfully!",
+        data: response.data,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Gig not approved or invalid gig ID.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error sending gift card. Please try again later.",
     });
   }
 };

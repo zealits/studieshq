@@ -24,6 +24,7 @@ const {
   updateExperience,
   updateSkills,
   updateLanguages,
+  sendGiftCard,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const router = express.Router();
@@ -63,6 +64,10 @@ router.route("/gig/:gigId/request-gift-card").post(isAuthenticatedUser, requestG
 router
   .route("/admin/gift-card/approve/:userId/:gigId")
   .put(isAuthenticatedUser, authorizeRoles("admin"), approveGiftCard);
+
+  // Send Gift Card Route (Admin Only)
+router.route("/admin/gift-card/send/:userId/:gigId")
+.post(isAuthenticatedUser, authorizeRoles("admin"), sendGiftCard);
 
 router.post("/send-email", sendTableDataEmail);
 

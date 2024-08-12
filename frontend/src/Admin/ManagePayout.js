@@ -115,7 +115,7 @@ const ManagePayout = () => {
 
   // Function to handle gift card approval
   // Function to handle gift card approval
-  const handleApproveGiftCard = async (userId, gigId) => {
+  const handleApproveGiftCard = async (userId, gigId, userName, userEmail) => {
     try {
       const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
 
@@ -135,7 +135,9 @@ const ManagePayout = () => {
         }
       );
 
-      setPopupMessage("Gift card approved successfully!");
+      setPopupMessage(
+        `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
+      );
       dispatch(loadAllUsers());
     } catch (error) {
       console.error("Error approving gift card:", error);
@@ -160,7 +162,7 @@ const ManagePayout = () => {
               <th>Budget</th>
               <th>Study Status</th>
               <th>Payment Status</th>
-              <th>Gift Card Option</th>
+              <th>Payout Option</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -199,11 +201,22 @@ const ManagePayout = () => {
                       <option value="">None</option>
                       <option value="visa">Visa</option>
                       <option value="mastercard">MasterCard</option>
+                      <option value="amazon">Amazon</option>
+                      <option value="starbucks">Starbucks</option>
+                      <option value="burgerKing">BurgerKing</option>
+                      <option value="dominos">Domino's</option>
+                      <option value="apple">Apple</option>
+                      <option value="walmart">Walmart</option>
+                      <option value="uber">Uber</option>
+                      <option value="airbnb">Airbnb</option>
                     </select>
                   </td>
                   <td>
                     {gig.paymentStatus !== "approved" && (
-                      <button className="btn btn-info" onClick={() => handleApproveGiftCard(user._id, gig._id)}>
+                      <button
+                        className="btn btn-info"
+                        onClick={() => handleApproveGiftCard(user._id, gig._id, user.name, user.email)}
+                      >
                         Approve ${gig.budget}
                       </button>
                     )}
