@@ -1,0 +1,35 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to your desired branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16' # Ensure this matches your Node.js version
+
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Deploy to cPanel via SSH
+      env:
+        CPANEL_USER: ${{ secrets.CPANEL_USER }}
+        CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
+        CPANEL_PORT: ${{ secrets.CPANEL_PORT }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H "$CPANEL_HOST" >> ~/.ssh/known_hosts
+        ssh $CPANEL_USER@$CPANEL_HOST -p $CPANEL_PORT 'cd /home/user/app_directory && git pull origin main && npm install && npm run start'
