@@ -46,6 +46,7 @@ const gigSchema = new mongoose.Schema({
   },
   requestGiftCardAt: Date,
   giftCardApprovedAt: Date,
+  giftCardSentAt: Date,
   giftCardPaidAt: Date,
 });
 
@@ -63,7 +64,6 @@ const educationSchema = new mongoose.Schema({
     required: true,
   },
 });
-
 
 const experienceSchema = new mongoose.Schema({
   company: {
@@ -92,7 +92,6 @@ const languageSchema = new mongoose.Schema({
   },
 });
 
-
 const skillSchema = new mongoose.Schema({
   skill: {
     type: String,
@@ -103,7 +102,6 @@ const skillSchema = new mongoose.Schema({
     required: true,
   },
 });
-
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -141,16 +139,15 @@ const userSchema = new mongoose.Schema({
   },
   dateOfBirth: {
     type: String,
-   
   },
   country: {
     type: String,
-   
+
     trim: true,
   },
   state: {
     type: String,
-  
+
     trim: true,
   },
   city: {
