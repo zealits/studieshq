@@ -526,6 +526,14 @@ exports.sendGiftCard = async (req, res, next) => {
     const { userId, gigId } = req.params;
     const { gift_template, subject, contacts, price_in_cents, brand_codes, message, expiry } = req.body;
 
+    console.log(gift_template);
+    console.log(subject);
+    console.log(contacts);
+    console.log(price_in_cents);
+    console.log(brand_codes);
+    console.log(message);
+    console.log(expiry);
+
     const user = await User.findById(userId);
     const gig = user.gigs.id(gigId);
 
@@ -566,10 +574,79 @@ exports.sendGiftCard = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({
       success: false,
       message: "Error sending gift card. Please try again later.",
+    });
+  }
+};
+
+exports.getAllGiftCardTypes = async (req, res, next) => {
+  try {
+    const response = await axios.get("https://api-testbed.giftbit.com/papi/v1/brands", {
+      headers: {
+        Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
+        "Content-Type": "application/json",
+        "Accept-Encoding": "identity",
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Gift card types retrieved successfully!",
+      data: response.data,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving gift card types. Please try again later.",
+    });
+  }
+};
+
+exports.updateGigBudget = async (req, res, next) => {
+  try {
+    const { userId, gigId } = req.params;
+    const { budget } = req.body;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Find the gig within the user's gigs array
+    const gig = user.gigs.id(gigId);
+
+    if (!gig) {
+      return res.status(404).json({
+        success: false,
+        message: "Gig not found",
+      });
+    }
+
+    // Update the budget for the specific gig
+    gig.budget = budget;
+
+    // Save the user document with the updated gig budget
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Budget updated successfully",
+      gig,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating budget",
+      error: error.message,
     });
   }
 };

@@ -1,28 +1,48 @@
 import React, { useEffect, useState } from "react";
 import "./ManagePayout.css";
 import { useDispatch, useSelector } from "react-redux";
-import { loadAllUsers } from "../Services/Actions/userAction"; // Adjust the path based on your project structure
-import Loader from "../components/Loading"; // A loader component if you have one
-import axios from "axios"; // You need to install axios if you haven't
+import { loadAllUsers } from "../Services/Actions/userAction";
+import Loader from "../components/Loading";
+import axios from "axios";
 import Modal from "react-modal";
+import { FaEdit } from "react-icons/fa";
 
 const ManagePayout = () => {
   const dispatch = useDispatch();
-  const { users, loading } = useSelector((state) => state.admin); // Assuming adminReducer is used for state management
+  const { users, loading } = useSelector((state) => state.admin);
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [selectedGiftCardOptions, setSelectedGiftCardOptions] = useState({});
+  const [giftCardTypes, setGiftCardTypes] = useState([]);
+  const [editableBudgets, setEditableBudgets] = useState({});
+  const [editingBudget, setEditingBudget] = useState({}); // Store editing states
+
+  useEffect(() => {
+    dispatch(loadAllUsers());
+
+    const fetchGiftCardTypes = async () => {
+      try {
+        const response = await axios.get("aak/l1/admin/gift-card/types", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setGiftCardTypes(response.data.data.brands);
+      } catch (error) {
+        console.error("Error fetching gift card types:", error);
+      }
+    };
+
+    fetchGiftCardTypes();
+  }, [dispatch]);
+
   const handleGiftCardOptionChange = (userId, gigId, value) => {
     setSelectedGiftCardOptions((prevOptions) => ({
       ...prevOptions,
       [`${userId}-${gigId}`]: value,
     }));
   };
-
-  useEffect(() => {
-    dispatch(loadAllUsers());
-  }, [dispatch]);
 
   const handleSendEmail = async () => {
     if (!email) {
@@ -31,7 +51,6 @@ const ManagePayout = () => {
     }
 
     try {
-      // Inline styles
       const styles = `
         <style>
           .user-payout-table {
@@ -40,60 +59,9 @@ const ManagePayout = () => {
             margin: 20px 0;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           }
-          .user-payout-table th, .user-payout-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-          }
-          .user-payout-table th {
-            background-color: #f4f4f4;
-            color: #333;
-          }
-          .user-payout-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-          }
-          .user-payout-table tbody tr:hover {
-            background-color: #f1f1f1;
-          }
-          .status-requested {
-            color: #ff9800; /* Orange color for 'requested' status */
-            background-color: #fff3e0; /* Light orange background */
-          }
-          .status-approved {
-            color: #4caf50; /* Green color for 'approved' status */
-            background-color: #e8f5e9; /* Light green background */
-          }
-          .status-not-requested {
-            color: #9e9e9e; /* Gray color for 'not requested' status */
-            background-color: #e0e0e0; /* Light gray background */
-          }
-          .payment-select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #fff;
-          }
-          .btn-info {
-            background-color: #007bff; /* Blue color for the button */
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-          }
-          .btn-info:hover {
-            background-color: #0056b3; /* Darker blue on hover */
-          }
-          .btn-info:disabled {
-            background-color: #ccc; /* Gray color for disabled button */
-            cursor: not-allowed;
-          }
         </style>
       `;
 
-      // Get table HTML
       const tableDataHtml = document.querySelector(".user-payout-table").outerHTML;
       const emailBody = `${styles}<div>${tableDataHtml}</div>`;
 
@@ -113,21 +81,68 @@ const ManagePayout = () => {
     }
   };
 
-  // Function to handle gift card approval
-  // Function to handle gift card approval
-  const handleApproveGiftCard = async (userId, gigId, userName, userEmail) => {
-    try {
-      const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
+  // const handleApproveGiftCard = async (userId, gigId, userName, userEmail) => {
+  //   try {
+  //     const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
+  //     const budget = editableBudgets[`${userId}-${gigId}`];
 
-      // Check if giftCardOption is not selected or set to "None"
+  //     if (!giftCardOption || giftCardOption === "") {
+  //       setPopupMessage("Please select a gift card option before approving.");
+  //       return;
+  //     }
+
+  //     await axios.put(
+  //       `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
+  //       { giftCardOption, budget }, // Send the updated budget along with the gift card option
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     setPopupMessage(
+  //       `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
+  //     );
+  //     dispatch(loadAllUsers());
+  //   } catch (error) {
+  //     console.error("Error approving gift card:", error);
+  //     setPopupMessage("Failed to approve gift card.");
+  //   }
+  // };
+
+  const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget) => {
+    try {
+      console.log("i have clicked");
+
+      const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
+      // const budget = editableBudgets[`${userId}-${gigId}`];
+
       if (!giftCardOption || giftCardOption === "") {
         setPopupMessage("Please select a gift card option before approving.");
         return;
       }
 
-      await axios.put(
-        `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
-        { giftCardOption }, // Send giftCardOption in the request body
+      // Construct the payload
+      const payload = {
+        gift_template: "MIJVVHGFXIIE", // Using the selected gift card option as the template ID
+        subject: "This gift card is sent through frontend", // Adjust the subject as needed
+        contacts: [
+          {
+            firstname: userName, // Use the user's name for both firstname and lastname
+            lastname: userName,
+            email: userEmail,
+          },
+        ],
+        price_in_cents: budget * 100, // Assuming budget is in dollars, convert to cents
+        brand_codes: [giftCardOption], // Replace with actual brand codes
+        message: "Thank you for your hard work!", // Customize the message
+        expiry: "2024-12-31", // Set the expiry date as needed
+      };
+
+      await axios.post(
+        `/aak/l1/admin/gift-card/send/${userId}/${gigId}`,
+        payload, // Send the payload
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -135,13 +150,49 @@ const ManagePayout = () => {
         }
       );
 
-      setPopupMessage(
-        `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
-      );
-      dispatch(loadAllUsers());
+      setPopupMessage("Gift card approved successfully!");
     } catch (error) {
       console.error("Error approving gift card:", error);
-      setPopupMessage("Failed to approve gift card.");
+      setPopupMessage("Failed to approve gift card. Please try again.");
+    }
+  };
+
+  const handleBudgetEdit = (userId, gigId) => {
+    setEditingBudget({ userId, gigId });
+    setSelectedGiftCardOptions((prevOptions) => ({
+      ...prevOptions,
+      [`${userId}-${gigId}`]: users.find((user) => user._id === userId).gigs.find((gig) => gig._id === gigId).budget,
+    }));
+  };
+
+  const handleBudgetChange = (e, userId, gigId) => {
+    const newBudget = e.target.value;
+
+    // Update the state with the new budget value, even if it's an empty string
+    setSelectedGiftCardOptions((prevOptions) => ({
+      ...prevOptions,
+      [`${userId}-${gigId}`]: newBudget,
+    }));
+  };
+
+  const handleBudgetSave = async (userId, gigId) => {
+    try {
+      const newBudget = selectedGiftCardOptions[`${userId}-${gigId}`];
+      await axios.put(
+        `aak/l1/admin/gig/budget/${userId}/${gigId}`,
+        { budget: newBudget },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setEditingBudget({}); // Reset the editing state after saving
+      setPopupMessage(`Budget updated successfully for the gig.`);
+      dispatch(loadAllUsers());
+    } catch (error) {
+      console.error("Error updating budget:", error);
+      setPopupMessage("Failed to update budget.");
     }
   };
 
@@ -159,9 +210,9 @@ const ManagePayout = () => {
               <th>Name</th>
               <th>Email</th>
               <th>Study Title</th>
-              <th>Budget</th>
               <th>Study Status</th>
               <th>Payment Status</th>
+              <th>Budget</th>
               <th>Payout Option</th>
               <th>Actions</th>
             </tr>
@@ -177,8 +228,6 @@ const ManagePayout = () => {
                     </>
                   )}
                   <td>{gig.title}</td>
-
-                  <td>${gig.budget}</td>
                   <td>{gig.status}</td>
                   <td
                     className={
@@ -191,6 +240,25 @@ const ManagePayout = () => {
                   >
                     {gig.paymentStatus}
                   </td>
+                  <td>
+                    {editingBudget.userId === user._id && editingBudget.gigId === gig._id ? (
+                      <>
+                        <input
+                          type="number"
+                          value={selectedGiftCardOptions[`${user._id}-${gig._id}`] || ""}
+                          onChange={(e) => handleBudgetChange(e, user._id, gig._id)}
+                        />
+                        <button className="btn btn-info" onClick={() => handleBudgetSave(user._id, gig._id)}>
+                          Save
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        ${gig.budget}{" "}
+                        <FaEdit className="edit-icon" onClick={() => handleBudgetEdit(user._id, gig._id)} />
+                      </>
+                    )}
+                  </td>
 
                   <td>
                     <select
@@ -199,25 +267,21 @@ const ManagePayout = () => {
                       onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
                     >
                       <option value="">None</option>
-                      <option value="visa">Visa</option>
-                      <option value="mastercard">MasterCard</option>
-                      <option value="amazon">Amazon</option>
-                      <option value="starbucks">Starbucks</option>
-                      <option value="burgerKing">BurgerKing</option>
-                      <option value="dominos">Domino's</option>
-                      <option value="apple">Apple</option>
-                      <option value="walmart">Walmart</option>
-                      <option value="uber">Uber</option>
-                      <option value="airbnb">Airbnb</option>
+                      {giftCardTypes.map((type) => (
+                        <option key={type.brand_code} value={type.brand_code}>
+                          {type.name}
+                        </option>
+                      ))}
                     </select>
                   </td>
+
                   <td>
                     {gig.paymentStatus !== "approved" && (
                       <button
                         className="btn btn-info"
-                        onClick={() => handleApproveGiftCard(user._id, gig._id, user.name, user.email)}
+                        onClick={() => handleApproveGiftCard(user._id, gig._id, user.name, user.email, gig.budget)}
                       >
-                        Approve ${gig.budget}
+                        Approve ${editableBudgets[`${user._id}-${gig._id}`] || gig.budget}
                       </button>
                     )}
                   </td>
@@ -255,8 +319,6 @@ const ManagePayout = () => {
           </button>
         </div>
       </Modal>
-
-      {/* add here field so admin take email address send button after click on that button all the data in table will send to specfic email address in form of table as it is in table so i will need to make backend route and api in usercontroller for that as well */}
     </div>
   );
 };

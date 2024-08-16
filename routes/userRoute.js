@@ -25,6 +25,8 @@ const {
   updateSkills,
   updateLanguages,
   sendGiftCard,
+  getAllGiftCardTypes,
+  updateGigBudget,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const router = express.Router();
@@ -47,7 +49,6 @@ router.route("/me/experience").put(isAuthenticatedUser, updateExperience);
 router.route("/me/skills").put(isAuthenticatedUser, updateSkills);
 router.route("/me/languages").put(isAuthenticatedUser, updateLanguages);
 
-
 router.route("/admin/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
 router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser);
 router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateUserRole);
@@ -65,9 +66,13 @@ router
   .route("/admin/gift-card/approve/:userId/:gigId")
   .put(isAuthenticatedUser, authorizeRoles("admin"), approveGiftCard);
 
-  // Send Gift Card Route (Admin Only)
-router.route("/admin/gift-card/send/:userId/:gigId")
-.post(isAuthenticatedUser, authorizeRoles("admin"), sendGiftCard);
+// Send Gift Card Route (Admin Only)
+router.route("/admin/gift-card/send/:userId/:gigId").post(isAuthenticatedUser, authorizeRoles("admin"), sendGiftCard);
+// Get All Gift Card Types Route (Admin Only)
+router.route("/admin/gift-card/types").get(isAuthenticatedUser, authorizeRoles("admin"), getAllGiftCardTypes);
+
+// New Route: Update Budget for a Gig (Admin Only)
+router.route("/admin/gig/budget/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin"), updateGigBudget);
 
 router.post("/send-email", sendTableDataEmail);
 
