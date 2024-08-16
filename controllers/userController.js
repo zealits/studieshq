@@ -526,21 +526,13 @@ exports.sendGiftCard = async (req, res, next) => {
     const { userId, gigId } = req.params;
     const { gift_template, subject, contacts, price_in_cents, brand_codes, message, expiry } = req.body;
 
-    console.log(gift_template);
-    console.log(subject);
-    console.log(contacts);
-    console.log(price_in_cents);
-    console.log(brand_codes);
-    console.log(message);
-    console.log(expiry);
-
     const user = await User.findById(userId);
     const gig = user.gigs.id(gigId);
 
     if (gig) {
       // Prepare the payload according to the working format
       const payload = {
-        gift_template: gift_template,
+        gift_template: process.env.GIFTBIT_TEMPLATE_ID,
         subject: subject,
         contacts: contacts.map((contact) => ({
           firstname: contact.firstname,
@@ -549,13 +541,12 @@ exports.sendGiftCard = async (req, res, next) => {
         })),
         price_in_cents: price_in_cents,
         brand_codes: brand_codes, // Array of brand codes
-        // region: region,
         message: message,
         expiry: expiry,
       };
 
       // Send gift card using Giftbit API
-      const response = await axios.post("https://api-testbed.giftbit.com/papi/v1/campaign", payload, {
+      const response = await axios.post(process.env.GIFTBIT_API_CAMPAIGN_URL, payload, {
         headers: {
           Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
           "Content-Type": "application/json",
@@ -574,7 +565,6 @@ exports.sendGiftCard = async (req, res, next) => {
       });
     }
   } catch (error) {
-    // console.error(error);
     res.status(500).json({
       success: false,
       message: "Error sending gift card. Please try again later.",
@@ -584,7 +574,7 @@ exports.sendGiftCard = async (req, res, next) => {
 
 exports.getAllGiftCardTypes = async (req, res, next) => {
   try {
-    const response = await axios.get("https://api-testbed.giftbit.com/papi/v1/brands", {
+    const response = await axios.get(process.env.GIFTBIT_API_BRANDS_URL, {
       headers: {
         Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
         "Content-Type": "application/json",

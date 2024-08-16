@@ -125,7 +125,7 @@ const ManagePayout = () => {
 
       // Construct the payload
       const payload = {
-        gift_template: "MIJVVHGFXIIE", // Using the selected gift card option as the template ID
+        gift_template: "this_will_not_work_you_know_why", // Using the selected gift card option as the template ID
         subject: "This gift card is sent through frontend", // Adjust the subject as needed
         contacts: [
           {
