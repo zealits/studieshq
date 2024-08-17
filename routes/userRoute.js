@@ -16,9 +16,9 @@ const {
   approveGig,
   completeGig,
   getAllGigsWithApplicants,
-  requestGiftCard, // New route for requesting a gift card
+  requestGiftCard, 
   approveGiftCard,
-  sendTableDataEmail, // New route for admin to approve gift card requests
+  sendTableDataEmail,
   updateBasicInfo,
   updateEducation,
   updateExperience,
@@ -49,30 +49,30 @@ router.route("/me/experience").put(isAuthenticatedUser, updateExperience);
 router.route("/me/skills").put(isAuthenticatedUser, updateSkills);
 router.route("/me/languages").put(isAuthenticatedUser, updateLanguages);
 
-router.route("/admin/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
-router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser);
-router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateUserRole);
-router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
+router.route("/admin/users").get(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), getAllUser);
+router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), getSingleUser);
+router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), updateUserRole);
+router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), deleteUser);
 
 // Gig Routes
 router.route("/gig/apply").post(isAuthenticatedUser, applyForGig);
-router.route("/admin/gig/approve/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin"), approveGig);
+router.route("/admin/gig/approve/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), approveGig);
 router.route("/gig/complete/:gigId").put(isAuthenticatedUser, completeGig);
-router.route("/admin/gigs").get(isAuthenticatedUser, authorizeRoles("admin"), getAllGigsWithApplicants);
+router.route("/admin/gigs").get(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), getAllGigsWithApplicants);
 
 // Gift Card Routes
 router.route("/gig/:gigId/request-gift-card").post(isAuthenticatedUser, requestGiftCard);
 router
   .route("/admin/gift-card/approve/:userId/:gigId")
-  .put(isAuthenticatedUser, authorizeRoles("admin"), approveGiftCard);
+  .put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), approveGiftCard);
 
 // Send Gift Card Route (Admin Only)
-router.route("/admin/gift-card/send/:userId/:gigId").post(isAuthenticatedUser, authorizeRoles("admin"), sendGiftCard);
+router.route("/admin/gift-card/send/:userId/:gigId").post(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), sendGiftCard);
 // Get All Gift Card Types Route (Admin Only)
-router.route("/admin/gift-card/types").get(isAuthenticatedUser, authorizeRoles("admin"), getAllGiftCardTypes);
+router.route("/admin/gift-card/types").get(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), getAllGiftCardTypes);
 
 // New Route: Update Budget for a Gig (Admin Only)
-router.route("/admin/gig/budget/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin"), updateGigBudget);
+router.route("/admin/gig/budget/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("superadmin"), updateGigBudget);
 
 router.post("/send-email", sendTableDataEmail);
 

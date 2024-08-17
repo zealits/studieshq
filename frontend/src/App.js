@@ -20,6 +20,8 @@ import AdminSidebar from "./components/AdminSidebar.js";
 import ManageUser from "./Admin/ManageUser.js";
 import ManageStudies from "./Admin/ManageStudies.js";
 import ManagePayout from "./Admin/ManagePayout.js";
+import SuperAdminDashboard from "./superAdmin/SuperAdminDashboard.js";
+import SuperAdminSidebar from "./superAdmin/SuperAdminSidebar.js";
 
 import "./App.css"; // Import the CSS for layout
 
@@ -38,7 +40,13 @@ function App() {
   return (
     <div className="app">
       <Router>
-        {isAuthenticated && (user.role === "admin" ? <AdminSidebar /> : <Sidebar />)}
+        {isAuthenticated && (
+          <>
+            {user.role === "admin" && <AdminSidebar />}
+            {user.role === "user" && <Sidebar />}
+            {user.role === "superadmin" && <SuperAdminSidebar />}
+          </>
+        )}
         <div className="content">
           <Routes>
             {/* Public Route */}
@@ -70,6 +78,12 @@ function App() {
                     <Route exact path="/managestudies" element={<ManageStudies />} />
                     <Route exact path="/managepayout" element={<ManagePayout />} />
                     <Route path="/addstudies" element={<AddGig />} />
+                  </>
+                )}
+
+                {user.role === "superadmin" && (
+                  <>
+                    <Route exact path="/" element={<SuperAdminDashboard />} />
                   </>
                 )}
 
