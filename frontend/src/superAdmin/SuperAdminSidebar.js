@@ -12,6 +12,7 @@ import {
   FaPlusCircle, // Add Gig
   FaHeadset, // Support
   FaSignOutAlt, // Logout
+  FaGift, 
   FaAngleRight,
   FaAngleLeft,
 } from "react-icons/fa";
@@ -42,10 +43,10 @@ const SuperAdminSidebar = () => {
         <li>
           <Link to="/admin-dashboard" className="linke">
             <i>
-              <FaHome className="icon" />
+              <FaGift className="icon" />
             </i>
 
-            <span className="links_name">Dashboard</span>
+            <span className="links_name">Manage GiftCard</span>
           </Link>
           <span className="tooltip">Dashboard</span>
         </li>

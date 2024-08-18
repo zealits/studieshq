@@ -81,68 +81,19 @@ const ManagePayout = () => {
     }
   };
 
-  // const handleApproveGiftCard = async (userId, gigId, userName, userEmail) => {
-  //   try {
-  //     const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
-  //     const budget = editableBudgets[`${userId}-${gigId}`];
-
-  //     if (!giftCardOption || giftCardOption === "") {
-  //       setPopupMessage("Please select a gift card option before approving.");
-  //       return;
-  //     }
-
-  //     await axios.put(
-  //       `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
-  //       { giftCardOption, budget }, // Send the updated budget along with the gift card option
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     setPopupMessage(
-  //       `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
-  //     );
-  //     dispatch(loadAllUsers());
-  //   } catch (error) {
-  //     console.error("Error approving gift card:", error);
-  //     setPopupMessage("Failed to approve gift card.");
-  //   }
-  // };
-
-  const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget) => {
+  const handleApproveGiftCard = async (userId, gigId, userName, userEmail) => {
     try {
-      console.log("i have clicked");
-
       const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
-      // const budget = editableBudgets[`${userId}-${gigId}`];
+      const budget = editableBudgets[`${userId}-${gigId}`];
 
       if (!giftCardOption || giftCardOption === "") {
         setPopupMessage("Please select a gift card option before approving.");
         return;
       }
 
-      // Construct the payload
-      const payload = {
-        gift_template: "this_will_not_work_you_know_why", // Using the selected gift card option as the template ID
-        subject: "This gift card is sent through frontend", // Adjust the subject as needed
-        contacts: [
-          {
-            firstname: userName, // Use the user's name for both firstname and lastname
-            lastname: userName,
-            email: userEmail,
-          },
-        ],
-        price_in_cents: budget * 100, // Assuming budget is in dollars, convert to cents
-        brand_codes: [giftCardOption], // Replace with actual brand codes
-        message: "Thank you for your hard work!", // Customize the message
-        expiry: "2024-12-31", // Set the expiry date as needed
-      };
-
-      await axios.post(
-        `/aak/l1/admin/gift-card/send/${userId}/${gigId}`,
-        payload, // Send the payload
+      await axios.put(
+        `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
+        { giftCardOption, budget }, // Send the updated budget along with the gift card option
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -150,12 +101,61 @@ const ManagePayout = () => {
         }
       );
 
-      setPopupMessage("Gift card approved successfully!");
+      setPopupMessage(
+        `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
+      );
+      dispatch(loadAllUsers());
     } catch (error) {
       console.error("Error approving gift card:", error);
-      setPopupMessage("Failed to approve gift card. Please try again.");
+      setPopupMessage("Failed to approve gift card.");
     }
   };
+
+  // const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget) => {
+  //   try {
+  //     console.log("i have clicked");
+
+  //     const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
+  //     // const budget = editableBudgets[`${userId}-${gigId}`];
+
+  //     if (!giftCardOption || giftCardOption === "") {
+  //       setPopupMessage("Please select a gift card option before approving.");
+  //       return;
+  //     }
+
+  //     // Construct the payload
+  //     const payload = {
+  //       gift_template: "this_will_not_work_you_know_why", // Using the selected gift card option as the template ID
+  //       subject: "This gift card is sent through frontend", // Adjust the subject as needed
+  //       contacts: [
+  //         {
+  //           firstname: userName, // Use the user's name for both firstname and lastname
+  //           lastname: userName,
+  //           email: userEmail,
+  //         },
+  //       ],
+  //       price_in_cents: budget * 100, // Assuming budget is in dollars, convert to cents
+  //       brand_codes: [giftCardOption], // Replace with actual brand codes
+  //       message: "Thank you for your hard work!", // Customize the message
+  //       expiry: "2024-12-31", // Set the expiry date as needed
+  //     };
+
+  //     await axios.post(
+  //       `/aak/l1/admin/gift-card/send/${userId}/${gigId}`,
+  //       payload, // Send the payload
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     setPopupMessage("Gift card approved successfully!");
+  //   } catch (error) {
+  //     console.error("Error approving gift card:", error);
+  //     setPopupMessage("Failed to approve gift card. Please try again.");
+  //   }
+  // };
 
   const handleBudgetEdit = (userId, gigId) => {
     setEditingBudget({ userId, gigId });

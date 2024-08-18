@@ -151,10 +151,10 @@ const SuperAdminDashboard = () => {
         }
       );
 
-      setPopupMessage("Gift card approved successfully!");
+      setPopupMessage("Gift card Send successfully!");
     } catch (error) {
-      console.error("Error approving gift card:", error);
-      setPopupMessage("Failed to approve gift card. Please try again.");
+      console.error("Error Sending gift card:", error);
+      setPopupMessage("Failed to Send gift card. Please try again.");
     }
   };
 

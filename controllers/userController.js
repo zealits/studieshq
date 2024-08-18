@@ -529,7 +529,10 @@ exports.sendGiftCard = async (req, res, next) => {
     const user = await User.findById(userId);
     const gig = user.gigs.id(gigId);
 
-    if (gig) {
+    if (gig && gig.paymentStatus === "approved") {
+      gig.paymentStatus = "paid";
+      gig.giftCardPaidAt = Date.now();
+      gig.giftCardOption = brand_codes[0];
       // Prepare the payload according to the working format
       const payload = {
         gift_template: process.env.GIFTBIT_TEMPLATE_ID,
@@ -553,6 +556,7 @@ exports.sendGiftCard = async (req, res, next) => {
         },
       });
 
+      await user.save();
       res.status(200).json({
         success: true,
         message: "Gift card sent successfully!",
