@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Modal from "react-modal";
 import "./Earnings.css";
@@ -10,6 +10,34 @@ const Earnings = () => {
   const [gigs, setGigs] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [giftCardTypes, setGiftCardTypes] = useState([]);
+  const [selectedGiftCardOptions, setSelectedGiftCardOptions] = useState({});
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchGiftCardTypes = async () => {
+      try {
+        const response = await axios.get("aak/l1/admin/gift-card/types", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setGiftCardTypes(response.data.data.brands);
+      } catch (error) {
+        console.error("Error fetching gift card types:", error);
+      }
+    };
+
+    fetchGiftCardTypes();
+  }, [dispatch]);
+
+  const handleGiftCardOptionChange = (userId, gigId, value) => {
+    setSelectedGiftCardOptions((prevOptions) => ({
+      ...prevOptions,
+      [`${userId}-${gigId}`]: value,
+    }));
+  };
 
   const userGigs = useSelector((state) => state.user.user.gigs);
   const completedGigs = userGigs.filter((gig) => gig.status === "completed");
@@ -21,15 +49,28 @@ const Earnings = () => {
   }, []);
 
   const handleRequestGiftCard = async (gigId) => {
+    const selectedGiftCardType = selectedGiftCardOptions[`${gigId}`];
+    if (!selectedGiftCardType) {
+      setModalMessage("Please select a gift card type.");
+      setModalIsOpen(true);
+      return;
+    }
+
     setLoading(true);
     setMessage("");
     setModalIsOpen(false);
 
     try {
-      // Call API to request gift card
-      const response = await axios.post(`/aak/l1/gig/${gigId}/request-gift-card`);
+      // Call API to request gift card with selected type
+      const response = await axios.post(`/aak/l1/gig/${gigId}/request-gift-card`, {
+        giftCardType: selectedGiftCardType,
+      });
       // Update the paymentStatus in the state
-      setGigs((prevGigs) => prevGigs.map((gig) => (gig._id === gigId ? { ...gig, paymentStatus: "requested" } : gig)));
+      setGigs((prevGigs) =>
+        prevGigs.map((gig) =>
+          gig._id === gigId ? { ...gig, paymentStatus: "requested" } : gig
+        )
+      );
       setModalMessage("Gift card request submitted successfully!");
     } catch (error) {
       console.error("Error submitting gift card request", error);
@@ -62,9 +103,27 @@ const Earnings = () => {
                 <h3>{gig.title}</h3>
                 <div>Allocated date: {formatDate(gig.allocatedAt)}</div>
                 <div>Completed date: {formatDate(gig.completedAt)}</div>
+                <div>
+                  <label>Select Gift Card Type:</label>
+                  <select
+                    value={selectedGiftCardOptions[gig._id] || ""}
+                    onChange={(e) => handleGiftCardOptionChange(gig._id, gig._id, e.target.value)}
+                  >
+                    <option value="">Select a type</option>
+                    {giftCardTypes.map((type) => (
+                      <option key={type.code} value={type.code}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {gig.paymentStatus !== "requested" && gig.paymentStatus !== "approved" && (
-                  <button onClick={() => handleRequestGiftCard(gig._id)} className="request-button" disabled={loading}>
+                  <button
+                    onClick={() => handleRequestGiftCard(gig._id)}
+                    className="request-button"
+                    disabled={loading}
+                  >
                     {`Request Gift Card of $${gig.budget}`}
                   </button>
                 )}

@@ -69,7 +69,7 @@ router
 // Send Gift Card Route (Admin Only)
 router.route("/admin/gift-card/send/:userId/:gigId").post(isAuthenticatedUser, authorizeRoles("superadmin"), sendGiftCard);
 // Get All Gift Card Types Route (Admin Only)
-router.route("/admin/gift-card/types").get(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), getAllGiftCardTypes);
+router.route("/admin/gift-card/types").get(isAuthenticatedUser, authorizeRoles("user","admin", "superadmin"), getAllGiftCardTypes);
 
 // New Route: Update Budget for a Gig (Admin Only)
 router.route("/admin/gig/budget/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin","superadmin"), updateGigBudget);
