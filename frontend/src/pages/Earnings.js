@@ -32,15 +32,17 @@ const Earnings = () => {
     fetchGiftCardTypes();
   }, [dispatch]);
 
-  const handleGiftCardOptionChange = (userId, gigId, value) => {
+  const handleGiftCardOptionChange = (gigId, value) => {
     setSelectedGiftCardOptions((prevOptions) => ({
       ...prevOptions,
-      [`${userId}-${gigId}`]: value,
+      [gigId]: value,
     }));
   };
 
   const userGigs = useSelector((state) => state.user.user.gigs);
   const completedGigs = userGigs.filter((gig) => gig.status === "completed");
+
+  console.log(completedGigs);
 
   useEffect(() => {
     // Load gigs from API initially (if required)
@@ -61,16 +63,13 @@ const Earnings = () => {
     setModalIsOpen(false);
 
     try {
-      // Call API to request gift card with selected type
+      console.log(selectedGiftCardType);
       const response = await axios.post(`/aak/l1/gig/${gigId}/request-gift-card`, {
         giftCardType: selectedGiftCardType,
       });
-      // Update the paymentStatus in the state
-      setGigs((prevGigs) =>
-        prevGigs.map((gig) =>
-          gig._id === gigId ? { ...gig, paymentStatus: "requested" } : gig
-        )
-      );
+
+      // Update paymentStatus in state (if needed)
+      setGigs((prevGigs) => prevGigs.map((gig) => (gig._id === gigId ? { ...gig, paymentStatus: "requested" } : gig)));
       setModalMessage("Gift card request submitted successfully!");
     } catch (error) {
       console.error("Error submitting gift card request", error);
@@ -95,7 +94,7 @@ const Earnings = () => {
     <div className="earnings-page">
       <h2>Request Gift Card</h2>
       <div className="completed-gigs">
-        <h3>Your Completed Gigs</h3>
+        <h3>Your Completed Studies</h3>
         <div className="request-giftcards">
           {completedGigs.length > 0 ? (
             completedGigs.map((gig) => (
@@ -104,26 +103,30 @@ const Earnings = () => {
                 <div>Allocated date: {formatDate(gig.allocatedAt)}</div>
                 <div>Completed date: {formatDate(gig.completedAt)}</div>
                 <div>
-                  <label>Select Gift Card Type:</label>
-                  <select
-                    value={selectedGiftCardOptions[gig._id] || ""}
-                    onChange={(e) => handleGiftCardOptionChange(gig._id, gig._id, e.target.value)}
-                  >
-                    <option value="">Select a type</option>
-                    {giftCardTypes.map((type) => (
-                      <option key={type.code} value={type.code}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
+                  {gig.paymentStatus === "requested" || gig.paymentStatus === "approved" ? (
+                    <div className="requestedgiftcardstatus">
+                      <h5>Requested Gift Card: {gig.userSelectedGiftCardOption}</h5>
+                    </div>
+                  ) : (
+                    <div className="optionsgiftcard">
+                      <label>Select Gift Card Type:</label>
+                      <select
+                        value={selectedGiftCardOptions[gig._id] || ""}
+                        onChange={(e) => handleGiftCardOptionChange(gig._id, e.target.value)}
+                      >
+                        <option value="">Select a type</option>
+                        {giftCardTypes.map((type) => (
+                          <option key={type.code} value={type.code}>
+                            {type.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 {gig.paymentStatus !== "requested" && gig.paymentStatus !== "approved" && (
-                  <button
-                    onClick={() => handleRequestGiftCard(gig._id)}
-                    className="request-button"
-                    disabled={loading}
-                  >
+                  <button onClick={() => handleRequestGiftCard(gig._id)} className="request-button" disabled={loading}>
                     {`Request Gift Card of $${gig.budget}`}
                   </button>
                 )}

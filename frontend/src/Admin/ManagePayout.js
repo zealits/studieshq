@@ -42,7 +42,7 @@ const ManagePayout = () => {
       ...prevOptions,
       [`${userId}-${gigId}`]: value,
     }));
-  };
+  }; 
 
   const handleSendEmail = async () => {
     if (!email) {
@@ -261,9 +261,10 @@ const ManagePayout = () => {
                   </td>
 
                   <td>
+                  <h6>{gig.userSelectedGiftCardOption}</h6>
                     <select
                       className="payment-select"
-                      value={selectedGiftCardOptions[`${user._id}-${gig._id}`] || gig.giftCardOption || ""}
+                      value={selectedGiftCardOptions[`${user._id}-${gig._id}`] || gig.giftCardOption || gig.userSelectedGiftCardOption || ""}
                       onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
                     >
                       <option value="">None</option>

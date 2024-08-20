@@ -461,13 +461,16 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 exports.requestGiftCard = async (req, res, next) => {
   try {
     const { gigId } = req.params;
+    const { giftCardType } = req.body; // Get the gift card type from the request body
     const userId = req.user._id;
 
+    console.log(giftCardType);
     const user = await User.findById(userId);
 
     const gig = user.gigs.id(gigId);
     if (gig && gig.status === "completed") {
       gig.paymentStatus = "requested";
+      gig.userSelectedGiftCardOption = giftCardType; // Store the gift card type here
       gig.requestGiftCardAt = Date.now();
 
       await user.save();
