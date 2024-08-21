@@ -34,6 +34,10 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL,
+  UPDATE_2FA_STATUS_REQUEST,
+  UPDATE_2FA_STATUS_SUCCESS,
+  UPDATE_2FA_STATUS_FAIL,
+  TOTP_VERIFIED,
   CLEAR_ERRORS,
 } from "../Constants/userConstants";
 import axios from "axios";
@@ -238,6 +242,54 @@ export const deleteUser = (id) => async (dispatch) => {
     dispatch({ type: DELETE_USER_SUCCESS, payload: { success: data.success, message: data.message } });
   } catch (error) {
     dispatch({ type: DELETE_USER_FAIL, payload: error.response.data.message });
+  }
+};
+
+// below not used anywhere
+export const updateUser2FAVerifiedStatus = (status) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: UPDATE_2FA_STATUS_REQUEST });
+
+    const { token } = getState().user;
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/aak/l1/me/update-2fa-status`, { twoFAEnabled: status }, config);
+
+    dispatch({ type: UPDATE_2FA_STATUS_SUCCESS, payload: data.success });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_2FA_STATUS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Action to verify TOTP
+export const verifyTOTP = (token) => async (dispatch) => {
+  try {
+    const config = { headers: { "Content-Type": "application/json" } };
+    const { data } = await axios.post("/aak/l1/verify-2fa", { token }, config);
+
+    if (data.message === "2FA verified successfully") {
+      dispatch({
+        type: TOTP_VERIFIED,
+      });
+
+      // Set the totpVerified status in localStorage with a 6-hour expiration
+      const expirationTime = Date.now() + 6 * 60 * 60 * 1000; // 6 hours from now
+      localStorage.setItem("totpVerified", JSON.stringify({ verified: true, expiration: expirationTime }));
+    }
+  } catch (error) {
+    dispatch({
+      type: LOGIN_FAIL,
+      payload: error.response.data.message,
+    });
   }
 };
 

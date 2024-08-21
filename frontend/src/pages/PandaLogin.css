@@ -49,6 +49,8 @@ hr {
 .sign-up {
   height: 640px;
   z-index: 2000;
+  top: 40%;
+  left: 50%;
 }
 
 .login-closed {

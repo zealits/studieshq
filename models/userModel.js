@@ -172,6 +172,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  is2FAEnabled: { type: Boolean, default: false },
+  twoFASecret: { type: String },
   gigs: [gigSchema],
   education: [educationSchema],
   experience: [experienceSchema],

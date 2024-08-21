@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { login, register, clearErrors } from "../Services/Actions/userAction.js";
-import './PandaLogin.css'; // Import the CSS file
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login, register } from "../Services/Actions/userAction.js";
+import "./PandaLogin.css";
+import Modal from "react-modal";
 
 const PandaLogin = () => {
   const [signUp, setSignUp] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
-  const [loginName, setLoginName] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+  const [loginName, setLoginName] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [show2FAModal, setShow2FAModal] = useState(false); // State to control modal visibility
 
   const dispatch = useDispatch();
 
   const handleToggle = () => {
     setSignUp(!signUp);
-    animateFields(signUp ? 'login' : 'signup');
+    animateFields(signUp ? "login" : "signup");
   };
 
   const animateFields = (form) => {
@@ -31,14 +33,20 @@ const PandaLogin = () => {
         return;
       }
       const userData = { name, email, password };
-      dispatch(register(userData));
+      dispatch(register(userData)).then(() => {
+      
+      });
     } else {
-      dispatch(login(loginName, loginPassword));
+      dispatch(login(loginName, loginPassword)).then(() => {
+      
+      });
     }
   };
 
+  
+
   return (
-    <div className='loginpage'>
+    <div className="loginpage">
       {!signUp ? (
         <Login
           loginName={loginName}
@@ -62,6 +70,8 @@ const PandaLogin = () => {
           handleSubmit={handleSubmit}
         />
       )}
+
+  
     </div>
   );
 };
@@ -71,12 +81,7 @@ const Login = ({ loginName, loginPassword, setLoginName, setLoginPassword, handl
     <h1>Log In</h1>
     <hr />
     <form onSubmit={handleSubmit}>
-      <Input
-        label="User Name"
-        type="text"
-        value={loginName}
-        onChange={(e) => setLoginName(e.target.value)}
-      />
+      <Input label="User Name" type="text" value={loginName} onChange={(e) => setLoginName(e.target.value)} />
       <Input
         label="Password"
         type="password"
@@ -89,29 +94,25 @@ const Login = ({ loginName, loginPassword, setLoginName, setLoginPassword, handl
   </div>
 );
 
-const SignUp = ({ name, email, password, rePassword, setName, setEmail, setPassword, setRePassword, handleToggle, handleSubmit }) => (
+const SignUp = ({
+  name,
+  email,
+  password,
+  rePassword,
+  setName,
+  setEmail,
+  setPassword,
+  setRePassword,
+  handleToggle,
+  handleSubmit,
+}) => (
   <div className="sign-up">
     <h1>Sign Up</h1>
     <hr />
     <form onSubmit={handleSubmit}>
-      <Input
-        label="User Name"
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <Input
-        label="Email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <Input label="User Name" type="text" value={name} onChange={(e) => setName(e.target.value)} />
+      <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <Input
         label="Re-Enter Password"
         type="password"
@@ -126,31 +127,28 @@ const SignUp = ({ name, email, password, rePassword, setName, setEmail, setPassw
 
 const Input = ({ label, type, value, onChange }) => (
   <div className="field">
-    <label className="label">
-      {label}
-    </label>
+    <label className="label">{label}</label>
     <br />
-    <input
-      className="input"
-      type={type}
-      value={value}
-      onChange={onChange}
-    />
+    <input className="input" type={type} value={value} onChange={onChange} />
   </div>
 );
 
 const Submit = () => (
   <div>
     <hr />
-    <button className="submit-button" type="submit">Submit</button>
+    <button className="submit-button" type="submit">
+      Submit
+    </button>
   </div>
 );
 
 const SignupLink = ({ handleToggle }) => (
   <div className="signup-link">
     <p className="in-out">
-      Don't have an account? {" "}
-      <a href="#" onClick={handleToggle}>Sign Up Here</a>
+      Don't have an account?{" "}
+      <a href="#" onClick={handleToggle}>
+        Sign Up Here
+      </a>
     </p>
   </div>
 );
@@ -158,8 +156,10 @@ const SignupLink = ({ handleToggle }) => (
 const LoginLink = ({ handleToggle }) => (
   <div className="signup-link">
     <p className="in-out">
-      Already have an account? {" "}
-      <a href="#" onClick={handleToggle}>Log In Here</a>
+      Already have an account?{" "}
+      <a href="#" onClick={handleToggle}>
+        Log In Here
+      </a>
     </p>
   </div>
 );

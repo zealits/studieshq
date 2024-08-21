@@ -38,6 +38,10 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL,
+  UPDATE_2FA_STATUS_REQUEST,
+  UPDATE_2FA_STATUS_SUCCESS,
+  UPDATE_2FA_STATUS_FAIL,
+  TOTP_VERIFIED,
   CLEAR_ERRORS,
 } from "../Constants/userConstants.js";
 
@@ -46,7 +50,13 @@ const initialState = {
   isAuthenticated: false,
   user: null,
   error: null,
+  totpVerified: false, // New field for TOTP verification status
 };
+
+const storedTOTP = JSON.parse(localStorage.getItem("totpVerified"));
+if (storedTOTP && storedTOTP.verified && storedTOTP.expiration > Date.now()) {
+  initialState.totpVerified = true;
+}
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -66,13 +76,16 @@ export const userReducer = (state = initialState, action) => {
         loading: false,
         isAuthenticated: true,
         user: action.payload,
+        totpVerified: JSON.parse(localStorage.getItem("totpVerified"))?.verified || false, // Reset totpVerified on login/register
       };
     case LOGOUT_SUCCESS:
+      localStorage.removeItem("totpVerified");
       return {
         ...state,
         loading: false,
         user: null,
         isAuthenticated: false,
+        totpVerified: false, // Reset on logout
       };
     case LOGIN_FAIL:
     case REGISTER_USER_FAIL:
@@ -83,12 +96,18 @@ export const userReducer = (state = initialState, action) => {
         isAuthenticated: false,
         user: null,
         error: action.payload,
+        totpVerified: false, // Reset on fail
       };
     case LOGOUT_FAIL:
       return {
         ...state,
         loading: false,
         error: action.payload,
+      };
+    case TOTP_VERIFIED:
+      return {
+        ...state,
+        totpVerified: true, // Set TOTP verification status to true
       };
     case CLEAR_ERRORS:
       return {
@@ -106,13 +125,16 @@ export const profileReducer = (state = {}, action) => {
     case UPDATE_PASSWORD_REQUEST:
     case UPDATE_USER_REQUEST:
     case DELETE_USER_REQUEST:
+    case UPDATE_2FA_STATUS_REQUEST: // Handle 2FA status update request
       return {
         ...state,
         loading: true,
       };
+
     case UPDATE_PROFILE_SUCCESS:
     case UPDATE_PASSWORD_SUCCESS:
     case UPDATE_USER_SUCCESS:
+    case UPDATE_2FA_STATUS_SUCCESS: // Handle 2FA status update success
       return {
         ...state,
         loading: false,
@@ -131,6 +153,7 @@ export const profileReducer = (state = {}, action) => {
     case UPDATE_PASSWORD_FAIL:
     case UPDATE_USER_FAIL:
     case DELETE_USER_FAIL:
+    case UPDATE_2FA_STATUS_FAIL: // Handle 2FA status update failure
       return {
         ...state,
         loading: false,

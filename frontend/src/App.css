@@ -38,3 +38,19 @@
     font-size: 18px;
   } */
   
+
+  .code-inputs {
+    display: flex;
+    gap: 8px; /* Adjust as needed */
+    justify-content: center;
+  }
+  
+  .code-box {
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    text-align: center;
+    font-size: 18px; /* Adjust as needed */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  

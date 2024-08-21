@@ -1,0 +1,42 @@
+.totp-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .totp-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .totp-form label {
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  
+  .totp-form input {
+    width: 100px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .totp-form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .totp-form button:hover {
+    background-color: #0056b3;
+  }
+  
