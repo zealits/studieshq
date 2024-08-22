@@ -25,6 +25,7 @@ import SuperAdminSidebar from "./superAdmin/SuperAdminSidebar.js";
 import Modal from "react-modal";
 
 import TotpPage from "./components/TotpPage.js";
+import TwoFactorAuthPage from "./components/TwoFactorAuthPage.js";
 import "./App.css"; // Import the CSS for layout
 import axios from "axios";
 
@@ -40,16 +41,6 @@ function App() {
   useEffect(() => {
     dispatch(loadUser()); // Load user data on app load
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isAuthenticated && !loading && user) {
-      if (!user.is2FAEnabled) {
-        setShow2FAModal(true);
-      } else if (!user.is2FAVerified) {
-        setShowTOTPForm(true);
-      }
-    }
-  }, [isAuthenticated, loading, user]);
 
   const handle2FA = async (activate) => {
     if (activate) {
@@ -126,72 +117,76 @@ function App() {
     return <Loading />; // Show loading screen while fetching user data
   }
 
-  if (isAuthenticated && !loading) {
-    if (user && user.is2FAEnabled && user.is2FAVerified) {
-      return (
-        <Modal
-          isOpen={showTOTPForm}
-          onRequestClose={() => setShowTOTPForm(false)}
-          contentLabel="Enter TOTP"
-          className="modal"
-          overlayClassName="overlay"
-        >
-          <h2>Enter your TOTP</h2>
-          <div>
-            <label htmlFor="totp">Enter the 6-digit TOTP code:</label>
-            <div className="code-inputs">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <input
-                  key={index}
-                  id={`totp-${index}`}
-                  type="text"
-                  maxLength="1"
-                  className="code-box"
-                  onChange={(e) => handleTOTPChange(e, index)}
-                />
-              ))}
-            </div>
-            {verificationError && <p style={{ color: "red" }}>{verificationError}</p>}
-            <button onClick={handleVerification}>Submit</button>
-          </div>
-          <button onClick={() => setShowTOTPForm(false)}>Close</button>
-        </Modal>
-      );
-    }
+  // if (isAuthenticated && !loading) {
+  //   if (user && user.is2FAEnabled && user.is2FAVerified) {
+  //     return (
+  //       <Modal
+  //         isOpen={showTOTPForm}
+  //         onRequestClose={() => setShowTOTPForm(false)}
+  //         contentLabel="Enter TOTP"
+  //         className="modal"
+  //         overlayClassName="overlay"
+  //       >
+  //         <h2>Enter your TOTP</h2>
+  //         <div>
+  //           <label htmlFor="totp">Enter the 6-digit TOTP code:</label>
+  //           <div className="code-inputs">
+  //             {Array.from({ length: 6 }).map((_, index) => (
+  //               <input
+  //                 key={index}
+  //                 id={`totp-${index}`}
+  //                 type="text"
+  //                 maxLength="1"
+  //                 className="code-box"
+  //                 onChange={(e) => handleTOTPChange(e, index)}
+  //               />
+  //             ))}
+  //           </div>
+  //           {verificationError && <p style={{ color: "red" }}>{verificationError}</p>}
+  //           <button onClick={handleVerification}>Submit</button>
+  //         </div>
+  //         <button onClick={() => setShowTOTPForm(false)}>Close</button>
+  //       </Modal>
+  //     );
+  //   }
 
-    if (!user.is2FAEnabled) {
-      return (
-        <Modal
-          isOpen={show2FAModal}
-          onRequestClose={() => setShow2FAModal(false)}
-          contentLabel="Activate 2FA"
-          className="modal"
-          overlayClassName="overlay"
-        >
-          <h2>Activate 2-Factor Authentication</h2>
-          <p>Would you like to activate 2-Factor Authentication now?</p>
-          <button onClick={() => handle2FA(true)}>Activate</button>
-          <button onClick={() => handle2FA(false)}>Maybe Later</button>
-        </Modal>
-      );
-    }
-  }
+  //   if (!user.is2FAEnabled) {
+  //     return (
+  //       <Modal
+  //         isOpen={show2FAModal}
+  //         onRequestClose={() => setShow2FAModal(false)}
+  //         contentLabel="Activate 2FA"
+  //         className="modal"
+  //         overlayClassName="overlay"
+  //       >
+  //         <h2>Activate 2-Factor Authentication</h2>
+  //         <p>Would you like to activate 2-Factor Authentication now?</p>
+  //         <button onClick={() => handle2FA(true)}>Activate</button>
+  //         <button onClick={() => handle2FA(false)}>Maybe Later</button>
+  //       </Modal>
+  //     );
+  //   }
+  // }
 
   return (
     <div className="app">
       <Router>
-        {isAuthenticated && totpVerified && (
-          <>
-            {user.role === "admin" && <AdminSidebar />}
-            {user.role === "user" && <Sidebar />}
-            {user.role === "superadmin" && <SuperAdminSidebar />}
-          </>
-        )}
+        {isAuthenticated &&
+          totpVerified &&
+          user.is2FAEnabled && (
+            <>
+              {user.role === "admin" && <AdminSidebar />}
+              {user.role === "user" && <Sidebar />}
+              {user.role === "superadmin" && <SuperAdminSidebar />}
+            </>
+          )}
         <div className="content">
           <Routes>
             {!isAuthenticated && <Route path="/" element={<PandaLogin />} />}
 
-            {isAuthenticated && !totpVerified ? (
+            {isAuthenticated && !user.is2FAEnabled && <Route path="/" element={<TwoFactorAuthPage />} />}
+
+            {isAuthenticated && !totpVerified && user.is2FAEnabled ? (
               <Route path="/" element={<TotpPage />} />
             ) : (
               isAuthenticated &&

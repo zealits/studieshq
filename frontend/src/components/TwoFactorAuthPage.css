@@ -1,0 +1,73 @@
+.two-factor-auth {
+  text-align: center;
+  padding: 40px;
+  background: #f9f9f9; /* Light background for contrast */
+  border-radius: 8px; /* Rounded corners for a softer look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  max-width: 500px; /* Constrain the width for better readability */
+  margin: 20px auto; /* Center the container */
+}
+
+.two-factor-auth h2 {
+  font-size: 24px;
+  color: #333; /* Darker color for better readability */
+  margin-bottom: 20px;
+}
+
+.two-factor-auth img {
+  margin: 20px 0;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd; /* Light border around the QR code */
+  border-radius: 8px; /* Rounded corners for the QR code */
+}
+
+.code-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.code-box {
+  width: 50px; /* Increased width for better accessibility */
+  height: 50px; /* Increased height for a balanced look */
+  font-size: 24px; /* Larger font size for better readability */
+  text-align: center;
+  border: 2px solid #ddd; /* Thicker border for a more defined look */
+  border-radius: 8px; /* Rounded corners */
+  transition: border-color 0.3s ease; /* Smooth transition for focus effect */
+}
+
+.code-box:focus {
+  border-color: #007bff; /* Change border color on focus */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.2); /* Subtle shadow on focus */
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 24px; /* Larger padding for a more prominent button */
+  font-size: 18px; /* Increased font size for better readability */
+  background-color: #007bff; /* Primary color */
+  color: white;
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+button:active {
+  transform: translateY(0); /* Reset lift effect on click */
+}
+
+.error-message {
+  color: #d9534f; /* Red color for errors */
+  font-size: 14px;
+  margin-top: 10px;
+}

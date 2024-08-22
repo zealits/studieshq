@@ -42,6 +42,8 @@ import {
   UPDATE_2FA_STATUS_SUCCESS,
   UPDATE_2FA_STATUS_FAIL,
   TOTP_VERIFIED,
+  ENABLE_2FA_SUCCESS,
+  ENABLE_2FA_FAIL,
   CLEAR_ERRORS,
 } from "../Constants/userConstants.js";
 
@@ -114,6 +116,32 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         error: null,
       };
+    default:
+      return state;
+  }
+};
+
+export const authReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ENABLE_2FA_SUCCESS:
+      return {
+        ...state,
+        qrCodeUrl: action.payload.qrCodeUrl,
+        secret: action.payload.secret,
+      };
+
+    case ENABLE_2FA_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
+      };
+
     default:
       return state;
   }

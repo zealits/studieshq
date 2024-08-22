@@ -1,42 +1,52 @@
+/* TotpPage.css */
+
 .totp-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-  }
-  
-  .totp-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .totp-form label {
-    margin-bottom: 15px;
-    font-size: 18px;
-  }
-  
-  .totp-form input {
-    width: 100px;
-    padding: 10px;
-    font-size: 18px;
-    text-align: center;
-  }
-  
-  .totp-form button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .totp-form button:hover {
-    background-color: #0056b3;
-  }
-  
+  text-align: center;
+  padding: 20px;
+}
+
+.totp-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.otp-box {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 18px;
+}
+
+.otp-box:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 20px;
+}

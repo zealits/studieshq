@@ -38,6 +38,10 @@ import {
   UPDATE_2FA_STATUS_SUCCESS,
   UPDATE_2FA_STATUS_FAIL,
   TOTP_VERIFIED,
+
+  ENABLE_2FA_SUCCESS,
+  ENABLE_2FA_FAIL,
+
   CLEAR_ERRORS,
 } from "../Constants/userConstants";
 import axios from "axios";
@@ -265,6 +269,25 @@ export const updateUser2FAVerifiedStatus = (status) => async (dispatch, getState
   } catch (error) {
     dispatch({
       type: UPDATE_2FA_STATUS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Action to enable 2FA
+export const enable2FA = () => async (dispatch) => {
+  try {
+    const config = { headers: { "Content-Type": "application/json" } };
+
+    const { data } = await axios.post("/aak/l1/enable-2fa", {}, config);
+
+    dispatch({
+      type: ENABLE_2FA_SUCCESS,
+      payload: data, // This will contain the QR code URL and the secret
+    });
+  } catch (error) {
+    dispatch({
+      type: ENABLE_2FA_FAIL,
       payload: error.response.data.message,
     });
   }

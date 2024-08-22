@@ -1,22 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { verifyTOTP } from "../Services/Actions/userAction";
-import "./TotpPage.css"; // Add a CSS file for styling
+import { enable2FA, verifyTOTP, clearErrors } from "../Services/Actions/userAction";
+import "./TwoFactorAuthPage.css";
 
-const TotpPage = () => {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const inputRefs = useRef([]);
+const TwoFactorAuthPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, totpVerified, error } = useSelector((state) => state.user);
+  const { qrCodeUrl, error } = useSelector((state) => state.auth);
+  const { totpVerified } = useSelector((state) => state.user);
 
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef([]);
+
+  // Fetch QR Code on component mount
   useEffect(() => {
+    dispatch(enable2FA());
+
     // Focus on the first OTP input field on component mount
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
-  }, []);
+  }, [dispatch]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -48,31 +53,40 @@ const TotpPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    // e.preventDefault();
+  const handleSubmit = () => {
     const otpCode = otp.join("");
-    dispatch(verifyTOTP(otpCode));
+
+    dispatch(verifyTOTP(otpCode))
+      .then(() => {
+        // Reload the page after successful dispatch
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Verification failed:", error);
+        // Optionally handle errors here
+      });
   };
 
   useEffect(() => {
-    if (isAuthenticated && totpVerified) {
-      navigate("/"); // Redirect to home after successful TOTP verification
+    if (error) {
+      console.error("Error:", error);
+      dispatch(clearErrors());
     }
-  }, [isAuthenticated, totpVerified, navigate]);
+  }, [error, dispatch]);
 
   return (
-    <div className="totp-container">
-      <h1>Enter TOTP</h1>
-      {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleSubmit} className="totp-form">
-        <label htmlFor="totp">Enter the 6-digit code:</label>
-        <div className="otp-inputs">
+    <div className="two-factor-auth">
+      <h2>Scan this QR Code with your authenticator app</h2>
+      {qrCodeUrl ? <img src={qrCodeUrl} alt="QR Code for 2FA" /> : <p>Loading QR Code...</p>}
+      <div>
+        <label htmlFor="code">Enter the 6-digit code:</label>
+        <div className="code-inputs">
           {otp.map((value, index) => (
             <input
               key={index}
               type="text"
               maxLength="1"
-              className="otp-box"
+              className="code-box"
               value={value}
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
@@ -80,10 +94,11 @@ const TotpPage = () => {
             />
           ))}
         </div>
-        <button type="submit">Submit</button>
-      </form>
+        {error && <p className="error-message">{error}</p>}
+        <button onClick={handleSubmit}>Verify</button>
+      </div>
     </div>
   );
 };
 
-export default TotpPage;
+export default TwoFactorAuthPage;
