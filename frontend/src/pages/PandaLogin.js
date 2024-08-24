@@ -14,6 +14,12 @@ const PandaLogin = () => {
   const [loginPassword, setLoginPassword] = useState("");
   const [show2FAModal, setShow2FAModal] = useState(false); // State to control modal visibility
 
+  const [emailVerified, setEmailVerified] = useState(false);
+const [otp, setOtp] = useState("");
+const [otpSent, setOtpSent] = useState(false);
+const [emailVerificationInProgress, setEmailVerificationInProgress] = useState(false);
+
+
   const dispatch = useDispatch();
 
   const handleToggle = () => {
