@@ -15,10 +15,9 @@ const PandaLogin = () => {
   const [show2FAModal, setShow2FAModal] = useState(false); // State to control modal visibility
 
   const [emailVerified, setEmailVerified] = useState(false);
-const [otp, setOtp] = useState("");
-const [otpSent, setOtpSent] = useState(false);
-const [emailVerificationInProgress, setEmailVerificationInProgress] = useState(false);
-
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [emailVerificationInProgress, setEmailVerificationInProgress] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -39,17 +38,11 @@ const [emailVerificationInProgress, setEmailVerificationInProgress] = useState(f
         return;
       }
       const userData = { name, email, password };
-      dispatch(register(userData)).then(() => {
-      
-      });
+      dispatch(register(userData)).then(() => {});
     } else {
-      dispatch(login(loginName, loginPassword)).then(() => {
-      
-      });
+      dispatch(login(loginName, loginPassword)).then(() => {});
     }
   };
-
-  
 
   return (
     <div className="loginpage">
@@ -76,8 +69,6 @@ const [emailVerificationInProgress, setEmailVerificationInProgress] = useState(f
           handleSubmit={handleSubmit}
         />
       )}
-
-  
     </div>
   );
 };

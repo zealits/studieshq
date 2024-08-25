@@ -174,6 +174,21 @@ const userSchema = new mongoose.Schema({
   },
   is2FAEnabled: { type: Boolean, default: false },
   twoFASecret: { type: String },
+
+  // New Fields for OTP and Email Verification
+  verificationCode: {
+    type: String,
+    
+  },
+  verificationCodeExpire: {
+    type: Date,
+    // select: false,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false, // Initially set to false until email is verified
+  },
+
   gigs: [gigSchema],
   education: [educationSchema],
   experience: [experienceSchema],
@@ -213,6 +228,37 @@ userSchema.methods.getResetPasswordToken = function () {
   this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
   return resetToken;
+};
+
+// Generate OTP for Email Verification
+userSchema.methods.generateVerificationCode = function () {
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log("Generated OTP:", otpCode); // Log the plain OTP
+
+  this.verificationCode = crypto.createHash("sha256").update(otpCode).digest("hex");
+  console.log("Hashed OTP:", this.verificationCode); // Log the hashed OTP
+
+  this.verificationCodeExpire = Date.now() + 10 * 60 * 1000;
+
+  return otpCode;
+};
+
+userSchema.methods.verifyOTP = async function (enteredOtp) {
+  console.log(this.email);
+  const hashedOtp = crypto.createHash("sha256").update(enteredOtp).digest("hex");
+  console.log("Entered OTP:", enteredOtp); // Log the entered OTP
+  console.log("Hashed Entered OTP:", hashedOtp); // Log the hashed entered OTP
+  console.log("Stored Hashed OTP:", this.verificationCode); // Log the stored hashed OTP
+
+  if (hashedOtp === this.verificationCode && this.verificationCodeExpire > Date.now()) {
+    this.isVerified = true;
+    this.verificationCode = undefined;
+    this.verificationCodeExpire = undefined;
+    // await this.save();
+    return true;
+  } else {
+    return false;
+  }
 };
 
 module.exports = mongoose.model("User", userSchema);

@@ -11,15 +11,95 @@ const axios = require("axios");
 
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, otp, password, firstName, lastName, gender, dateOfBirth, country, state, city, contactNumber } =
+    req.body;
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-  });
+  const user = await User.findOne({ email });
 
-  sendToken(user, 201, res);
+  if (!user) {
+    return next(new ErrorHander("User not found. Please request an OTP first.", 404));
+  }
+
+  const isOtpValid = await user.verifyOTP(otp);
+
+  console.log(isOtpValid);
+
+  if (!isOtpValid) {
+    return next(new ErrorHander("Invalid or expired OTP", 400));
+  }
+
+  user.password = password;
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.gender = gender;
+  user.dateOfBirth = dateOfBirth;
+  user.country = country;
+  user.state = state;
+  user.city = city;
+  user.name = name;
+  user.contactNumber = contactNumber;
+
+  await user.save();
+
+  sendToken(user, 200, res);
+});
+
+exports.sendOtp = catchAsyncErrors(async (req, res, next) => {
+  const { email } = req.body;
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = new User({ email });
+  }
+
+  const otp = user.generateVerificationCode();
+  await user.save({ validateBeforeSave: false });
+
+  const message = `Your OTP for email verification is: ${otp}. It will expire in 10 minutes.`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Email Verification OTP for Studieshq",
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `OTP sent to ${email} successfully`,
+    });
+  } catch (error) {
+    user.verificationCode = undefined;
+    user.verificationCodeExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHander(error.message, 500));
+  }
+});
+
+exports.verifyEmail = catchAsyncErrors(async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  // Find the user by email
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(new ErrorHander("User not found", 404));
+  }
+
+  // Verify the OTP using the method in the user model
+  const isVerified = await user.verifyOTP(otp);
+
+  if (isVerified) {
+    res.status(200).json({
+      success: true,
+      message: "Email verification successful!",
+    });
+  } else {
+    return next(new ErrorHander("Invalid or expired OTP", 400));
+  }
 });
 
 // apply for gig

@@ -16,7 +16,7 @@ const {
   approveGig,
   completeGig,
   getAllGigsWithApplicants,
-  requestGiftCard, 
+  requestGiftCard,
   approveGiftCard,
   sendTableDataEmail,
   updateBasicInfo,
@@ -27,11 +27,15 @@ const {
   sendGiftCard,
   getAllGiftCardTypes,
   updateGigBudget,
+  verifyEmail,
+  sendOtp,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const router = express.Router();
 
 router.route("/register").post(registerUser);
+router.route("/verify-email").post(verifyEmail);
+router.route("/send-otp").post(sendOtp);
 router.route("/login").post(loginUser);
 
 router.route("/password/forgot").post(forgotPassword);
@@ -56,7 +60,9 @@ router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admi
 
 // Gig Routes
 router.route("/gig/apply").post(isAuthenticatedUser, applyForGig);
-router.route("/admin/gig/approve/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), approveGig);
+router
+  .route("/admin/gig/approve/:userId/:gigId")
+  .put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), approveGig);
 router.route("/gig/complete/:gigId").put(isAuthenticatedUser, completeGig);
 router.route("/admin/gigs").get(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), getAllGigsWithApplicants);
 
@@ -67,12 +73,18 @@ router
   .put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), approveGiftCard);
 
 // Send Gift Card Route (Admin Only)
-router.route("/admin/gift-card/send/:userId/:gigId").post(isAuthenticatedUser, authorizeRoles("superadmin"), sendGiftCard);
+router
+  .route("/admin/gift-card/send/:userId/:gigId")
+  .post(isAuthenticatedUser, authorizeRoles("superadmin"), sendGiftCard);
 // Get All Gift Card Types Route (Admin Only)
-router.route("/admin/gift-card/types").get(isAuthenticatedUser, authorizeRoles("user","admin", "superadmin"), getAllGiftCardTypes);
+router
+  .route("/admin/gift-card/types")
+  .get(isAuthenticatedUser, authorizeRoles("user", "admin", "superadmin"), getAllGiftCardTypes);
 
 // New Route: Update Budget for a Gig (Admin Only)
-router.route("/admin/gig/budget/:userId/:gigId").put(isAuthenticatedUser, authorizeRoles("admin","superadmin"), updateGigBudget);
+router
+  .route("/admin/gig/budget/:userId/:gigId")
+  .put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), updateGigBudget);
 
 router.post("/send-email", sendTableDataEmail);
 
