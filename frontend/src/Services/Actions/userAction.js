@@ -38,10 +38,8 @@ import {
   UPDATE_2FA_STATUS_SUCCESS,
   UPDATE_2FA_STATUS_FAIL,
   TOTP_VERIFIED,
-
   ENABLE_2FA_SUCCESS,
   ENABLE_2FA_FAIL,
-
   CLEAR_ERRORS,
 } from "../Constants/userConstants";
 import axios from "axios";
@@ -71,9 +69,10 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST });
 
     const config = { headers: { "Content-Type": "application/json" } };
+    
 
     const { data } = await axios.post(`/aak/l1/login`, { email, password }, config);
-
+   
     dispatch({ type: LOGIN_SUCCESS, payload: data.user });
   } catch (error) {
     dispatch({ type: LOGIN_FAIL, payload: error.response.data.message });

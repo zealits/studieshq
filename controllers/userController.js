@@ -11,8 +11,8 @@ const axios = require("axios");
 
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, otp, password, firstName, lastName, gender, dateOfBirth, country, state, city, contactNumber } =
-    req.body;
+  const { name, email, otp, password, firstName, lastName } = req.body;
+  console.log(req.body);
 
   const user = await User.findOne({ email });
 
@@ -20,26 +20,27 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander("User not found. Please request an OTP first.", 404));
   }
 
-  const isOtpValid = await user.verifyOTP(otp);
+  // const isOtpValid = await user.verifyOTP(otp);
 
-  console.log(isOtpValid);
+  // console.log(isOtpValid);
 
-  if (!isOtpValid) {
-    return next(new ErrorHander("Invalid or expired OTP", 400));
-  }
+  // if (!isOtpValid) {
+  //   return next(new ErrorHander("Invalid or expired OTP", 400));
+  // }
 
   user.password = password;
   user.firstName = firstName;
   user.lastName = lastName;
-  user.gender = gender;
-  user.dateOfBirth = dateOfBirth;
-  user.country = country;
-  user.state = state;
-  user.city = city;
-  user.name = name;
-  user.contactNumber = contactNumber;
+  // user.gender = gender;
+  // user.dateOfBirth = dateOfBirth;
+  // user.country = country;
+  // user.state = state;
+  // user.city = city;
+  user.name = firstName;
+  // user.contactNumber = contactNumber;
 
   await user.save();
+  console.log(user);
 
   sendToken(user, 200, res);
 });

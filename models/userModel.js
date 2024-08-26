@@ -111,7 +111,7 @@ const skillSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please Enter Your Name"],
+    // required: [true, "Please Enter Your Name"],
     maxLength: [30, "Name cannot exceed 30 characters"],
     minLength: [4, "Name should have more than 4 characters"],
   },
@@ -178,7 +178,6 @@ const userSchema = new mongoose.Schema({
   // New Fields for OTP and Email Verification
   verificationCode: {
     type: String,
-    
   },
   verificationCodeExpire: {
     type: Date,
@@ -214,6 +213,8 @@ userSchema.methods.getJWTToken = function () {
 
 // Compare Password
 userSchema.methods.comparePassword = async function (password) {
+  console.log(this.password);
+  console.log(password);
   return await bcrypt.compare(password, this.password);
 };
 

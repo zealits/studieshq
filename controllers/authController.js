@@ -5,6 +5,7 @@ exports.enable2FA = async (req, res) => {
   try {
     // Retrieve the user from req.user
     const user = await User.findById(req.user._id); // or req.user.id
+    console.log(user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
