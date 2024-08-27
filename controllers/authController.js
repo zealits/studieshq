@@ -20,7 +20,7 @@ exports.enable2FA = async (req, res) => {
 
     res.json({ qrCodeUrl, secret: secret.base32 });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };

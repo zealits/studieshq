@@ -213,8 +213,7 @@ userSchema.methods.getJWTToken = function () {
 
 // Compare Password
 userSchema.methods.comparePassword = async function (password) {
-  console.log(this.password);
-  console.log(password);
+
   return await bcrypt.compare(password, this.password);
 };
 
@@ -234,10 +233,10 @@ userSchema.methods.getResetPasswordToken = function () {
 // Generate OTP for Email Verification
 userSchema.methods.generateVerificationCode = function () {
   const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log("Generated OTP:", otpCode); // Log the plain OTP
+  // console.log("Generated OTP:", otpCode); // Log the plain OTP
 
   this.verificationCode = crypto.createHash("sha256").update(otpCode).digest("hex");
-  console.log("Hashed OTP:", this.verificationCode); // Log the hashed OTP
+  // console.log("Hashed OTP:", this.verificationCode); // Log the hashed OTP
 
   this.verificationCodeExpire = Date.now() + 10 * 60 * 1000;
 
@@ -245,11 +244,11 @@ userSchema.methods.generateVerificationCode = function () {
 };
 
 userSchema.methods.verifyOTP = async function (enteredOtp) {
-  console.log(this.email);
+  // console.log(this.email);
   const hashedOtp = crypto.createHash("sha256").update(enteredOtp).digest("hex");
-  console.log("Entered OTP:", enteredOtp); // Log the entered OTP
-  console.log("Hashed Entered OTP:", hashedOtp); // Log the hashed entered OTP
-  console.log("Stored Hashed OTP:", this.verificationCode); // Log the stored hashed OTP
+  // console.log("Entered OTP:", enteredOtp); // Log the entered OTP
+  // console.log("Hashed Entered OTP:", hashedOtp); // Log the hashed entered OTP
+  // console.log("Stored Hashed OTP:",/ this.verificationCode); // Log the stored hashed OTP
 
   if (hashedOtp === this.verificationCode && this.verificationCodeExpire > Date.now()) {
     this.isVerified = true;
