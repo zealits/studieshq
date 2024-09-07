@@ -13,6 +13,7 @@ import studies from "../Assets/photos/studies.png";
 import participation from "../Assets/photos/participation.png";
 import rewards from "../Assets/photos/rewards.png";
 import calendar from "../Assets/photos/calendar.png";
+import share from "../Assets/photos/share3.png";
 import { useNavigate } from "react-router-dom";
 
 
@@ -53,6 +54,23 @@ const Home = () => {
     setExpandedGigId(expandedGigId === gigId ? null : gigId);
   };
 
+  const handleShare = (gig) => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: gig.title,
+          text: gig.description,
+          url: window.location.href, // You can replace this with a specific URL related to the gig
+        })
+        .then(() => console.log("Thanks for sharing!"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      // Fallback code for non-supporting browsers
+      alert("Web Share API is not supported in your browser. Please share manually.");
+    }
+  };
+  
+
   return (
     <div className="home">
       <section className="hero">
@@ -69,38 +87,49 @@ const Home = () => {
       </section>
 
       <section className="popular-gigs">
-        <div className="available-studies">
-          <h2>Popular Studies</h2>
-          <div className="study-list">
-            {gigs && gigs.length > 0 ? (
-              gigs.map((gig) => (
-                <div key={gig._id} className="homestudy-card" onClick={handleGetStarted}>
-                  <h3 className="study-title">{gig.title}</h3>
-                  <div className={`study-description ${expandedGigId === gig._id ? "expanded" : ""}`}>
-                {expandedGigId === gig._id ? gig.description : `${gig.description.substring(0, 100)}.`}
-              </div>
-              {gig.description.length > 100 && (
-                <button className="read-more-button" onClick={() => toggleDescription(gig._id)}>
-                  {expandedGigId === gig._id ? "Read Less" : "Read More"}
-                </button>
-              )}
-                  <div className="home-study-details">
-                    <span className="study-location">
-                      GiftCard <div></div>${gig.budget}
-                    </span>
-                    <span className="study-date">
-                      <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "}
-                      {formatDate(gig.deadline)}
-                    </span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div>No gigs available</div>
+  <div className="available-studies">
+    <h2>Popular Studies</h2>
+    <div className="study-list">
+      {gigs && gigs.length > 0 ? (
+        gigs.map((gig) => (
+          <div key={gig._id} className="homestudy-card" >
+            <h3 className="study-title">{gig.title}</h3>
+            <div className={`study-description ${expandedGigId === gig._id ? "expanded" : ""}`}>
+              {expandedGigId === gig._id ? gig.description : `${gig.description.substring(0, 100)}.`}
+            </div>
+            {gig.description.length > 100 && (
+              <button className="read-more-button" onClick={() => toggleDescription(gig._id)}>
+                {expandedGigId === gig._id ? "Read Less" : "Read More"}
+              </button>
             )}
+            <div className="home-study-details">
+              <span className="study-location">
+                GiftCard <div></div>${gig.budget}
+              </span>
+              <span className="study-date">
+                <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "}
+                {formatDate(gig.deadline)}
+              </span>
+              <div className="share-buttons">
+              <button
+                className="share-button"
+                onClick={() => handleShare(gig)}
+              >
+              <img src={share} alt="Share" className="share-icon" />
+              </button>
+            </div>
+            </div>
+            {/* Share Button Section */}
+          
           </div>
-        </div>
-      </section>
+        ))
+      ) : (
+        <div>No gigs available</div>
+      )}
+    </div>
+  </div>
+</section>
+
 
       <section className="how-it-works">
         <h2>How It Works</h2>

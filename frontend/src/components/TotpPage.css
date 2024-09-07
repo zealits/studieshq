@@ -5,14 +5,19 @@ body {
   margin: 0;
   padding: 0;
   /* background: linear-gradient(135deg, #6dd5ed, #2193b0); */
-  display: flex;
+  display:flex;
+ 
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .totp-container {
   /* background-color: white; */
+ 
+ margin-top: 100px ;
+  align-items: center;
+  justify-content: center;
   border-radius: 12px;
   padding: 30px 40px;
   /* width: 350px; */
@@ -62,12 +67,12 @@ button {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
+  /* border-radius: 6px; */
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-button:hover {
+.totpbutton:hover {
   background-color: #0056b3;
 }
 

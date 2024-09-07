@@ -57,6 +57,7 @@ exports.sendOtp = catchAsyncErrors(async (req, res, next) => {
   const otp = user.generateVerificationCode();
   await user.save({ validateBeforeSave: false });
 
+  console.log(otp);
   const message = `Your OTP for email verification is: ${otp}. It will expire in 10 minutes.`;
 
   try {

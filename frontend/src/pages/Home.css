@@ -387,3 +387,20 @@ body {
 }
 
 
+.share-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.share-button {
+  background-color: transparent; /* Make button background transparent */
+  border: none;
+  cursor: pointer;
+  padding: 0; /* Remove default padding */
+}
+
+.share-icon {
+  width: 24px; /* Set icon size */
+  height: 24px;
+}

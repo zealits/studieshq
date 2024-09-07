@@ -282,7 +282,7 @@ const ManagePayout = () => {
                   </td>
 
                   <td>
-                    {gig.paymentStatus !== "approved" && (
+                    {gig.paymentStatus === "requested" && (
                       <button
                         className="btn btn-info"
                         onClick={() => handleApproveGiftCard(user._id, gig._id, user.name, user.email, gig.budget)}

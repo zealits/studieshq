@@ -76,6 +76,22 @@ const ManageStudies = () => {
     });
   };
 
+  const handleShare = (gig) => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: gig.title,
+          text: gig.description,
+          url: window.location.href, // You can replace this with a specific URL related to the gig
+        })
+        .then(() => console.log("Thanks for sharing!"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      // Fallback code for non-supporting browsers
+      alert("Web Share API is not supported in your browser. Please share manually.");
+    }
+  };
+
   const openDeleteModal = (study) => {
     setStudyToDelete(study);
     setDeleteModalIsOpen(true);
@@ -201,6 +217,9 @@ const ManageStudies = () => {
                 </button>
                 <button className="btn btn-danger" onClick={() => openDeleteModal(study)} disabled={loadingAction}>
                   {loadingAction ? "Deleting..." : "Delete"}
+                </button>
+                <button className="btn " onClick={() => handleShare(study)}>
+                  share
                 </button>
               </div>
             </div>
