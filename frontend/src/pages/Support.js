@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const Support = () => {
-  return (
-    <div>Support</div>
-  )
-}
+  return <div>Under Construction this page.</div>;
+};
 
-export default Support
+export default Support;
