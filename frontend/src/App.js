@@ -20,6 +20,7 @@ import AdminSidebar from "./components/AdminSidebar.js";
 import ManageUser from "./Admin/ManageUser.js";
 import ManageStudies from "./Admin/ManageStudies.js";
 import ManagePayout from "./Admin/ManagePayout.js";
+import ManagePdf from "./Admin/ManagePdf.js";
 import SuperAdminDashboard from "./superAdmin/SuperAdminDashboard.js";
 import SuperAdminSidebar from "./superAdmin/SuperAdminSidebar.js";
 import Modal from "react-modal";
@@ -212,6 +213,7 @@ function App() {
                       <Route exact path="/manageuser" element={<ManageUser />} />
                       <Route exact path="/managestudies" element={<ManageStudies />} />
                       <Route exact path="/managepayout" element={<ManagePayout />} />
+                      <Route exact path="/managePdf" element={<ManagePdf />} />
                       <Route path="/addstudies" element={<AddGig />} />
                     </>
                   )}

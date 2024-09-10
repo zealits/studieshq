@@ -90,14 +90,14 @@ const AdminSidebar = () => {
           <span className="tooltip">Analytics</span>
         </li>
         <li>
-          <Link to="/knowledge-base" className="linke">
+          <Link to="/managePdf" className="linke">
             <i>
               <FaBook className="icon" />
             </i>
 
-            <span className="links_name">Knowledge Base</span>
+            <span className="links_name">Manage PDF</span>
           </Link>
-          <span className="tooltip">Knowledge Base</span>
+          <span className="tooltip">Manage PDF</span>
         </li>
         <li>
           <Link to="/addstudies" className="linke">

@@ -20,14 +20,17 @@ const company = require("./routes/companyRoute");
 const serviceDetail = require("./routes/serviceDetailRoute");
 const gigRoutes = require("./routes/gigRoutes");
 const authRoutes = require("./routes/authRoutes");
-
+const pdfRoutes = require("./routes/pdfRoutes"); 
 // app.use("/api/z1",product);
+
+
 app.use("/aak/l1", venue);
 app.use("/aak/l1", user);
 app.use("/aak/l1", company);
 app.use("/aak/l1", serviceDetail);
 app.use("/aak/l1", gigRoutes);
 app.use("/aak/l1", authRoutes);
+app.use("/aak/l1", pdfRoutes); 
 
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
