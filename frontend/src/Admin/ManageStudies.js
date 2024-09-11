@@ -36,6 +36,7 @@ const ManageStudies = () => {
     };
 
     fetchGigs();
+    console.log(gigs);
   }, [token]);
 
   const generatePieData = (applicants) => {
@@ -146,6 +147,39 @@ const ManageStudies = () => {
     setSelectedStudy(null);
   };
 
+  const downloadPdf = async (pdfUrl) => {
+    let id = pdfUrl._id;
+    try {
+      const response = await axios.get(`/aak/l1/pdf/${id}`, {
+        responseType: "blob", // Important for handling file downloads
+      });
+
+     
+
+      // Extract the filename from the Content-Disposition header
+      const contentDisposition = response.headers["content-disposition"];
+      let filename = "downloaded_file"; // Default filename
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        filename = contentDisposition.split("filename=")[1].replace(/['"]/g, ""); // Remove any quotes around the filename
+      }
+
+      // Create a URL for the blob and trigger the download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename); // Use the extracted filename
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      // Optional: Clean up the URL object
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      // setMessage('Error downloading file');
+    }
+  };
+
   if (loading)
     return (
       <div>
@@ -191,6 +225,14 @@ const ManageStudies = () => {
               <p>Description: {study.description}</p>
               <p>Gift Card: ${study.budget}</p>
               <p>Deadline: {study.deadline}</p>
+              {study.pdfDetails && (
+                <p className="pdf-container">
+                  <span>PDF:</span>
+                  <span className="btn btn-link" onClick={() => downloadPdf(study.pdfDetails)}>
+                    Download PDF
+                  </span>
+                </p>
+              )}
               <div className="pie-chart-container">
                 <PieChart width={400} height={400}>
                   <Pie

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addGig, clearErrors } from "../Services/Actions/gigsActions.js";
+import axios from 'axios';
 import "./AddGig.css";
 
 const AddGig = () => {
@@ -8,6 +9,9 @@ const AddGig = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [budget, setBudget] = useState("");
+  const [selectedPdf, setSelectedPdf] = useState(""); // State for selected PDF
+  const [pdfs, setPdfs] = useState([]); // State for list of PDFs
+  const [message, setMessage] = useState(""); // State for messages
 
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.gig);
@@ -19,14 +23,29 @@ const AddGig = () => {
     }
 
     if (success) {
-      alert("study added successfully");
+      alert("Study added successfully");
       // Clear form fields
       setTitle("");
       setDescription("");
       setDeadline("");
       setBudget("");
+      setSelectedPdf(""); // Clear selected PDF
     }
   }, [dispatch, error, success]);
+
+  useEffect(() => {
+    const fetchPdfs = async () => {
+      try {
+        const response = await axios.get('/aak/l1/getpdf');
+        setPdfs(response.data);
+      } catch (error) {
+        console.error('Error fetching PDFs:', error);
+        setMessage('Error fetching files');
+      }
+    };
+
+    fetchPdfs();
+  }, []);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -36,6 +55,7 @@ const AddGig = () => {
       description,
       deadline,
       budget,
+      pdf: selectedPdf // Add selected PDF to gig data
     };
 
     dispatch(addGig(gigData));
@@ -61,6 +81,22 @@ const AddGig = () => {
           <label>Budget</label>
           <input type="number" value={budget} onChange={(e) => setBudget(e.target.value)} required />
         </div>
+        <div>
+          <label>Select PDF</label>
+          <select 
+            value={selectedPdf} 
+            onChange={(e) => setSelectedPdf(e.target.value)} 
+            required
+          >
+            <option value="">Select a PDF</option>
+            {pdfs.map((pdf) => (
+              <option key={pdf._id} value={pdf._id}>
+                {pdf.filename}
+              </option>
+            ))}
+          </select>
+        </div>
+        {message && <p className="error-message">{message}</p>}
         <button type="submit" disabled={loading ? true : false}>
           {loading ? "Loading..." : "Add Study"}
         </button>

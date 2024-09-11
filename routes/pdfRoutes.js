@@ -1,15 +1,9 @@
-const express = require("express");
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
-const { uploadPDF, downloadPDF, getAllPDFs, getSinglePDF } = require("../controllers/pdfController.js");
-
+const express = require('express');
+const { uploadPdf, getPdfs, getPdf } = require('../controllers/pdfController'); // Adjust the path as needed
 const router = express.Router();
 
-// Admin routes
-router.route("/admin/pdf/upload").post(uploadPDF);
-
-// Public routes
-router.route("/pdfs").get(getAllPDFs);
-router.route("/pdf/:filename").get(downloadPDF);
-router.route("/pdf/info/:id").get(getSinglePDF);
+router.post('/upload', uploadPdf);
+router.get('/getpdf', getPdfs);
+router.get('/pdf/:id', getPdf); // Route to serve a specific PDF
 
 module.exports = router;

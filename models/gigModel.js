@@ -7,7 +7,7 @@ const gigSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    // required: true,
+    // required: true, // Uncomment if description should be required
   },
   deadline: {
     type: String,
@@ -24,10 +24,16 @@ const gigSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  applicants: [{
+  applicants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  pdf: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  }],
+    ref: "PDF", // Reference to the PDF model
+  },
 });
 
 module.exports = mongoose.model("Gig", gigSchema);

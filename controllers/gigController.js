@@ -52,6 +52,7 @@ exports.deleteGig = catchAsyncErrors(async (req, res, next) => {
 exports.getAllGigs = catchAsyncErrors(async (req, res, next) => {
   const gigs = await Gig.find();
 
+  console.log("sdfds");
   res.status(200).json({
     success: true,
     gigs,

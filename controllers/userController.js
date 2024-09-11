@@ -160,7 +160,7 @@ exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
 
 // Get all gigs with applicants (Admin)
 exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
-  // Aggregation pipeline to match gigs with applicants
+  // Aggregation pipeline to match gigs with applicants and PDFs
   const gigs = await Gig.aggregate([
     {
       $lookup: {
@@ -168,6 +168,14 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
         localField: "applicants",
         foreignField: "_id",
         as: "applicantsDetails",
+      },
+    },
+    {
+      $lookup: {
+        from: "pdfs", // Collection name for PDFs
+        localField: "pdf",
+        foreignField: "_id",
+        as: "pdfDetails",
       },
     },
     {
@@ -190,6 +198,9 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
             },
           },
         },
+        pdfDetails: {
+          $arrayElemAt: ["$pdfDetails", 0], // Assuming `pdf` is a single reference
+        },
       },
     },
     {
@@ -201,7 +212,12 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
         budget: 1,
         status: 1,
         createdAt: 1,
-        applicantsDetails: 1, // Include all details of applicants
+        applicantsDetails: 1,
+        pdfDetails: {
+          _id: 1,
+          url: 1, // Assuming PDF model has a `url` field
+          // Add any other PDF fields you need
+        },
       },
     },
   ]);
