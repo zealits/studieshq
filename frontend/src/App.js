@@ -29,6 +29,7 @@ import TotpPage from "./components/TotpPage.js";
 import TwoFactorAuthPage from "./components/TwoFactorAuthPage.js";
 import "./App.css"; // Import the CSS for layout
 import axios from "axios";
+import CreateContract from "./Admin/CreateContract.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -213,7 +214,7 @@ function App() {
                       <Route exact path="/manageuser" element={<ManageUser />} />
                       <Route exact path="/managestudies" element={<ManageStudies />} />
                       <Route exact path="/managepayout" element={<ManagePayout />} />
-                      <Route exact path="/managePdf" element={<ManagePdf />} />
+                      <Route exact path="/managePdf" element={<CreateContract />} />
                       <Route path="/addstudies" element={<AddGig />} />
                     </>
                   )}

@@ -46,7 +46,7 @@ const getPdfs = async (req, res) => {
 
 const getPdf = async (req, res) => {
   try {
-    console.log(req)
+    // console.log(req)
     const pdf = await PDF.findById(req.params.id);
     if (!pdf) {
       return res.status(404).json({ error: "File not found" });

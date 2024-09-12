@@ -95,9 +95,9 @@ const AdminSidebar = () => {
               <FaBook className="icon" />
             </i>
 
-            <span className="links_name">Manage PDF</span>
+            <span className="links_name">Manage Contract</span>
           </Link>
-          <span className="tooltip">Manage PDF</span>
+          <span className="tooltip">Manage Contract</span>
         </li>
         <li>
           <Link to="/addstudies" className="linke">

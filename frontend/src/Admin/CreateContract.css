@@ -1,0 +1,77 @@
+.create-contract-container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .create-contract-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .create-contract-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .create-contract-field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .create-contract-label {
+    margin-bottom: 5px;
+  }
+  
+  .create-contract-input,
+  .create-contract-textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .create-contract-signature {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .create-contract-signatureCanvas {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .create-contract-signature-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .create-contract-save-button,
+  .create-contract-clear-button,
+  .create-contract-submit-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-contract-save-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .create-contract-clear-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .create-contract-submit-button {
+    background-color: #007bff;
+    color: white;
+    align-self: center;
+  }
+  

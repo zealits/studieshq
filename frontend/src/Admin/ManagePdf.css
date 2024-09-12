@@ -1,56 +1,93 @@
 .manage-pdf-container {
-    padding: 20px;
-    background-color: #f4f4f4;
-  }
-  
-  .manage-pdf-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .manage-pdf-form {
-    margin-bottom: 20px;
-  }
-  
-  .manage-pdf-file-input {
-    margin-right: 10px;
-  }
-  
-  .manage-pdf-upload-button {
-    padding: 10px 20px;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .manage-pdf-upload-button:hover {
-    background-color: #333;
-  }
-  
-  .manage-pdf-message {
-    color: #d9534f; /* Red color for error messages */
-  }
-  
-  .manage-pdf-list-title {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .manage-pdf-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .manage-pdf-item {
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-  
-  .manage-pdf-item:hover {
-    background-color: #f1f1f1;
-  }
-  
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.manage-pdf-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.manage-pdf-form {
+  margin-bottom: 20px;
+  padding: 40px 10px;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 55px;
+  cursor: pointer;
+  border: 1px solid #32323260;
+
+  text-align: center;
+  color: #f1f1f1;
+  background-color: #32323260;
+}
+.manage-pdf-file-input {
+  margin-right: 10px;
+}
+
+.manage-pdf-upload-button {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.manage-pdf-upload-button:hover {
+  background-color: #333;
+}
+
+.manage-pdf-message {
+  color: #d9534f; /* Red color for error messages */
+}
+
+.manage-pdf-list-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.manage-pdf-list {
+  /* width: 80vw; */
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+}
+
+.manage-pdf-item {
+  padding: 20px 10px;
+  /* background-color: #fff; */
+  border: 1px solid #ddd;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 55px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.manage-pdf-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* .manage-pdf-item {
+ 
+  padding: 8px;
+} */
+
+.contract-icon {
+  width: 120px; /* Adjust the size as needed */
+  height: 120px;
+  margin-right: 8px;
+}
+
+.manage-pdf-upload-icon {
+  width: 80px; /* Adjust the size as needed */
+  height: 80px;
+}
