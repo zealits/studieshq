@@ -3,8 +3,11 @@ const mongoose = require("mongoose");
 const contractSchema = new mongoose.Schema({
   userId: {
     type: String,
-    // ref: 'User',
     required: true,
+  },
+  filename: {
+    type: String,
+    // required: true,
   },
   jobTitle: {
     type: String,
@@ -18,13 +21,16 @@ const contractSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email: { // New field for email address
+    type: String,
+    // required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
   signature: {
-    type: String, // Store the signature as a base64 encoded image or SVG
-    required: true,
+    type: String,
   },
   pdfData: { type: Buffer }, // Store PDF binary data
 });

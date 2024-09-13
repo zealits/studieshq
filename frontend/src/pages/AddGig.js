@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addGig, clearErrors } from "../Services/Actions/gigsActions.js";
-import axios from 'axios';
+import axios from "axios";
 import "./AddGig.css";
 
 const AddGig = () => {
@@ -36,11 +36,13 @@ const AddGig = () => {
   useEffect(() => {
     const fetchPdfs = async () => {
       try {
-        const response = await axios.get('/aak/l1/getpdf');
+        // const response = await axios.get("/aak/l1/getpdf");
+        const response = await axios.get("/aak/l1/contracts");
+
         setPdfs(response.data);
       } catch (error) {
-        console.error('Error fetching PDFs:', error);
-        setMessage('Error fetching files');
+        console.error("Error fetching PDFs:", error);
+        setMessage("Error fetching files");
       }
     };
 
@@ -55,8 +57,10 @@ const AddGig = () => {
       description,
       deadline,
       budget,
-      pdf: selectedPdf // Add selected PDF to gig data
+      pdf: selectedPdf, // Add selected PDF to gig data
     };
+
+    // console.log(selectedPdf);
 
     dispatch(addGig(gigData));
   };
@@ -83,11 +87,7 @@ const AddGig = () => {
         </div>
         <div>
           <label>Select PDF</label>
-          <select 
-            value={selectedPdf} 
-            onChange={(e) => setSelectedPdf(e.target.value)} 
-            required
-          >
+          <select value={selectedPdf} onChange={(e) => setSelectedPdf(e.target.value)} required>
             <option value="">Select a PDF</option>
             {pdfs.map((pdf) => (
               <option key={pdf._id} value={pdf._id}>

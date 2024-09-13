@@ -30,6 +30,7 @@ import TwoFactorAuthPage from "./components/TwoFactorAuthPage.js";
 import "./App.css"; // Import the CSS for layout
 import axios from "axios";
 import CreateContract from "./Admin/CreateContract.js";
+import UpdateContract from "./Admin/updateContract.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -173,15 +174,13 @@ function App() {
   return (
     <div className="app">
       <Router>
-        {isAuthenticated &&
-          totpVerified &&
-          user.is2FAEnabled && (
-            <>
-              {user.role === "admin" && <AdminSidebar />}
-              {user.role === "user" && <Sidebar />}
-              {user.role === "superadmin" && <SuperAdminSidebar />}
-            </>
-          )}
+        {isAuthenticated && totpVerified && user.is2FAEnabled && (
+          <>
+            {user.role === "admin" && <AdminSidebar />}
+            {user.role === "user" && <Sidebar />}
+            {user.role === "superadmin" && <SuperAdminSidebar />}
+          </>
+        )}
         <div className="content">
           <Routes>
             {!isAuthenticated && <Route path="/" element={<PandaLogin />} />}
@@ -216,6 +215,7 @@ function App() {
                       <Route exact path="/managepayout" element={<ManagePayout />} />
                       <Route exact path="/managePdf" element={<CreateContract />} />
                       <Route path="/addstudies" element={<AddGig />} />
+                      <Route path="/analytics" element={<UpdateContract />} />
                     </>
                   )}
 
