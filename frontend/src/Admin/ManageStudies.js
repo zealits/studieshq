@@ -28,6 +28,7 @@ const ManageStudies = () => {
           },
         });
         setGigs(response.data.gigs || []);
+        // console.log(gigs);
         setLoading(false);
       } catch (error) {
         setError("Error fetching gigs");
@@ -149,6 +150,7 @@ const ManageStudies = () => {
 
   const downloadPdf = async (pdfUrl) => {
     let id = pdfUrl._id;
+    console.log(id);
     try {
       const response = await axios.get(`/aak/l1/pdf/${id}`, {
         responseType: "blob", // Important for handling file downloads

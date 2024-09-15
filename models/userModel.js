@@ -48,6 +48,10 @@ const gigSchema = new mongoose.Schema({
     type: String,
     // enum: ["visa", "master", "none"],
   },
+  // New field for storing contract PDF
+  contractPdf: {
+    type: Buffer, // or type: String if storing a URL/path
+  },
 
   requestGiftCardAt: Date,
   giftCardApprovedAt: Date,
@@ -213,7 +217,6 @@ userSchema.methods.getJWTToken = function () {
 
 // Compare Password
 userSchema.methods.comparePassword = async function (password) {
-
   return await bcrypt.compare(password, this.password);
 };
 

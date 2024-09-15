@@ -78,6 +78,9 @@ const AvailableGigs = () => {
                 </span>
               </div>
               <button className="apply-button" onClick={() => handleApply(gig._id)}>
+                Sign Contract
+              </button>
+              <button className="apply-button" onClick={() => handleApply(gig._id)}>
                 Apply Now
               </button>
             </div>

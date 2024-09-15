@@ -161,6 +161,8 @@ exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
 // Get all gigs with applicants (Admin)
 exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
   // Aggregation pipeline to match gigs with applicants and PDFs
+
+ 
   const gigs = await Gig.aggregate([
     {
       $lookup: {
@@ -173,6 +175,14 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
     {
       $lookup: {
         from: "pdfs", // Collection name for PDFs
+        localField: "pdf",
+        foreignField: "_id",
+        as: "pdfDetails",
+      },
+    },
+    {
+      $lookup: {
+        from: "contracts", // Collection name for PDFs
         localField: "pdf",
         foreignField: "_id",
         as: "pdfDetails",

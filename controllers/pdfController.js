@@ -1,5 +1,6 @@
 const multer = require("multer");
 const PDF = require("../models/pdfModel"); // Adjust the path as needed
+const Contract = require("../models/contractModel"); // Adjust the path as needed
 
 const storage = multer.memoryStorage(); // Store the file in memory
 const upload = multer({ storage: storage }).single("file"); // Use single file upload
@@ -47,15 +48,15 @@ const getPdfs = async (req, res) => {
 const getPdf = async (req, res) => {
   try {
     // console.log(req)
-    const pdf = await PDF.findById(req.params.id);
+    const pdf = await Contract.findById(req.params.id);
     if (!pdf) {
       return res.status(404).json({ error: "File not found" });
     }
 
     // Assuming the file is stored as a buffer in the database
     res.setHeader("Content-Disposition", `attachment; filename=${pdf.filename}`);
-    res.setHeader("Content-Type", pdf.contentType);
-    res.send(pdf.data); // Adjust if you're using a different field for file data
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(pdf.pdfData); // Adjust if you're using a different field for file data
   } catch (err) {
     res.status(500).json({ error: "Failed to retrieve file" });
   }
