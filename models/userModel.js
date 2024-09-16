@@ -97,7 +97,7 @@ const languageSchema = new mongoose.Schema({
   },
   proficiency: {
     type: String,
-    required: true,
+    // required: true,
   },
 });
 
