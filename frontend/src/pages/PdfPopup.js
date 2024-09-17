@@ -8,10 +8,15 @@ const PdfPopup = ({ blobData, cid2, gigId2, onClose }) => {
   const sigCanvas = useRef({});
   const [pdfUrl, setPdfUrl] = useState(null);
   const [showSignature, setShowSignature] = useState(false); // State to control the visibility of the signature canvas
+  const [showAlert, setShowAlert] = useState(false); // State for the popup alert
   let vaish = btoa(blobData);
 
   const userEmail = useSelector((state) => state.user.user.email);
   const userId = useSelector((state) => state.user.user._id);
+
+  const [formData, setFormData] = useState({
+    signature: "",
+  });
 
   useEffect(() => {
     if (blobData) {
@@ -31,23 +36,37 @@ const PdfPopup = ({ blobData, cid2, gigId2, onClose }) => {
 
   const handleClearSignature = () => {
     sigCanvas.current.clear();
+    setFormData({ ...formData, signature: "" });
   };
 
   const handleSaveSignature = () => {
     const signature = sigCanvas.current.getTrimmedCanvas().toDataURL("image/png");
-    console.log("Saved Signature:", signature);
+    setFormData({ ...formData, signature });
+    // console.log("Saved Signature:", signature);
     // Handle signature as needed (e.g., save to state, send to backend)
   };
 
   const handleSubmitContract = async (e) => {
     e.preventDefault();
 
+    if (!formData.signature) {
+      // Show the alert popup if the signature is missing
+      setShowAlert(true);
+      return;
+    }
+
     try {
       let contractId = cid2;
       let email = userEmail;
       let gigId = gigId2;
       // Send a PUT request to update the contract by ID
-      const response = await axios.put(`/aak/l1/contracts/${cid2}`, { userId, contractId, email, gigId });
+      const response = await axios.put(`/aak/l1/contracts/${cid2}`, {
+        userId,
+        contractId,
+        email,
+        gigId,
+        signature: formData.signature,
+      });
 
       console.log(response);
       // Display success message
@@ -61,6 +80,10 @@ const PdfPopup = ({ blobData, cid2, gigId2, onClose }) => {
 
   const handleSignClick = () => {
     setShowSignature(true); // Show the signature canvas when the "Sign" button is clicked
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false); // Close the alert popup
   };
 
   return (
@@ -89,25 +112,43 @@ const PdfPopup = ({ blobData, cid2, gigId2, onClose }) => {
 
         {/* Signature Section */}
         <div className={`pdf-popup-signature ${true ? "show" : ""}`}>
-          <label className="pdf-popup-signature-label">Signature:</label>
-          <SignatureCanvas penColor="blue" canvasProps={{ className: "pdf-popup-signature-canvas" }} ref={sigCanvas} />
-          <div className="pdf-popup-signature-buttons">
-            <button className="pdf-popup-save-button" onClick={handleSaveSignature}>
-              Save Signature
+          <form>
+            <label className="pdf-popup-signature-label">Signature:</label>
+            <SignatureCanvas
+              penColor="blue"
+              canvasProps={{ className: "pdf-popup-signature-canvas" }}
+              ref={sigCanvas}
+            />
+            <div className="pdf-popup-signature-buttons">
+              <button type="button" className="pdf-popup-save-button" onClick={handleSaveSignature}>
+                Save Signature
+              </button>
+              <button type="button" className="pdf-popup-clear-button" onClick={handleClearSignature}>
+                Clear Signature
+              </button>
+            </div>
+            <button type="submit" className="pdf-popup-clear-button" onClick={handleSubmitContract}>
+              Submit
             </button>
-            <button className="pdf-popup-clear-button" onClick={handleClearSignature}>
-              Clear Signature
-            </button>
-          </div>
-          <button className="pdf-popup-clear-button" onClick={handleSubmitContract}>
-            Submit
-          </button>
+          </form>
         </div>
 
         <button onClick={onClose} className="pdf-popup-close-button">
           Close
         </button>
       </div>
+
+      {/* Alert Popup */}
+      {showAlert && (
+        <div className="pdf-popup-alert">
+          <div className="pdf-popup-alert-content">
+            <p>Please sign the contract before submitting.</p>
+            <button onClick={handleCloseAlert} className="pdf-popup-alert-close-button">
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

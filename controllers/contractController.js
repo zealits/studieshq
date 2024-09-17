@@ -128,7 +128,7 @@ exports.getAllContracts = async (req, res) => {
 exports.updateContract = async (req, res) => {
   console.log("Triggered");
   try {
-    const { contractId, email, userId, gigId } = req.body;
+    const { contractId, email, userId, gigId, signature } = req.body;
 
     // Find the existing contract
     const contract = await Contract.findById(contractId);
@@ -142,6 +142,18 @@ exports.updateContract = async (req, res) => {
     // Add new page or update an existing page to add email
     const page = pdfDoc.getPage(0); // assuming you want to update the first page
     page.drawText(`Email: ${email}`, { x: 50, y: 280, size: 12 });
+
+    // Embed the signature as an image
+    if (signature) {
+      const base64Data = signature.replace(/^data:image\/png;base64,/, "");
+      try {
+        const signatureImage = await pdfDoc.embedPng(Buffer.from(base64Data, "base64"));
+        page.drawImage(signatureImage, { x: 50, y: 100, width: 100, height: 50 });
+      } catch (error) {
+        console.error("Error embedding PNG image:", error.message);
+        return res.status(400).json({ message: "Invalid signature image data" });
+      }
+    }
 
     // Save the updated PDF
     const updatedPdfBytes = await pdfDoc.save();
@@ -187,5 +199,42 @@ exports.updateContract = async (req, res) => {
   } catch (error) {
     console.error("Error updating contract:", error);
     res.status(500).json({ message: "Error updating contract", error: error.message });
+  }
+};
+
+exports.getContractPdf = async (req, res) => {
+  // console.log("fdasdfdsafsadfadsf");
+  try {
+    const { userId, gigId } = req.params;
+    console.log(userId);
+    console.log(gigId);
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the gig by gigId inside the user's gigs array
+    const userGig = user.gigs.find((gig) => gig._id.toString() === gigId);
+    if (!userGig) {
+      return res.status(404).json({ message: "Gig not found for the user" });
+    }
+
+    // Check if the contractPdf exists
+    if (!userGig.contractPdf) {
+      return res.status(404).json({ message: "Contract PDF not found for this gig" });
+    }
+
+    // Set headers and send the PDF as response
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="contract_${gigId}.pdf"`,
+    });
+
+    // Send the PDF Buffer data as a response
+    res.send(userGig.contractPdf);
+  } catch (error) {
+    console.error("Error fetching contract PDF:", error);
+    res.status(500).json({ message: "Error fetching contract PDF", error: error.message });
   }
 };

@@ -30,8 +30,8 @@ const AvailableGigs = () => {
   const userGigs = useSelector((state) => state.user.user.gigs);
   const userEmail = useSelector((state) => state.user.user.email);
   const contractSigned = userGigs.filter((gig) => gig.status === "contractSigned");
+  const userId = useSelector((state) => state.user.user._id);
 
- 
   // Filter out gigs that the user has applied to, allocated, or completed
   const filteredGigs = gigs.filter((gig) => !userGigs.some((userGig) => userGig.gigId === gig._id));
 
@@ -85,8 +85,6 @@ const AvailableGigs = () => {
     return `${day}-${month}-${year}`;
   };
 
-
-
   const toggleDescription = (gigId) => {
     setExpandedGigId(expandedGigId === gigId ? null : gigId);
   };
@@ -99,6 +97,24 @@ const AvailableGigs = () => {
   const handleViewContractPDf = (gigId) => {
     // console.log(pdfId);
     console.log(gigId);
+
+    axios
+      .get(`aak/l1/user/${userId}/gig/${gigId}/contract-pdf`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        console.log(response);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `contract_${gigId}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      })
+      .catch((error) => {
+        console.error("Error downloading the contract PDF", error);
+      });
   };
 
   return (
@@ -106,38 +122,35 @@ const AvailableGigs = () => {
       <h2>Available Studies</h2>
       <div className="study-list">
         {/* Display contract signed gigs */}
-        {contractSigned.length > 0 && (
-          <div>
-            {contractSigned.map((gig) => (
-              <div key={gig._id} className="homestudy-card signed-contract-card">
-                <h3 className="study-title">{gig.title}</h3>
-                <div className={`study-description ${expandedGigId === gig._id ? "expanded" : ""}`}>
-                  {expandedGigId === gig._id ? gig.description : `${gig.description.substring(0, 100)}.`}
-                </div>
-                {gig.description.length > 100 && (
-                  <button className="read-more-button" onClick={() => toggleDescription(gig._id)}>
-                    {expandedGigId === gig._id ? "Read Less" : "Read More"}
-                  </button>
-                )}
-                <div className="home-study-details">
-                  <span className="study-location">
-                    Gift Card <div></div>${gig.budget}
-                  </span>
-                  <span className="study-date">
-                    <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "}
-                    {formatDateForSigned(gig.deadline)}
-                  </span>
-                </div>
-                <button className="apply-button" onClick={() => handleViewContractPDf(gig._id)}>
-                  View Signed Contract
-                </button>
-                <button className="apply-button" onClick={() => handleApply(gig._id)}>
-                  Apply Now
-                </button>
+        {contractSigned.length > 0 &&
+          contractSigned.map((gig) => (
+            <div key={gig._id} className="homestudy-card signed-contract-card">
+              <h3 className="study-title">{gig.title}</h3>
+              <div className={`study-description ${expandedGigId === gig._id ? "expanded" : ""}`}>
+                {expandedGigId === gig._id ? gig.description : `${gig.description.substring(0, 100)}.`}
               </div>
-            ))}
-          </div>
-        )}
+              {gig.description.length > 100 && (
+                <button className="read-more-button" onClick={() => toggleDescription(gig._id)}>
+                  {expandedGigId === gig._id ? "Read Less" : "Read More"}
+                </button>
+              )}
+              <div className="home-study-details">
+                <span className="study-location">
+                  Gift Card <div></div>${gig.budget}
+                </span>
+                <span className="study-date">
+                  <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>
+                  {formatDateForSigned(gig.deadline)}
+                </span>
+              </div>
+              <button className="apply-button" onClick={() => handleViewContractPDf(gig._id)}>
+                Download Signed Contract
+              </button>
+              <button className="apply-button" onClick={() => handleApply(gig._id)}>
+                Apply Now
+              </button>
+            </div>
+          ))}
 
         {/* Render available gigs */}
         {filteredGigs && filteredGigs.length > 0 ? (
@@ -157,7 +170,7 @@ const AvailableGigs = () => {
                   Gift Card <div></div>${gig.budget}
                 </span>
                 <span className="study-date">
-                  <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "}
+                  <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>
                   {formatDate(gig.deadline)}
                 </span>
               </div>
