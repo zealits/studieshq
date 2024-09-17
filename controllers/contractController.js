@@ -1,4 +1,6 @@
 const Contract = require("../models/contractModel");
+const User = require("../models/userModel");
+const Gig = require("../models/gigModel.js");
 const { PDFDocument } = require("pdf-lib"); // or use pdfkit
 const fs = require("fs");
 const mongoose = require("mongoose");
@@ -54,6 +56,7 @@ exports.createContract = async (req, res) => {
 
 // Get a contract by ID
 exports.getContractById = async (req, res) => {
+  console.log("adsf");
   try {
     const contract = await Contract.findById(req.params.id);
     if (!contract) {
@@ -85,11 +88,47 @@ exports.getAllContracts = async (req, res) => {
   }
 };
 
-exports.updateContract = async (req, res) => {
-  try {
-    const { contractId, email } = req.body;
+// exports.updateContract = async (req, res) => {
+//   console.log("trigreed");
+//   try {
+//     const { contractId, email } = req.body;
 
-    console.log(email);
+//     console.log(email);
+
+//     // Find the existing contract
+//     const contract = await Contract.findById(contractId);
+//     if (!contract) {
+//       return res.status(404).json({ message: "Contract not found" });
+//     }
+
+//     // Load the existing PDF
+//     const pdfDoc = await PDFDocument.load(contract.pdfData);
+
+//     // Add new page or update an existing page to add email
+//     const page = pdfDoc.getPage(0); // assuming you want to update the first page
+//     page.drawText(`Email: ${email}`, { x: 50, y: 280, size: 12 });
+
+//     // Save the updated PDF
+//     const updatedPdfBytes = await pdfDoc.save();
+//     const updatedPdfBuffer = Buffer.from(updatedPdfBytes);
+
+//     // Update the contract data with new email and PDF
+//     contract.email = email;
+//     contract.pdfData = updatedPdfBuffer;
+
+//     await contract.save();
+
+//     res.status(200).json({ message: "Contract updated successfully", contract });
+//   } catch (error) {
+//     console.error("Error updating contract:", error);
+//     res.status(500).json({ message: "Error updating contract", error: error.message });
+//   }
+// };
+
+exports.updateContract = async (req, res) => {
+  console.log("Triggered");
+  try {
+    const { contractId, email, userId, gigId } = req.body;
 
     // Find the existing contract
     const contract = await Contract.findById(contractId);
@@ -108,13 +147,43 @@ exports.updateContract = async (req, res) => {
     const updatedPdfBytes = await pdfDoc.save();
     const updatedPdfBuffer = Buffer.from(updatedPdfBytes);
 
-    // Update the contract data with new email and PDF
-    contract.email = email;
-    contract.pdfData = updatedPdfBuffer;
+    // Find the user to store the updated PDF in the gig's contractPdf
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    await contract.save();
+    // Find the gig that the user is applying for or signing the contract for
+    const gig = await Gig.findById(gigId);
+    if (!gig) {
+      return res.status(404).json({ message: "Gig not found" });
+    }
 
-    res.status(200).json({ message: "Contract updated successfully", contract });
+    // Check if the gig is already applied by the user
+    let userGig = user.gigs.find((g) => g.gigId.toString() === gigId);
+    if (!userGig) {
+      // If not applied, apply for the gig
+      userGig = {
+        gigId,
+        title: gig.title,
+        description: gig.description,
+        deadline: gig.deadline,
+        budget: gig.budget,
+        status: "contractSigned", // Set status to "contract signed"
+        appliedAt: Date.now(),
+        contractPdf: updatedPdfBuffer, // Store the contract PDF
+      };
+      user.gigs.push(userGig);
+    } else {
+      // If the gig is already applied, update the contract PDF and status
+      userGig.status = "contract signed";
+      userGig.contractPdf = updatedPdfBuffer;
+    }
+
+    // Save the user with the updated gig information
+    await user.save();
+
+    res.status(200).json({ message: "Contract signed and updated successfully", userGig });
   } catch (error) {
     console.error("Error updating contract:", error);
     res.status(500).json({ message: "Error updating contract", error: error.message });

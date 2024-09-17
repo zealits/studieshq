@@ -95,7 +95,7 @@ const TwoFactorAuthPage = () => {
           ))}
         </div>
         {error && <p className="error-message">{error}</p>}
-        <button onClick={handleSubmit}>Verify</button>
+        <button className="twoFautButt"onClick={handleSubmit}>Verify</button>
       </div>
     </div>
   );

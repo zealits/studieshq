@@ -26,7 +26,7 @@ const gigSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["applied", "allocated", "completed"],
+    enum: ["applied", "allocated", "completed","contractSigned"],
     required: true,
   },
   appliedAt: {
@@ -50,7 +50,7 @@ const gigSchema = new mongoose.Schema({
   },
   // New field for storing contract PDF
   contractPdf: {
-    type: Buffer, // or type: String if storing a URL/path
+    type: Buffer, 
   },
 
   requestGiftCardAt: Date,

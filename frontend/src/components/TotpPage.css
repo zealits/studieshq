@@ -61,7 +61,7 @@ h1 {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-button {
+.totpbutton {
   padding: 12px 25px;
   font-size: 16px;
   background-color: #007bff;

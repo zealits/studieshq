@@ -45,7 +45,7 @@
   box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.2); /* Subtle shadow on focus */
 }
 
-button {
+.twoFautButt {
   margin-top: 20px;
   padding: 12px 24px; /* Larger padding for a more prominent button */
   font-size: 18px; /* Increased font size for better readability */
@@ -57,7 +57,7 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease; 
 }
 
-button:hover {
+.twoFautButt:hover {
   /* background-color: #0056b3;  */
   transform: translateY(-2px); /* Slight lift effect */
 }

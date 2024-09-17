@@ -80,6 +80,7 @@ const CreateContract = () => {
     for (let i = 0; i < len; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
+    console.log(btoa(binary));
     return window.btoa(binary);
   };
 
