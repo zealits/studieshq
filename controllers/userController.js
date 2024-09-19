@@ -113,7 +113,8 @@ exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(userId);
   const gig = await Gig.findById(gigId);
 
-  // console.log("gig :", gig);
+  // console.log("gig :", gigId);
+  // console.log("user :", user);
   if (!gig) {
     return next(new ErrorHander("Gig not found", 404));
   }
@@ -132,24 +133,23 @@ exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
   //   return next(new ErrorHander("You have already applied for this gig", 400));
   // }
 
-  const usergig = {
-    gigId: gigId,
-    title: gig.title,
-    description: gig.description,
-    deadline: gig.deadline,
-    budget: gig.budget,
-    status: "applied",
-    appliedAt: Date.now(),
-  };
-  // console.log("usergig :", usergig);
+  const userGigIndex = user.gigs.findIndex((gigDetail) => gigDetail.gigId.equals(gigId));
 
-  user.gigs.push(usergig);
+  if (userGigIndex === -1) {
+    return next(new ErrorHander("User's gig not found", 404));
+  }
+
+  // Update the user's gig details
+
+  user.gigs[userGigIndex].status = "applied";
+  user.gigs[userGigIndex].appliedAt = Date.now();
   await user.save();
 
   gig.applicants.push(userId);
   if (gig.status === "open") {
     gig.status = "applied";
   }
+
   await gig.save();
 
   res.status(200).json({
@@ -158,11 +158,65 @@ exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// below is apply for gig on available studies for version 1 made of studyhq
+// exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
+//   const userId = req.user.id;
+//   const gigId = req.body.gigId;
+
+//   const user = await User.findById(userId);
+//   const gig = await Gig.findById(gigId);
+
+//   console.log("gig :", gigId);
+//   // console.log("user :", user);
+//   if (!gig) {
+//     return next(new ErrorHander("Gig not found", 404));
+//   }
+
+//   if (!user) {
+//     return next(new ErrorHander("User not found", 404));
+//   }
+
+//   // Convert gigId to ObjectId if needed
+//   // const objectIdGigId = mongoose.Types.ObjectId(gigId);
+
+//   // Check if user has already applied for the gig
+//   // const hasApplied = user.gigs.some((gigDetail) => gigDetail.gigId.toString() === gigId.toString());
+
+//   // if (hasApplied) {
+//   //   return next(new ErrorHander("You have already applied for this gig", 400));
+//   // }
+
+//   const usergig = {
+//     gigId: gigId,
+//     title: gig.title,
+//     description: gig.description,
+//     deadline: gig.deadline,
+//     budget: gig.budget,
+//     status: "applied",
+//     appliedAt: Date.now(),
+//   };
+//   console.log("usergig :", usergig);
+
+//   user.gigs.push(usergig);
+//   await user.save();
+
+//   gig.applicants.push(userId);
+//   if (gig.status === "open") {
+//     gig.status = "applied";
+//   }
+
+//   await gig.save();
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Applied for gig successfully",
+//   });
+// });
+
 // Get all gigs with applicants (Admin)
 exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
   // Aggregation pipeline to match gigs with applicants and PDFs
 
- 
   const gigs = await Gig.aggregate([
     {
       $lookup: {

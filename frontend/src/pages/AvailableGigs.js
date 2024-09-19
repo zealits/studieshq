@@ -146,7 +146,7 @@ const AvailableGigs = () => {
               <button className="apply-button" onClick={() => handleViewContractPDf(gig._id)}>
                 Download Signed Contract
               </button>
-              <button className="apply-button" onClick={() => handleApply(gig._id)}>
+              <button className="apply-button" onClick={() => handleApply(gig.gigId)}>
                 Apply Now
               </button>
             </div>
