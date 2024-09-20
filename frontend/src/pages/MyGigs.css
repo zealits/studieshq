@@ -177,9 +177,10 @@
 
 .mygigs-gigs-content {
   display: flex;
+  flex-wrap: wrap;
   width: 80vw;
-  /* grid-template-columns: repeat(auto-fit, minmax(300px, 0fr)); */
-  gap: 20px;
+  /* grid-template-columns: repeat(auto-fit, minmax(3000px, 0fr)); */
+  gap: 40px;
 }
 
 .mygigs-gig-card {

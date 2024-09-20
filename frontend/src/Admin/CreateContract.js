@@ -203,11 +203,11 @@ const CreateContract = () => {
               {/* Display PDF if it exists */}
               {contract.pdfData && (
                 <div className="contract-pdf">
-                  <h4>PDF Document:</h4>
+                  <h4>Contract :</h4>
                   <iframe
                     src={`data:application/pdf;base64,${base64Data}`}
                     title="Contract PDF"
-                    width="600"
+                    width="500"
                     height="400"
                   />
                 </div>

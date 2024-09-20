@@ -85,7 +85,7 @@ const PandaLogin = () => {
         return;
       }
       const userData = { firstName, lastName, email, password };
-      console.log(userData);
+      // console.log(userData);
       dispatch(register(userData)).then(() => {
         alert("Registration successful!");
       });

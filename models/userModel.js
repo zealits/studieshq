@@ -26,7 +26,7 @@ const gigSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["applied", "allocated", "completed","contractSigned"],
+    enum: ["applied", "allocated", "completed", "contractSigned"],
     required: true,
   },
   appliedAt: {
@@ -50,7 +50,7 @@ const gigSchema = new mongoose.Schema({
   },
   // New field for storing contract PDF
   contractPdf: {
-    type: Buffer, 
+    type: Buffer,
   },
 
   requestGiftCardAt: Date,
@@ -236,7 +236,7 @@ userSchema.methods.getResetPasswordToken = function () {
 // Generate OTP for Email Verification
 userSchema.methods.generateVerificationCode = function () {
   const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-  // console.log("Generated OTP:", otpCode); // Log the plain OTP
+  console.log("Generated OTP:", otpCode); // Log the plain OTP
 
   this.verificationCode = crypto.createHash("sha256").update(otpCode).digest("hex");
   // console.log("Hashed OTP:", this.verificationCode); // Log the hashed OTP
@@ -257,7 +257,7 @@ userSchema.methods.verifyOTP = async function (enteredOtp) {
     this.isVerified = true;
     this.verificationCode = undefined;
     this.verificationCodeExpire = undefined;
-    // await this.save();
+    await this.save();
     return true;
   } else {
     return false;

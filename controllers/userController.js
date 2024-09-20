@@ -11,8 +11,11 @@ const axios = require("axios");
 
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
+  // console.log(req);
+  console.log("regisring the user");
   const { name, email, otp, password, firstName, lastName } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
+  // console.log(firstName);
 
   const user = await User.findOne({ email });
 
@@ -40,7 +43,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   // user.contactNumber = contactNumber;
 
   await user.save();
-  console.log(user);
+  // console.log(user);
 
   sendToken(user, 200, res);
 });
