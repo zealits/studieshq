@@ -215,7 +215,7 @@ function App() {
                       <Route exact path="/managepayout" element={<ManagePayout />} />
                       <Route exact path="/managePdf" element={<CreateContract />} />
                       <Route path="/addstudies" element={<AddGig />} />
-                      <Route path="/analytics" element={<UpdateContract />} />
+                      <Route path="/analytics" element={<AdminDashboard/>} />
                     </>
                   )}
 
