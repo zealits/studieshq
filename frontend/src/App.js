@@ -174,7 +174,8 @@ function App() {
   return (
     <div className="app">
       <Router>
-        {isAuthenticated && totpVerified && user.is2FAEnabled && (
+        {/* {isAuthenticated && totpVerified && user.is2FAEnabled && ( */}
+        {isAuthenticated && user.is2FAEnabled && (
           <>
             {user.role === "admin" && <AdminSidebar />}
             {user.role === "user" && <Sidebar />}
@@ -185,13 +186,13 @@ function App() {
           <Routes>
             {!isAuthenticated && <Route path="/" element={<PandaLogin />} />}
 
-            {isAuthenticated && !user.is2FAEnabled && <Route path="/" element={<TwoFactorAuthPage />} />}
+            {/* {isAuthenticated && !user.is2FAEnabled && <Route path="/" element={<TwoFactorAuthPage />} />} */}
 
-            {isAuthenticated && !totpVerified && user.is2FAEnabled ? (
+            {isAuthenticated && totpVerified && user.is2FAEnabled ? (
               <Route path="/" element={<TotpPage />} />
             ) : (
               isAuthenticated &&
-              totpVerified && (
+              !totpVerified && (
                 <>
                   {user.role === "user" && (
                     <>
