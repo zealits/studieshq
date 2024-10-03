@@ -89,11 +89,15 @@ const AddGig = () => {
           <label>Select PDF</label>
           <select value={selectedPdf} onChange={(e) => setSelectedPdf(e.target.value)} required>
             <option value="">Select a PDF</option>
-            {pdfs.map((pdf) => (
-              <option key={pdf._id} value={pdf._id}>
-                {pdf.filename}
-              </option>
-            ))}
+            {Array.isArray(pdfs) && pdfs.length > 0 ? (
+              pdfs.map((pdf) => (
+                <option key={pdf._id} value={pdf._id}>
+                  {pdf.filename}
+                </option>
+              ))
+            ) : (
+              <option disabled>No PDFs available</option>
+            )}
           </select>
         </div>
         {message && <p className="error-message">{message}</p>}

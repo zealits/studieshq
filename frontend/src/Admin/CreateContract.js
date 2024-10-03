@@ -61,7 +61,7 @@ const CreateContract = () => {
   const fetchContracts = async () => {
     try {
       const response = await axios.get("/aak/l1/contracts");
-      console.log(response);
+      // console.log(response);
       setContracts(response.data); // Assuming response.data is an array of contracts
     } catch (error) {
       console.error("Error fetching contracts:", error);
@@ -80,7 +80,7 @@ const CreateContract = () => {
     for (let i = 0; i < len; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
-    console.log(btoa(binary));
+    // console.log(btoa(binary));
     return window.btoa(binary);
   };
 
@@ -179,42 +179,45 @@ const CreateContract = () => {
         </form>
       </div>
       <div className="contracts-list">
-        {contracts.map((contract) => {
-          const base64Data = contract.pdfData.data ? byteArrayToBase64(contract.pdfData.data) : "";
+        {Array.isArray(contracts) && contracts.length > 0 ? (
+          contracts.map((contract) => {
+            const base64Data = contract.pdfData?.data ? byteArrayToBase64(contract.pdfData.data) : "";
 
-          return (
-            <div key={contract._id} className="contract-item">
-              <p>
-                <strong>User ID:</strong> {contract.userId}
-              </p>
-              <p>
-                <strong>Job Title:</strong> {contract.jobTitle}
-              </p>
-              <p>
-                <strong>Project Details:</strong> {contract.projectDetails}
-              </p>
-              <p>
-                <strong>Freelance Study Details:</strong> {contract.freelanceStudyDetails}
-              </p>
-              <p>
-                <strong>Filename:</strong> {contract.filename}
-              </p>
+            return (
+              <div key={contract._id} className="contract-item">
+                <p>
+                  <strong>User ID:</strong> {contract.userId}
+                </p>
+                <p>
+                  <strong>Job Title:</strong> {contract.jobTitle}
+                </p>
+                <p>
+                  <strong>Project Details:</strong> {contract.projectDetails}
+                </p>
+                <p>
+                  <strong>Freelance Study Details:</strong> {contract.freelanceStudyDetails}
+                </p>
+                <p>
+                  <strong>Filename:</strong> {contract.filename}
+                </p>
 
-              {/* Display PDF if it exists */}
-              {contract.pdfData && (
-                <div className="contract-pdf">
-                  <h4>Contract :</h4>
-                  <iframe
-                    src={`data:application/pdf;base64,${base64Data}`}
-                    title="Contract PDF"
-                    width="500"
-                    height="400"
-                  />
-                </div>
-              )}
-            </div>
-          );
-        })}
+                {contract.pdfData && (
+                  <div className="contract-pdf">
+                    <h4>Contract:</h4>
+                    <iframe
+                      src={`data:application/pdf;base64,${base64Data}`}
+                      title="Contract PDF"
+                      width="500"
+                      height="400"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <p>No contracts available.</p>
+        )}
       </div>
     </div>
   );
