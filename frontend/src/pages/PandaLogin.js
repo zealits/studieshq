@@ -87,11 +87,11 @@ const PandaLogin = () => {
       const userData = { firstName, lastName, email, password };
       // console.log(userData);
       dispatch(register(userData)).then(() => {
-        alert("Registration successful!");
+        // alert("Registration successful!");
       });
     } else {
       dispatch(login(loginName, loginPassword)).then(() => {
-        alert("Login successful!");
+        // alert("Login successful!");
       });
     }
   };

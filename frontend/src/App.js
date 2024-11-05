@@ -14,6 +14,7 @@ import Message from "./pages/Messages";
 import PandaLogin from "./pages/PandaLogin";
 import Sidebar from "./components/Sidebar";
 import AddGig from "./pages/AddGig";
+import StudyReferralPage from "./pages/StudyReferralPage.js";
 import AdminDashboard from "./pages/AdminDashboard.js";
 import Loading from "./components/Loading.js";
 import AdminSidebar from "./components/AdminSidebar.js";
@@ -229,6 +230,7 @@ function App() {
               )
             )}
 
+            <Route path="/share/study/:studyId" element={<StudyReferralPage />} />
             {/* Redirect to the home page if no matching route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
