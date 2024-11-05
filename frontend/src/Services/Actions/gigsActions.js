@@ -17,7 +17,7 @@ export const addGig = (gigData) => async (dispatch) => {
   try {
     dispatch({ type: ADD_GIG_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+    const config = { headers: { "Content-Type": "multipart/form-data" } };
 
     const { data } = await axios.post("/aak/l1/admin/gig", gigData, config);
 

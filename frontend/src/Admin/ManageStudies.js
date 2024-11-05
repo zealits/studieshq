@@ -28,7 +28,7 @@ const ManageStudies = () => {
           },
         });
         setGigs(response.data.gigs || []);
-        // console.log(gigs);
+        console.log(response);
         setLoading(false);
       } catch (error) {
         setError("Error fetching gigs");
@@ -156,8 +156,6 @@ const ManageStudies = () => {
         responseType: "blob", // Important for handling file downloads
       });
 
-     
-
       // Extract the filename from the Content-Disposition header
       const contentDisposition = response.headers["content-disposition"];
       let filename = "downloaded_file"; // Default filename
@@ -224,9 +222,19 @@ const ManageStudies = () => {
           gigs.map((study) => (
             <div key={study._id} className="study-card">
               <h2>{study.title}</h2>
+              {study.image && (
+                <img
+                  src={study.image.includes("data:image") ? study.image : `data:image/png;base64,${study.image}`}
+                  alt="Image Preview"
+                  className="image-preview"
+                />
+              )}
               <p>Description: {study.description}</p>
               <p>Gift Card: ${study.budget}</p>
               <p>Deadline: {study.deadline}</p>
+
+              {study.languages && study.languages.length > 0 && <p>Languages: {study.languages.join(", ")}</p>}
+
               {study.pdfDetails && (
                 <p className="pdf-container">
                   <span>PDF:</span>
@@ -235,6 +243,7 @@ const ManageStudies = () => {
                   </span>
                 </p>
               )}
+
               <div className="pie-chart-container">
                 <PieChart width={400} height={400}>
                   <Pie
@@ -255,6 +264,7 @@ const ManageStudies = () => {
                   <Legend />
                 </PieChart>
               </div>
+
               <div className="study-actions">
                 <button className="btn btn-info" onClick={() => handleEdit(study)}>
                   Edit
@@ -262,8 +272,8 @@ const ManageStudies = () => {
                 <button className="btn btn-danger" onClick={() => openDeleteModal(study)} disabled={loadingAction}>
                   {loadingAction ? "Deleting..." : "Delete"}
                 </button>
-                <button className="btn " onClick={() => handleShare(study)}>
-                  share
+                <button className="btn" onClick={() => handleShare(study)}>
+                  Share
                 </button>
               </div>
             </div>

@@ -34,6 +34,12 @@ const gigSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "PDF", // Reference to the PDF model
   },
+  image: {
+    type: String, // Store the Base64 string as a String type
+  },
+  languages: {
+    type: [String], // Array to store language options
+  },
 });
 
 module.exports = mongoose.model("Gig", gigSchema);

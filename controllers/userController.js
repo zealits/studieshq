@@ -238,14 +238,6 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
       },
     },
     {
-      $lookup: {
-        from: "contracts", // Collection name for PDFs
-        localField: "pdf",
-        foreignField: "_id",
-        as: "pdfDetails",
-      },
-    },
-    {
       $addFields: {
         applicantsDetails: {
           $map: {
@@ -285,11 +277,12 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
           url: 1, // Assuming PDF model has a `url` field
           // Add any other PDF fields you need
         },
+        image: 1, // Directly include the Base64 string image field
+        languages: 1, // Directly include the languages array
       },
     },
   ]);
 
-  // console.log(gigs);
   res.status(200).json({
     success: true,
     gigs,

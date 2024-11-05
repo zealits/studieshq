@@ -32,6 +32,7 @@ import "./App.css"; // Import the CSS for layout
 import axios from "axios";
 import CreateContract from "./Admin/CreateContract.js";
 import UpdateContract from "./Admin/updateContract.js";
+import CreateStudy from "./Admin/CreateStudy.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -215,8 +216,8 @@ function App() {
                       <Route exact path="/manageuser" element={<ManageUser />} />
                       <Route exact path="/managestudies" element={<ManageStudies />} />
                       <Route exact path="/managepayout" element={<ManagePayout />} />
-                      <Route exact path="/managePdf" element={<CreateContract />} />
-                      <Route exact path="/addstudies" element={<AddGig />} />
+                      <Route exact path="/managePdf" element={<AddGig />} />
+                      <Route exact path="/addstudies" element={<CreateStudy />} />
                       <Route exact path="/analytics" element={<AdminDashboard />} />
                     </>
                   )}

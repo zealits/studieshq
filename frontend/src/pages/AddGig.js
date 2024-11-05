@@ -9,9 +9,12 @@ const AddGig = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [budget, setBudget] = useState("");
-  const [selectedPdf, setSelectedPdf] = useState(""); // State for selected PDF
-  const [pdfs, setPdfs] = useState([]); // State for list of PDFs
-  const [message, setMessage] = useState(""); // State for messages
+  const [selectedPdf, setSelectedPdf] = useState("");
+  const [pdfs, setPdfs] = useState([]);
+  const [image, setImage] = useState(""); // Store the Base64 image string here
+  const [imagePreview, setImagePreview] = useState(""); // For image preview
+  const [languages, setLanguages] = useState([]);
+  const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.gig);
@@ -24,21 +27,21 @@ const AddGig = () => {
 
     if (success) {
       alert("Study added successfully");
-      // Clear form fields
       setTitle("");
       setDescription("");
       setDeadline("");
       setBudget("");
-      setSelectedPdf(""); // Clear selected PDF
+      setSelectedPdf("");
+      setImage("");
+      setImagePreview("");
+      setLanguages([]);
     }
   }, [dispatch, error, success]);
 
   useEffect(() => {
     const fetchPdfs = async () => {
       try {
-        // const response = await axios.get("/aak/l1/getpdf");
         const response = await axios.get("/aak/l1/contracts");
-
         setPdfs(response.data);
       } catch (error) {
         console.error("Error fetching PDFs:", error);
@@ -49,20 +52,44 @@ const AddGig = () => {
     fetchPdfs();
   }, []);
 
-  const submitHandler = (e) => {
+  const handleLanguageChange = (e) => {
+    const value = e.target.value;
+    if (languages.includes(value)) {
+      setLanguages(languages.filter((lang) => lang !== value));
+    } else {
+      setLanguages([...languages, value]);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result.split(",")[1]; // Extract base64 part
+        setImage(base64String); // Store the base64 string
+        setImagePreview(reader.result); // Set the full data URL for preview
+      };
+      reader.readAsDataURL(file); // Read file as Data URL
+    }
+  };
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    const gigData = {
+    const formData = {
       title,
       description,
       deadline,
       budget,
-      pdf: selectedPdf, // Add selected PDF to gig data
+      pdf: selectedPdf,
+      image, // Base64 string of the image
+      languages,
     };
 
-    // console.log(selectedPdf);
+    console.log("FormData being sent:", formData); // Log the data to be sent
 
-    dispatch(addGig(gigData));
+    dispatch(addGig(formData));
   };
 
   return (
@@ -100,8 +127,23 @@ const AddGig = () => {
             )}
           </select>
         </div>
+        <div>
+          <label>Upload Image</label>
+          <input type="file" onChange={handleImageChange} accept="image/*" required />
+          {imagePreview && <img src={imagePreview} alt="Image Preview" className="image-preview" />}
+        </div>
+        <div>
+          <label>Select Languages</label>
+          <select multiple value={languages} onChange={handleLanguageChange} required>
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+            {/* Add more languages as needed */}
+          </select>
+        </div>
         {message && <p className="error-message">{message}</p>}
-        <button type="submit" disabled={loading ? true : false}>
+        <button type="submit" disabled={loading}>
           {loading ? "Loading..." : "Add Study"}
         </button>
       </form>
