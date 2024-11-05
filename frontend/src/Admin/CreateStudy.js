@@ -9,6 +9,7 @@ const CreateStudy = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [budget, setBudget] = useState("");
+  const [location, setLocation] = useState(""); // New state for location
   const [selectedPdf, setSelectedPdf] = useState("");
   const [pdfs, setPdfs] = useState([]);
   const [image, setImage] = useState("");
@@ -31,6 +32,7 @@ const CreateStudy = () => {
       setDescription("");
       setDeadline("");
       setBudget("");
+      setLocation(""); // Reset location
       setSelectedPdf("");
       setImage("");
       setImagePreview("");
@@ -81,6 +83,7 @@ const CreateStudy = () => {
       description,
       deadline,
       budget,
+      location, // Include location in form data
       pdf: selectedPdf,
       image,
       languages,
@@ -125,12 +128,22 @@ const CreateStudy = () => {
             />
           </div>
           <div className="create-study__input-group">
-            <label className="create-study__label">Gift Card Amount</label>
+            <label className="create-study__label">Gift Amount</label>
             <input
               type="number"
               className="create-study__input"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
+              required
+            />
+          </div>
+          <div className="create-study__input-group">
+            <label className="create-study__label">Location</label>
+            <input
+              type="text"
+              className="create-study__input"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)} // Update location on change
               required
             />
           </div>
