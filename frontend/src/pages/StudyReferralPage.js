@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import calendar from "../Assets/photos/calendar.png";
+import "./StudyRefrralPage.css";
 
 const StudyReferralPage = () => {
   const { studyId } = useParams();
@@ -20,37 +22,57 @@ const StudyReferralPage = () => {
     fetchProjectDetails();
   }, [studyId]);
 
+  const formatDate = (dateString) => {
+    const [year, day, month] = dateString.split("-");
+    return `${day}-${month}-${year}`;
+  };
+
   return (
-    <div>
-      <h1>Study Details</h1>
+    <div className="study-referral-page-container">
       {studyDetails ? (
-        <div>
-      <h3 className="study-title">{studyDetails.title}</h3>
+        <div className="study-details-wrapper">
+          <h1 className="study-details-title">{studyDetails.title}</h1>
 
-      {studyDetails.image && (
-        <img
-          src={
-            studyDetails.image.includes("data:image")
-              ? studyDetails.image
-              : `data:image/png;base64,${studyDetails.image}`
-          }
-          alt="Image Preview"
-          className="image-preview"
-        />
-      )}
+          <div className="study-two-columns-sepration">
+            <div className="study-details-image-section">
+              {studyDetails.image && (
+                <img
+                  src={
+                    studyDetails.image.includes("data:image")
+                      ? studyDetails.image
+                      : `data:image/png;base64,${studyDetails.image}`
+                  }
+                  alt="Image Preview"
+                  className="study-details-image"
+                />
+              )}
+            </div>
 
-      <div className="home-study-details">
-        <span className="study-location">
-          GiftCard <div></div>${studyDetails.budget}
-        </span>
-        <span className="study-date">
-          {/* <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "} */}
-          {/* {formatDate(studyDetails.deadline)} */}
-        </span>
-      </div>
-    </div>
+            <div className="study-details-info">
+              <div className="study-details-description">{studyDetails.description}</div>
+              {studyDetails.locations && studyDetails.locations.length > 0 && (
+                <div className="study-details-locations">
+                  <span className="study-details-label">Locations:</span> {studyDetails.locations.join(", ")}
+                </div>
+              )}
+              {studyDetails.languages && studyDetails.languages.length > 0 && (
+                <div className="study-details-languages">
+                  <span className="study-details-label">Languages:</span> {studyDetails.languages.join(", ")}
+                </div>
+              )}
+
+              <div className="study-details-budget">
+                <span className="study-details-label">Gift Card:</span> ${studyDetails.budget}
+              </div>
+              <div className="study-details-deadline">
+                <span className="study-details-label">Last Date : </span> {formatDate(studyDetails.deadline)}
+              </div>
+              <button className="study-details-apply">apply</button>
+            </div>
+          </div>
+        </div>
       ) : (
-        <p>Loading study details...</p>
+        <p className="study-details-loading-message">Loading study details...</p>
       )}
     </div>
   );
