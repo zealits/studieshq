@@ -1,29 +1,58 @@
-import React from "react";
-import "./StudyRefrralPage.css";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const StudyReferralPage = () => {
-  const studyData = {
-    title: "New York, NY, 90 min User Study",
-    description:
-      "We are collecting health, heart rate, fitness, and motion data for a research project. Additionally, we are analyzing user experience and device interaction feedback.",
-    giftCard: "$1000",
-    lastDate: "15-12-2024",
-  };
+  const { studyId } = useParams();
+  const [studyDetails, setStudyDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchProjectDetails = async () => {
+      try {
+        const response = await axios.get(`/aak/l1/gig/${studyId}`);
+        setStudyDetails(response.data.gig);
+        console.log(response.data.gig); // Log project details
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+      }
+    };
+
+    fetchProjectDetails();
+  }, [studyId]);
 
   return (
-    <section className="study-referral-page">
-      <div className="referral-header">
-        <h2>{studyData.title}</h2>
-        <span className="gift-card">Gift Card: {studyData.giftCard}</span>
-      </div>
-      <p className="description">{studyData.description}</p>
-      <div className="details">
-        <span className="last-date">
-          <strong>Last Date:</strong> {studyData.lastDate}
+    <div>
+      <h1>Study Details</h1>
+      {studyDetails ? (
+        <div>
+      <h3 className="study-title">{studyDetails.title}</h3>
+
+      {studyDetails.image && (
+        <img
+          src={
+            studyDetails.image.includes("data:image")
+              ? studyDetails.image
+              : `data:image/png;base64,${studyDetails.image}`
+          }
+          alt="Image Preview"
+          className="image-preview"
+        />
+      )}
+
+      <div className="home-study-details">
+        <span className="study-location">
+          GiftCard <div></div>${studyDetails.budget}
+        </span>
+        <span className="study-date">
+          {/* <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "} */}
+          {/* {formatDate(studyDetails.deadline)} */}
         </span>
       </div>
-      <button className="apply-button">Apply Now</button>
-    </section>
+    </div>
+      ) : (
+        <p>Loading study details...</p>
+      )}
+    </div>
   );
 };
 

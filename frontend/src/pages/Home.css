@@ -404,3 +404,106 @@ body {
   width: 24px; /* Set icon size */
   height: 24px;
 }
+
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.share-modal__content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 320px; /* Slightly wider for spacing */
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.share-modal__content h3 {
+  margin-bottom: 10px;
+  font-size: 1.25em;
+  color: #333;
+}
+
+.share-modal__content p {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.share-button-modal {
+  display: inline-block;
+  width: 50px;
+  height: 50px; 
+  padding: 10px;
+  margin: 5px; 
+  font-size: 1.2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ffffff;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.share-button-modal.facebook { background-color: #4267B2; }
+.share-button-modal.whatsapp { background-color: #25D366; }
+.share-button-modal.linkedin { background-color: #0077B5; }
+.share-button-modal.twitter { background-color: #1DA1F2; }
+
+.share-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.copy-link {
+  background-color: #4CAF50;
+  color: #ffffff;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px; /* Space above copy button */
+  transition: background-color 0.3s ease;
+  display: block;
+  width: 100%;
+}
+
+.copy-link:hover {
+  background-color: #45a049;
+}
+
+.copy-link:active {
+  background-color: #3e8e41;
+}
+
+.share-modal__close-button {
+  background-color: #d60303;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 14px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.share-modal__close-button:hover {
+  background-color: #ff3333;
+}
+
+.copy-close-container {
+  display: flex;
+  gap: 10px; /* Space between Copy and Close buttons */
+  flex-direction: column; /* Align Copy and Close buttons in column on smaller screens */
+}
+

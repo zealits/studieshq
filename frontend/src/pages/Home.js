@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGigs, applyGig } from "../Services/Actions/gigsActions.js";
 import { FaRegSmile, FaRegLightbulb, FaGift } from "react-icons/fa";
+import { FacebookShareButton, WhatsappShareButton, LinkedinShareButton, TwitterShareButton } from "react-share";
+import { FaFacebook, FaWhatsapp, FaLinkedin, FaTwitter } from "react-icons/fa";
 import "./Home.css";
 import v1 from "../Assets/videos/3.mp4";
 import browse from "../Assets/photos/web-browser.png";
@@ -15,12 +17,26 @@ import rewards from "../Assets/photos/rewards.png";
 import calendar from "../Assets/photos/calendar.png";
 import share from "../Assets/photos/share3.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [expandedGigId, setExpandedGigId] = useState(null);
+  const { user } = useSelector((state) => state.user);
+  const [referralLink, setReferralLink] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink);
+    setCopySuccess(true);
+
+    // Hide the "Copied!" message after 2 seconds
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
+
   useEffect(() => {
     dispatch(fetchGigs());
   }, [dispatch]);
@@ -41,7 +57,6 @@ const Home = () => {
   };
 
   const formatDate = (dateString) => {
-  
     const [year, day, month] = dateString.split("-");
     return `${day}-${month}-${year}`;
   };
@@ -54,20 +69,21 @@ const Home = () => {
     setExpandedGigId(expandedGigId === gigId ? null : gigId);
   };
 
-  const handleShare = (gig) => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: gig.title,
-          text: gig.description,
-          url: window.location.href, // You can replace this with a specific URL related to the gig
-        })
-        .then(() => console.log("Thanks for sharing!"))
-        .catch((error) => console.error("Error sharing:", error));
-    } else {
-      // Fallback code for non-supporting browsers
-      alert("Web Share API is not supported in your browser. Please share manually.");
+  const referFriend = async (gigId) => {
+    console.log(gigId);
+    console.log(user._id);
+    try {
+      const response = await axios.post("aak/l1/generate-link", { gigId, referringUserId: user._id });
+      setReferralLink(response.data.referralLink);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error generating project referral link:", error);
+      alert("Failed to generate project referral link.");
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -93,6 +109,14 @@ const Home = () => {
               gigs.map((gig) => (
                 <div key={gig._id} className="homestudy-card">
                   <h3 className="study-title">{gig.title}</h3>
+
+                  {gig.image && (
+                    <img
+                      src={gig.image.includes("data:image") ? gig.image : `data:image/png;base64,${gig.image}`}
+                      alt="Image Preview"
+                      className="image-preview"
+                    />
+                  )}
                   <div className={`study-description ${expandedGigId === gig._id ? "expanded" : ""}`}>
                     {expandedGigId === gig._id
                       ? gig.description
@@ -114,8 +138,10 @@ const Home = () => {
                       <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>{" "}
                       {formatDate(gig.deadline)}
                     </span>
+
+                    {/* provide code for this share */}
                     <div className="share-buttons">
-                      <button className="share-button" onClick={() => handleShare(gig)}>
+                      <button className="share-button" onClick={() => referFriend(gig._id)}>
                         <img src={share} alt="Share" className="share-icon" />
                       </button>
                     </div>
@@ -208,6 +234,45 @@ const Home = () => {
         <h2>Recent Studies</h2>
         {/* Add cards for recent gigs here */}
       </section>
+
+      {showModal && (
+        <div className="share-modal">
+          <div className="share-modal__content">
+            <h3>Share this study</h3>
+            <p>Share the study with your friends:</p>
+            <FacebookShareButton url={referralLink}>
+              <button className="share-button-modal facebook">
+                <FaFacebook />
+              </button>
+            </FacebookShareButton>
+            <WhatsappShareButton url={referralLink}>
+              <button className="share-button-modal whatsapp">
+                <FaWhatsapp />
+              </button>
+            </WhatsappShareButton>
+            <LinkedinShareButton url={referralLink}>
+              <button className="share-button-modal linkedin">
+                <FaLinkedin />
+              </button>
+            </LinkedinShareButton>
+            <TwitterShareButton url={referralLink}>
+              <button className="share-button-modal twitter">
+                <FaTwitter />
+              </button>
+            </TwitterShareButton>
+
+            {copySuccess && <p className="copy-success-message">Copied!</p>}
+
+            <button onClick={handleCopyLink} className="share-button copy-link">
+              Copy Link
+            </button>
+
+            <button onClick={closeModal} className="share-modal__close-button">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
