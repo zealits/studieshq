@@ -9,7 +9,7 @@ const CreateStudy = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [budget, setBudget] = useState("");
-  const [location, setLocation] = useState(""); // New state for location
+  const [locations, setLocations] = useState([]);
   const [selectedPdf, setSelectedPdf] = useState("");
   const [pdfs, setPdfs] = useState([]);
   const [image, setImage] = useState("");
@@ -19,6 +19,28 @@ const CreateStudy = () => {
 
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.gig);
+
+  const locationOptions = [
+    "Iceland",
+    "Iran",
+    "Nigeria",
+    "Sri Lanka",
+    "Ethiopia",
+    "Myanmar",
+    "Nepal",
+    "Azerbaijan",
+    "Armenia",
+    "Cambodia",
+    "Spain (Galicia)",
+    "Laos",
+    "Spain (Basque Country)",
+    "Indonesia",
+    "Uzbekistan",
+    "Mongolia",
+    "North Macedonia",
+    "South Africa",
+    "Rwanda",
+  ];
 
   useEffect(() => {
     if (error) {
@@ -32,7 +54,7 @@ const CreateStudy = () => {
       setDescription("");
       setDeadline("");
       setBudget("");
-      setLocation(""); // Reset location
+      setLocations([]);
       setSelectedPdf("");
       setImage("");
       setImagePreview("");
@@ -54,13 +76,14 @@ const CreateStudy = () => {
     fetchPdfs();
   }, []);
 
+  const handleLocationChange = (e) => {
+    const value = e.target.value;
+    setLocations((prev) => (prev.includes(value) ? prev.filter((loc) => loc !== value) : [...prev, value]));
+  };
+
   const handleLanguageChange = (e) => {
     const value = e.target.value;
-    if (languages.includes(value)) {
-      setLanguages(languages.filter((lang) => lang !== value));
-    } else {
-      setLanguages([...languages, value]);
-    }
+    setLanguages((prev) => (prev.includes(value) ? prev.filter((lang) => lang !== value) : [...prev, value]));
   };
 
   const handleImageChange = (e) => {
@@ -76,20 +99,19 @@ const CreateStudy = () => {
     }
   };
 
-  const submitHandler = async (e) => {
+  const submitHandler = (e) => {
     e.preventDefault();
     const formData = {
       title,
       description,
       deadline,
-      budget,
-      location, // Include location in form data
-      pdf: selectedPdf,
+      budget: budget > 0 ? budget : 0, // Ensure positive gift amount
+      locations,
+      pdf: selectedPdf || null,
       image,
       languages,
     };
 
-    console.log("FormData being sent:", formData);
     dispatch(addGig(formData));
   };
 
@@ -113,7 +135,6 @@ const CreateStudy = () => {
             className="create-study__textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
           />
         </div>
         <div className="create-study__input-row">
@@ -124,27 +145,16 @@ const CreateStudy = () => {
               className="create-study__input"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              required
             />
           </div>
           <div className="create-study__input-group">
             <label className="create-study__label">Gift Amount</label>
             <input
               type="number"
-              className="create-study__input"
+              className="create-study__input create-study__input--no-arrows"
               value={budget}
-              onChange={(e) => setBudget(e.target.value)}
-              required
-            />
-          </div>
-          <div className="create-study__input-group">
-            <label className="create-study__label">Location</label>
-            <input
-              type="text"
-              className="create-study__input"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)} // Update location on change
-              required
+              onChange={(e) => setBudget(Math.max(0, e.target.value))}
+              min="0"
             />
           </div>
           <div className="create-study__input-group">
@@ -153,7 +163,6 @@ const CreateStudy = () => {
               className="create-study__select"
               value={selectedPdf}
               onChange={(e) => setSelectedPdf(e.target.value)}
-              required
             >
               <option value="">Select a Contract</option>
               {Array.isArray(pdfs) && pdfs.length > 0 ? (
@@ -169,14 +178,20 @@ const CreateStudy = () => {
           </div>
         </div>
         <div className="create-study__input-group">
+          <label className="create-study__label">Location</label>
+          <div className="create-study__checkbox-group">
+            {locationOptions.map((loc) => (
+              <div key={loc} className="create-study__checkbox-item">
+                <input type="checkbox" value={loc} checked={locations.includes(loc)} onChange={handleLocationChange} />
+                <label>{loc}</label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="create-study__input-group">
           <label className="create-study__label">Upload Image</label>
-          <input
-            type="file"
-            className="create-study__file-input"
-            onChange={handleImageChange}
-            accept="image/*"
-            required
-          />
+          <input type="file" className="create-study__file-input" onChange={handleImageChange} accept="image/*" />
           {imagePreview && <img src={imagePreview} alt="Preview" className="create-study__image-preview" />}
         </div>
         <div className="create-study__input-group">
