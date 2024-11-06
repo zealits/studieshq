@@ -40,7 +40,7 @@ const gigSchema = new mongoose.Schema({
   languages: {
     type: [String], // Array to store language options
   },
-  location: {
+  locations: {
    type: [String], // Define the location field as a String
     // required: true, // Uncomment if location should be required
   },

@@ -232,8 +232,9 @@ const ManageStudies = () => {
               <p>Description : {study.description}</p>
               <p>Gift Card : ${study.budget}</p>
               <p>Deadline : {study.deadline}</p>
-              <p>location : {study.location}</p>
+              {/* <p>location : {study.location}</p> */}
 
+              {study.locations && study.locations.length > 0 && <p>Languages: {study.locations.join(", ")}</p>}
               {study.languages && study.languages.length > 0 && <p>Languages: {study.languages.join(", ")}</p>}
 
               {study.pdfDetails && (

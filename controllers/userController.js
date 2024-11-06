@@ -279,7 +279,7 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
         },
         image: 1, // Directly include the Base64 string image field
         languages: 1, // Directly include the languages array
-        location: 1, // Directly include the languages array
+        locations: 1, // Directly include the languages array
       },
     },
   ]);
