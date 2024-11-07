@@ -13,6 +13,7 @@ const PandaLogin = () => {
   const [loginName, setLoginName] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [show2FAModal, setShow2FAModal] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   const [signUp, setSignUp] = useState(false);
   const [email, setEmail] = useState("");
@@ -29,42 +30,36 @@ const PandaLogin = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
 
   const sendOtpToEmail = () => {
-    // Call the backend API to send OTP
     fetch("/aak/l1/send-otp", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           setOtpSent(true);
-          alert("OTP has been sent to your email.");
+          setPopupMessage("OTP has been sent to your email.");
         } else {
-          alert(data.message || "Failed to send OTP.");
+          setPopupMessage(data.message || "Failed to send OTP.");
         }
       })
       .catch((error) => console.error("Error:", error));
   };
 
   const verifyOtp = () => {
-    // Call the backend API to verify OTP
     fetch("/aak/l1/verify-email", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           setEmailVerified(true);
-          alert("Email verified successfully.");
+          setPopupMessage("Email verified successfully.");
         } else {
-          alert(data.message || "Invalid OTP.");
+          setPopupMessage(data.message || "Invalid OTP.");
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -100,11 +95,14 @@ const PandaLogin = () => {
       };
       console.log(userData);
       dispatch(register(userData)).then(() => {
-        alert("Registration successful!");
+        setPopupMessage("Registration successful!");
+
       });
     } else {
       dispatch(login(loginName, loginPassword)).then(() => {
-        alert("Login successful!");
+        setPopupMessage("Login successful!");
+
+        
       });
     }
   };
@@ -151,6 +149,21 @@ const PandaLogin = () => {
           handleSubmit={handleSubmit}
         />
       )}
+
+      <Modal
+        isOpen={!!popupMessage}
+        onRequestClose={() => setPopupMessage("")}
+        className="popup"
+        overlayClassName="overlay"
+      >
+        <div>
+          <h2>Notification</h2>
+          <p>{popupMessage}</p>
+          <button className="btn btn-info" onClick={() => setPopupMessage("")}>
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
@@ -222,7 +235,6 @@ const SignUp = ({
 
   return (
     <div className="sign-up-container">
-    
       <h1>Sign Up</h1>
       <hr />
       {!emailVerified ? (
@@ -279,8 +291,27 @@ const SignUp = ({
               <label className="sign-up-label">Country</label>
               <select value={country} onChange={(e) => setCountry(e.target.value)} className="sign-up-select-country">
                 <option value="">Select Country</option>
-                <option value="US">United States</option>
-                <option value="IN">India</option>
+                <option value="United States">United States</option>
+                <option value="India">India</option>
+                <option value="Iceland">Iceland</option>
+                <option value="Iran">Iran</option>
+                <option value="Nigeria">Nigeria</option>
+                <option value="Sri Lanka">Sri Lanka</option>
+                <option value="Ethiopia">Ethiopia</option>
+                <option value="Myanmar">Myanmar</option>
+                <option value="Nepal">Nepal</option>
+                <option value="Azerbaijan">Azerbaijan</option>
+                <option value="Armenia">Armenia</option>
+                <option value="Cambodia">Cambodia</option>
+                <option value="Spain (Galicia)">Spain (Galicia)</option>
+                <option value="Laos">Laos</option>
+                <option value="Spain (Basque Country)">Spain (Basque Country)</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Uzbekistan">Uzbekistan</option>
+                <option value="Mongolia">Mongolia</option>
+                <option value="North Macedonia">North Macedonia</option>
+                <option value="South Africa">South Africa</option>
+                <option value="Rwanda">Rwanda</option>
               </select>
             </div>
             <div className="sign-up-field-dob">

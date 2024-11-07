@@ -4,6 +4,8 @@ import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import Modal from "react-modal";
 import "./ManageStudies.css";
+import { FaFacebook, FaWhatsapp, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FacebookShareButton, WhatsappShareButton, LinkedinShareButton, TwitterShareButton } from "react-share";
 import Loading from "../components/Loading";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -18,6 +20,10 @@ const ManageStudies = () => {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [studyToDelete, setStudyToDelete] = useState(null);
   const token = useSelector((state) => state.user.token);
+  const { user } = useSelector((state) => state.user);
+  const [referralLink, setReferralLink] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const fetchGigs = async () => {
@@ -39,6 +45,27 @@ const ManageStudies = () => {
     fetchGigs();
     console.log(gigs);
   }, [token]);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink);
+    setCopySuccess(true);
+
+    // Hide the "Copied!" message after 2 seconds
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
+
+  const referFriend = async (gigId) => {
+    console.log(gigId);
+    console.log(user._id);
+    try {
+      const response = await axios.post("aak/l1/generate-link", { gigId, referringUserId: user._id });
+      setReferralLink(response.data.referralLink);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error generating project referral link:", error);
+      alert("Failed to generate project referral link.");
+    }
+  };
 
   const generatePieData = (applicants) => {
     const statusCounts = {
@@ -274,7 +301,7 @@ const ManageStudies = () => {
                 <button className="btn btn-danger" onClick={() => openDeleteModal(study)} disabled={loadingAction}>
                   {loadingAction ? "Deleting..." : "Delete"}
                 </button>
-                <button className="btn" onClick={() => handleShare(study)}>
+                <button className="btn" onClick={() => referFriend(study._id)}>
                   Share
                 </button>
               </div>
@@ -282,6 +309,45 @@ const ManageStudies = () => {
           ))
         )}
       </div>
+
+      {showModal && (
+        <div className="share-modal">
+          <div className="share-modal__content">
+            <h3>Share this study</h3>
+            <p>Share the study with your friends:</p>
+            <FacebookShareButton url={referralLink}>
+              <button className="share-button-modal facebook">
+                <FaFacebook />
+              </button>
+            </FacebookShareButton>
+            <WhatsappShareButton url={referralLink}>
+              <button className="share-button-modal whatsapp">
+                <FaWhatsapp />
+              </button>
+            </WhatsappShareButton>
+            <LinkedinShareButton url={referralLink}>
+              <button className="share-button-modal linkedin">
+                <FaLinkedin />
+              </button>
+            </LinkedinShareButton>
+            <TwitterShareButton url={referralLink}>
+              <button className="share-button-modal twitter">
+                <FaTwitter />
+              </button>
+            </TwitterShareButton>
+
+            {copySuccess && <p className="copy-success-message">Copied!</p>}
+
+            <button onClick={handleCopyLink} className="share-button copy-link">
+              Copy Link
+            </button>
+
+            <button onClick={closeModal} className="share-modal__close-button">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
