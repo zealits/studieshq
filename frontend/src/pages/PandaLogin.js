@@ -222,32 +222,21 @@ const SignUp = ({
 
   return (
     <div className="sign-up-container">
-      <h1 className="sign-up-title">Sign Up</h1>
-      <hr className="sign-up-divider" />
+    
+      <h1>Sign Up</h1>
+      <hr />
       {!emailVerified ? (
         <>
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="sign-up-input-email"
-          />
+          <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           {otpSent ? (
             <>
-              <Input
-                label="Enter OTP"
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="sign-up-input-otp"
-              />
-              <button className="sign-up-btn-verify" type="button" onClick={verifyOtp}>
+              <Input label="Enter OTP" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} />
+              <button className="submit-button" type="button" onClick={verifyOtp}>
                 Verify OTP
               </button>
             </>
           ) : (
-            <button className="sign-up-btn-send-otp" type="button" onClick={sendOtpToEmail}>
+            <button className="submit-button" type="button" onClick={sendOtpToEmail}>
               Send OTP
             </button>
           )}

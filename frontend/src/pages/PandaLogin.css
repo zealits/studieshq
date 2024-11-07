@@ -115,8 +115,9 @@ hr {
   color: white;
   border: none;
   border-radius: 5px;
-  height: 50px;
-  width: 300px;
+  padding: 5px 10px;
+  /* height: 50px; */
+  /* width: 150px; */
   font-size: 20px;
   cursor: pointer;
 }
@@ -193,11 +194,11 @@ hr {
 
 
 .sign-up-container {
-  background: white;
-  border-radius: 10px;
+  /* background: white; */
+  /* border-radius: 10px; */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-margin-top: 200px;
+margin-top: 50px;
   padding: 30px;
   text-align: center;
 }
@@ -344,7 +345,7 @@ margin-top: 200px;
 
 .sign-up-link-toggle {
   font-size: 1rem;
-  color: #5b5bfa;
+  color: #353536;
   text-decoration: none;
   cursor: pointer;
   margin-top: 20px;
