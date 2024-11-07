@@ -172,6 +172,7 @@ const ManageStudies = () => {
   };
 
   const closeModal = () => {
+   setShowModal(null);
     setSelectedStudy(null);
   };
 
@@ -315,6 +316,10 @@ const ManageStudies = () => {
           <div className="share-modal__content">
             <h3>Share this study</h3>
             <p>Share the study with your friends:</p>
+
+            {/* Display the referral link */}
+            <p className="referral-link">{referralLink}</p>
+
             <FacebookShareButton url={referralLink}>
               <button className="share-button-modal facebook">
                 <FaFacebook />

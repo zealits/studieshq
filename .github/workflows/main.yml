@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: "20.x"
 
       # Step 3: Install backend dependencies (root)
       - name: Install backend dependencies
@@ -80,5 +80,9 @@ jobs:
             cd ..
 
             # Restart the application using PM2
-            pm2 restart orders-app  || pm2 start npm --name "orders-app " -- run dev
+            if pm2 list | grep -q "orders-app"; then
+             pm2 restart orders-app
+            else
+             pm2 start npm --name "orders-app" -- run dev
+            fi
           EOF
