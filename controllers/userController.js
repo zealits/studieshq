@@ -13,8 +13,8 @@ const axios = require("axios");
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   // console.log(req);
   console.log("regisring the user");
-  const { name, email, otp, password, firstName, lastName } = req.body;
-  // console.log(req.body);
+  const { name, email, otp, password, firstName, lastName, gender, languages, country, dateOfBirth } = req.body;
+  console.log(req.body);
   // console.log(firstName);
 
   const user = await User.findOne({ email });
@@ -22,6 +22,10 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   if (!user) {
     return next(new ErrorHander("User not found. Please request an OTP first.", 404));
   }
+  const updatedLanguages = languages.map((lang) => ({
+    language: lang.name, // Renaming 'name' to 'language'
+    proficiency: lang.proficiency,
+  }));
 
   // const isOtpValid = await user.verifyOTP(otp);
 
@@ -34,16 +38,17 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   user.password = password;
   user.firstName = firstName;
   user.lastName = lastName;
-  // user.gender = gender;
-  // user.dateOfBirth = dateOfBirth;
-  // user.country = country;
+  user.gender = gender;
+  user.dateOfBirth = dateOfBirth;
+  user.country = country;
+  user.languages = updatedLanguages;
   // user.state = state;
   // user.city = city;
   user.name = firstName;
   // user.contactNumber = contactNumber;
 
   await user.save();
-  // console.log(user);
+  console.log(user);
 
   sendToken(user, 200, res);
 });

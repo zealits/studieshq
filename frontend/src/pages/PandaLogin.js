@@ -96,13 +96,10 @@ const PandaLogin = () => {
       console.log(userData);
       dispatch(register(userData)).then(() => {
         setPopupMessage("Registration successful!");
-
       });
     } else {
       dispatch(login(loginName, loginPassword)).then(() => {
         setPopupMessage("Login successful!");
-
-        
       });
     }
   };

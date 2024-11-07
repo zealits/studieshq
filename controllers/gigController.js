@@ -4,7 +4,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 // Create a new gig (Admin)
 exports.createGig = catchAsyncErrors(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const gig = await Gig.create(req.body);
 
   res.status(201).json({
