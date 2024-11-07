@@ -177,7 +177,7 @@ function App() {
     <div className="app">
       <Router>
         {/* {isAuthenticated && totpVerified && user.is2FAEnabled && ( */}
-        {isAuthenticated && user.is2FAEnabled && (
+        {isAuthenticated &&  (
           <>
             {user.role === "admin" && <AdminSidebar />}
             {user.role === "user" && <Sidebar />}
@@ -232,6 +232,7 @@ function App() {
             )}
 
             <Route path="/share/study/:studyId" element={<StudyReferralPage />} />
+            <Route path="/register" element={<PandaLogin />} />
             {/* Redirect to the home page if no matching route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

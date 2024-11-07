@@ -155,3 +155,223 @@ hr {
   opacity: 1;
   transform: scale(1);
 }
+
+
+
+/* Dynamic Languages Section */
+.language-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.language-container input, .language-container select {
+  flex: 1;
+}
+
+.add-language-button {
+  background-color: #007b65;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-language-button:hover {
+  background-color: #005a4a;
+}
+
+.remove-language-button {
+  color: #ff5a5a;
+  cursor: pointer;
+}
+
+
+
+
+
+.sign-up-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+margin-top: 200px;
+  padding: 30px;
+  text-align: center;
+}
+
+.sign-up-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+.sign-up-divider {
+  width: 50px;
+  border: 2px solid #5b5bfa;
+  margin: 10px auto;
+  margin-bottom: 20px;
+}
+
+.sign-up-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.sign-up-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.sign-up-field-firstname,
+.sign-up-field-lastname,
+.sign-up-field-password,
+.sign-up-field-repassword {
+  width: 48%;
+}
+
+.sign-up-input-email,
+.sign-up-input-firstname,
+.sign-up-input-lastname,
+.sign-up-input-dob,
+.sign-up-input-password,
+.sign-up-input-repassword,
+.sign-up-input-language-name {
+  width: 100%;
+  padding: 10px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  transition: border 0.3s ease-in-out;
+}
+
+.sign-up-input-email:focus,
+.sign-up-input-firstname:focus,
+.sign-up-input-lastname:focus,
+.sign-up-input-dob:focus,
+.sign-up-input-password:focus,
+.sign-up-input-repassword:focus,
+.sign-up-input-language-name:focus {
+  border-color: #5b5bfa;
+  outline: none;
+}
+
+.sign-up-btn-verify,
+.sign-up-btn-send-otp,
+.sign-up-btn-submit,
+.sign-up-btn-add-language {
+  background: #009B77;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  margin: 10px 0;
+}
+
+.sign-up-btn-verify:hover,
+.sign-up-btn-send-otp:hover,
+.sign-up-btn-submit:hover,
+.sign-up-btn-add-language:hover {
+  background: #4a4ada;
+}
+
+.sign-up-btn-verify:active,
+.sign-up-btn-send-otp:active,
+.sign-up-btn-submit:active,
+.sign-up-btn-add-language:active {
+  background: #3737d2;
+}
+
+.sign-up-select-gender,
+.sign-up-select-country,
+.sign-up-select-proficiency {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  background-color: white;
+  transition: border 0.3s ease-in-out;
+}
+
+.sign-up-select-gender:focus,
+.sign-up-select-country:focus,
+.sign-up-select-proficiency:focus {
+  border-color: #5b5bfa;
+  outline: none;
+}
+
+.sign-up-field-gender,
+.sign-up-field-country,
+.sign-up-field-dob,
+.sign-up-field-languages {
+  margin-bottom: 20px;
+}
+
+.sign-up-label {
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.sign-up-language-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sign-up-remove-language-btn {
+  cursor: pointer;
+  color: #ff4d4d;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.sign-up-remove-language-btn:hover {
+  transform: scale(1.2);
+}
+
+.sign-up-link-toggle {
+  font-size: 1rem;
+  color: #5b5bfa;
+  text-decoration: none;
+  cursor: pointer;
+  margin-top: 20px;
+  background: none;
+  border: none;
+}
+
+
+.sign-up-row {
+  display: flex;
+  gap: 20px; /* Adjust the gap between the fields */
+}
+
+.sign-up-row > div {
+  flex: 1; /* Ensures equal width for each field */
+}
+
+.sign-up-field-gender,
+.sign-up-field-country,
+.sign-up-field-dob {
+  display: flex;
+  flex-direction: column;
+}
+
+.sign-up-select-gender,
+.sign-up-select-country,
+.sign-up-input-dob {
+  padding: 10px;
+  margin-top: 5px;
+}

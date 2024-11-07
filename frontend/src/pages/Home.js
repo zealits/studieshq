@@ -57,7 +57,7 @@ const Home = () => {
   };
 
   const formatDate = (dateString) => {
-    const [year, day, month] = dateString.split("-");
+    const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
   };
 

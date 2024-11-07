@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import calendar from "../Assets/photos/calendar.png";
 import "./StudyRefrralPage.css";
 
 const StudyReferralPage = () => {
   const { studyId } = useParams();
+  const navigate = useNavigate();
   const [studyDetails, setStudyDetails] = useState(null);
+  const user = null; // Replace with actual user state if available
+  const referringUserId = "12345"; // Replace with actual referral ID if available
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -23,8 +26,18 @@ const StudyReferralPage = () => {
   }, [studyId]);
 
   const formatDate = (dateString) => {
-    const [year, day, month] = dateString.split("-");
+    const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
+  };
+
+  const handleApplyClick = () => {
+    if (!user) {
+      // Redirect to registration page if not logged in, preserving referral information
+      navigate(`/register?redirect=/apply/study/${studyId}&referral=${referringUserId}`);
+    } else {
+      // If logged in, proceed to application
+      navigate(`/apply/studys/${studyId}`);
+    }
   };
 
   return (
@@ -52,22 +65,20 @@ const StudyReferralPage = () => {
               <div className="study-details-description">{studyDetails.description}</div>
               {studyDetails.locations && studyDetails.locations.length > 0 && (
                 <div className="study-details-locations">
-                  <span className="study-details-label">Locations:</span> {studyDetails.locations.join(", ")}
+                  <span className="study-details-label">Locations :</span> {studyDetails.locations.join(", ")}
                 </div>
               )}
               {studyDetails.languages && studyDetails.languages.length > 0 && (
                 <div className="study-details-languages">
-                  <span className="study-details-label">Languages:</span> {studyDetails.languages.join(", ")}
+                  <span className="study-details-label">Languages :</span> {studyDetails.languages.join(", ")}
                 </div>
               )}
-
-              <div className="study-details-budget">
-                <span className="study-details-label">Gift Card:</span> ${studyDetails.budget}
-              </div>
               <div className="study-details-deadline">
                 <span className="study-details-label">Last Date : </span> {formatDate(studyDetails.deadline)}
               </div>
-              <button className="study-details-apply">apply</button>
+              <button className="study-details-apply" onClick={handleApplyClick}>
+                Apply
+              </button>
             </div>
           </div>
         </div>
