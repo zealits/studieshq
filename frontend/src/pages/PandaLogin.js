@@ -3,8 +3,11 @@ import { useDispatch } from "react-redux";
 import { login, register } from "../Services/Actions/userAction.js";
 import "./PandaLogin.css";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 
 const PandaLogin = () => {
+  const navigate = useNavigate();
+
   // const [signUp, setSignUp] = useState(false);
   const [name, setName] = useState("");
   // const [email, setEmail] = useState("");
@@ -78,6 +81,7 @@ const PandaLogin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (signUp) {
       if (password !== rePassword) {
         alert("Passwords do not match");
@@ -95,12 +99,26 @@ const PandaLogin = () => {
         country,
         languages,
         dateOfBirth,
-        referralId: referringUserId || null, // Include referral ID if available
+        referralId: referringUserId || null,
         studyId: referredStudyId || null,
       };
       console.log(userData);
+
       dispatch(register(userData)).then(() => {
         setPopupMessage("Registration successful!");
+
+        // Clear local storage items
+        localStorage.removeItem("referringUserId");
+        localStorage.removeItem("referredStudyId");
+
+        // Redirect to /invited-study if referredStudyId exists
+        if (referredStudyId) {
+          navigate("/invited-study");
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        }
       });
     } else {
       dispatch(login(loginName, loginPassword)).then(() => {

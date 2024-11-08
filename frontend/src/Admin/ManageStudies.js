@@ -343,9 +343,9 @@ const ManageStudies = () => {
 
             {copySuccess && <p className="copy-success-message">Copied!</p>}
 
-            <button onClick={handleCopyLink} className="share-button copy-link">
+            {/* <button onClick={handleCopyLink} className="share-button copy-link">
               Copy Link
-            </button>
+            </button> */}
 
             <button onClick={closeModal} className="share-modal__close-button">
               Close
