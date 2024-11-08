@@ -64,13 +64,13 @@ export const fetchUserData = () => async (dispatch, getState) => {
 };
 
 // Login
-export const login = (email, password) => async (dispatch) => {
+export const login = (email, password, referralId, studyId) => async (dispatch) => {
   try {
     dispatch({ type: LOGIN_REQUEST });
 
     const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(`/aak/l1/login`, { email, password }, config);
+    const { data } = await axios.post(`/aak/l1/login`, { email, password, referralId, studyId }, config);
 
     dispatch({ type: LOGIN_SUCCESS, payload: data.user });
   } catch (error) {

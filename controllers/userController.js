@@ -155,7 +155,6 @@ exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next
   const userId = req.user.id;
   const { gigId, location, language, birthDate } = req.body; // Extract location, language, and birthdate
 
-  
   // Find the user and gig from the database
   const user = await User.findById(userId);
   const gig = await Gig.findById(gigId);
@@ -488,8 +487,8 @@ exports.completeGig = catchAsyncErrors(async (req, res, next) => {
 //Login User
 
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body;
-
+  const { email, password, referralId, studyId } = req.body;
+  // console.log(req.body);
   // checking if user has given password and email both
 
   if (!email || !password) {
@@ -506,6 +505,28 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!isPasswordMatched) {
     return next(new ErrorHander("Invalid email or password b", 401));
+  }
+
+    if (referralId) {
+    // console.log(`Referral ID: ${referralId}`);
+
+    // Find the project using projectId
+    const study = await Gig.findById(studyId);
+
+    if (!study) {
+      return next(new ErrorHander("Project not found.", 404));
+    }
+
+    // If no jobId is provided, add referral to the project's `projectReferrals` array
+    study.studyReferrals.push({
+      referredBy: referralId,
+      referredUser: user._id,
+      status: "pending",
+      referralDate: new Date(),
+    });
+
+    // Save the project with the updated referrals
+    await study.save();
   }
 
   sendToken(user, 200, res);

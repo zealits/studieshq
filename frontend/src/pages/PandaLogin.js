@@ -121,8 +121,22 @@ const PandaLogin = () => {
         }
       });
     } else {
-      dispatch(login(loginName, loginPassword)).then(() => {
+      const referralId = localStorage.getItem("referringUserId");
+      const studyId = localStorage.getItem("referredStudyId");
+
+      dispatch(login(loginName, loginPassword, referralId || null, studyId || null)).then(() => {
         setPopupMessage("Login successful!");
+
+        localStorage.removeItem("referringUserId");
+        localStorage.removeItem("referredStudyId");
+
+        if (referralId) {
+          navigate("/invited-study");
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        }
       });
     }
   };
