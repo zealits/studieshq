@@ -43,6 +43,28 @@ const CreateStudy = () => {
     "Rwanda",
   ];
 
+  const languageOptions = [
+    "Icelandic",
+    "Persian",
+    "Sinhala",
+    "Amharic",
+    "Burmese",
+    "Nepali",
+    "Azerbaijani",
+    "Armenian",
+    "Khmer",
+    "Galician",
+    "Lao",
+    "Basque",
+    "Sundanese",
+    "Uzbek",
+    "Mongolian",
+    "Macedonian",
+    "Xhosa",
+    "Kinyarwanda",
+    "Southern Sotho",
+  ];
+
   useEffect(() => {
     if (error) {
       alert(error);
@@ -98,6 +120,14 @@ const CreateStudy = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSelectAllLocations = () => {
+    setLocations(locations.length === locationOptions.length ? [] : locationOptions);
+  };
+
+  const handleSelectAllLanguages = () => {
+    setLanguages(languages.length === languageOptions.length ? [] : languageOptions);
   };
 
   const submitHandler = (e) => {
@@ -178,9 +208,24 @@ const CreateStudy = () => {
             </select>
           </div>
         </div>
+
+        <div className="create-study__input-group">
+          <label className="create-study__label">Upload Image</label>
+          <input type="file" className="create-study__file-input" onChange={handleImageChange} accept="image/*" />
+          {imagePreview && <img src={imagePreview} alt="Preview" className="create-study__image-preview" />}
+        </div>
+
         <div className="create-study__input-group">
           <label className="create-study__label">Location</label>
           <div className="create-study__checkbox-group">
+            <div className="create-study__checkbox-item">
+              <input
+                type="checkbox"
+                onChange={handleSelectAllLocations}
+                checked={locations.length === locationOptions.length}
+              />
+              <label>Select All Locations</label>
+            </div>
             {locationOptions.map((loc) => (
               <div key={loc} className="create-study__checkbox-item">
                 <input type="checkbox" value={loc} checked={locations.includes(loc)} onChange={handleLocationChange} />
@@ -191,30 +236,17 @@ const CreateStudy = () => {
         </div>
 
         <div className="create-study__input-group">
-          <label className="create-study__label">Upload Image</label>
-          <input type="file" className="create-study__file-input" onChange={handleImageChange} accept="image/*" />
-          {imagePreview && <img src={imagePreview} alt="Preview" className="create-study__image-preview" />}
-        </div>
-        <div className="create-study__input-group">
           <label className="create-study__label">Select Languages</label>
           <div className="create-study__checkbox-group">
-            {[
-              "English",
-              "Spanish",
-              "French",
-              "German",
-              "Italian",
-              "Portuguese",
-              "Chinese",
-              "Japanese",
-              "Korean",
-              "Russian",
-              "Arabic",
-              "Hindi",
-              "Turkish",
-              "Dutch",
-              "Swedish",
-            ].map((lang) => (
+            <div className="create-study__checkbox-item">
+              <input
+                type="checkbox"
+                onChange={handleSelectAllLanguages}
+                checked={languages.length === languageOptions.length}
+              />
+              <label>Select All Languages</label>
+            </div>
+            {languageOptions.map((lang) => (
               <div key={lang} className="create-study__checkbox-item">
                 <input
                   type="checkbox"
@@ -227,6 +259,7 @@ const CreateStudy = () => {
             ))}
           </div>
         </div>
+
         {message && <p className="create-study__error-message">{message}</p>}
         <button type="submit" className="create-study__submit-button" disabled={loading}>
           {loading ? "Loading..." : "Add Study"}
