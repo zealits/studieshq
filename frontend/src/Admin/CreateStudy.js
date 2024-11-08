@@ -21,6 +21,7 @@ const CreateStudy = () => {
   const { loading, error, success } = useSelector((state) => state.gig);
 
   const locationOptions = [
+    "USA",
     "Iceland",
     "Iran",
     "Nigeria",

@@ -1,29 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import calendar from "../Assets/photos/calendar.png";
 import "./StudyRefrralPage.css";
 
 const StudyReferralPage = () => {
   const { studyId } = useParams();
+  const query = new URLSearchParams(useLocation().search);
+  const referringUserId = query.get("referral");
   const navigate = useNavigate();
   const [studyDetails, setStudyDetails] = useState(null);
   const user = null; // Replace with actual user state if available
-  const referringUserId = "12345"; // Replace with actual referral ID if available
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
+        console.log("Study ID:", studyId);
+        console.log("Referring User ID:", referringUserId);
+
         const response = await axios.get(`/aak/l1/gig/${studyId}`);
+
+        localStorage.setItem("referringUserId", referringUserId || ""); // Store referral ID in local storage
+        localStorage.setItem("referredStudyId", studyId || "");
         setStudyDetails(response.data.gig);
-        console.log(response.data.gig); // Log project details
+
+        console.log("Fetched data:", response.data.gig); // Log project details
       } catch (error) {
         console.error("Error fetching project details:", error);
       }
     };
 
-    fetchProjectDetails();
-  }, [studyId]);
+    if (studyId && referringUserId) {
+      fetchProjectDetails();
+    }
+  }, [studyId, referringUserId]);
 
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split("-");
@@ -32,6 +42,9 @@ const StudyReferralPage = () => {
 
   const handleApplyClick = () => {
     if (!user) {
+      console.log("Dfd");
+      localStorage.setItem("referringUserId", referringUserId); // Store referral ID in local storage for tracking
+      localStorage.setItem("referredStudyId", studyId);
       // Redirect to registration page if not logged in, preserving referral information
       navigate(`/register?redirect=/apply/study/${studyId}&referral=${referringUserId}`);
     } else {
@@ -73,9 +86,12 @@ const StudyReferralPage = () => {
                   <span className="study-details-label">Languages :</span> {studyDetails.languages.join(", ")}
                 </div>
               )}
-              <div className="study-details-deadline">
-                <span className="study-details-label">Last Date : </span> {formatDate(studyDetails.deadline)}
-              </div>
+              {studyDetails.deadline !== "" && studyDetails.deadline && (
+                <div className="study-details-deadline">
+                  <span className="study-details-label">Last Date : </span> {formatDate(studyDetails.deadline)}
+                </div>
+              )}
+
               <button className="study-details-apply" onClick={handleApplyClick}>
                 Apply
               </button>

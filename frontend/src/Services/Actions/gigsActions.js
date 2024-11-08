@@ -31,11 +31,26 @@ export const addGig = (gigData) => async (dispatch) => {
 };
 
 // Fetch Gigs
+export const fetchSharedGigs = (userId) => async (dispatch) => {
+  try {
+    dispatch({ type: FETCH_GIGS_REQUEST });
+
+    // const { data } = await axios.get(`/aak/l1/gigs`);
+    const { data } = await axios.get(`/aak/l1/studies/shared-with-user/${userId}`);
+
+    dispatch({ type: FETCH_GIGS_SUCCESS, payload: data.gigs });
+  } catch (error) {
+    dispatch({ type: FETCH_GIGS_FAIL, payload: error.response.data.message });
+  }
+};
+
+// Fetch Gigs
 export const fetchGigs = () => async (dispatch) => {
   try {
     dispatch({ type: FETCH_GIGS_REQUEST });
 
     const { data } = await axios.get(`/aak/l1/gigs`);
+    // const { data } = await axios.get(`/aak/l1/studies/shared-with-user/${userId}`);
 
     dispatch({ type: FETCH_GIGS_SUCCESS, payload: data.gigs });
   } catch (error) {

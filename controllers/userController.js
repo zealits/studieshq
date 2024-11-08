@@ -13,7 +13,20 @@ const axios = require("axios");
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   // console.log(req);
   console.log("regisring the user");
-  const { name, email, otp, password, firstName, lastName, gender, languages, country, dateOfBirth } = req.body;
+  const {
+    name,
+    email,
+    otp,
+    password,
+    firstName,
+    lastName,
+    gender,
+    languages,
+    country,
+    dateOfBirth,
+    referralId,
+    studyId,
+  } = req.body;
   console.log(req.body);
   // console.log(firstName);
 
@@ -49,6 +62,28 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 
   await user.save();
   console.log(user);
+
+  if (referralId) {
+    console.log(`Referral ID: ${referralId}`);
+
+    // Find the project using projectId
+    const study = await Gig.findById(studyId);
+
+    if (!study) {
+      return next(new ErrorHander("Project not found.", 404));
+    }
+
+    // If no jobId is provided, add referral to the project's `projectReferrals` array
+    study.studyReferrals.push({
+      referredBy: referralId,
+      referredUser: user._id,
+      status: "pending",
+      referralDate: new Date(),
+    });
+
+    // Save the project with the updated referrals
+    await study.save();
+  }
 
   sendToken(user, 200, res);
 });

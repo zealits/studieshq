@@ -83,6 +83,9 @@ const PandaLogin = () => {
         alert("Passwords do not match");
         return;
       }
+
+      const referringUserId = localStorage.getItem("referringUserId");
+      const referredStudyId = localStorage.getItem("referredStudyId");
       const userData = {
         firstName,
         lastName,
@@ -92,6 +95,8 @@ const PandaLogin = () => {
         country,
         languages,
         dateOfBirth,
+        referralId: referringUserId || null, // Include referral ID if available
+        studyId: referredStudyId || null,
       };
       console.log(userData);
       dispatch(register(userData)).then(() => {

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGigs, applyGig } from "../Services/Actions/gigsActions.js"; // Adjust the import path as necessary
+import { fetchGigs, applyGig ,fetchSharedGigs} from "../Services/Actions/gigsActions.js"; // Adjust the import path as necessary
 import Popup from "./Popup"; // Import the Popup component
 import "./AvailableGigs.css";
 import { loadUser } from "../Services/Actions/userAction.js";
@@ -17,9 +17,11 @@ const AvailableGigs = () => {
   const [expandedGigId, setExpandedGigId] = useState(null);
   const [cid, setCid] = useState(null);
   const [gigId, setGigId] = useState(null);
+  const userId = useSelector((state) => state.user.user._id);
 
+  console.log(userId);
   useEffect(() => {
-    dispatch(fetchGigs());
+    dispatch(fetchSharedGigs(userId));
   }, [dispatch]);
 
   const { gigs, successMessage } = useSelector((state) => ({
@@ -30,7 +32,6 @@ const AvailableGigs = () => {
   const userGigs = useSelector((state) => state.user.user.gigs);
   const userEmail = useSelector((state) => state.user.user.email);
   const contractSigned = userGigs.filter((gig) => gig.status === "contractSigned");
-  const userId = useSelector((state) => state.user.user._id);
 
   // Filter out gigs that the user has applied to, allocated, or completed
   const filteredGigs = gigs.filter((gig) => !userGigs.some((userGig) => userGig.gigId === gig._id));

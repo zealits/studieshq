@@ -172,7 +172,7 @@ const ManageStudies = () => {
   };
 
   const closeModal = () => {
-   setShowModal(null);
+    setShowModal(null);
     setSelectedStudy(null);
   };
 

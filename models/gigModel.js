@@ -41,9 +41,17 @@ const gigSchema = new mongoose.Schema({
     type: [String], // Array to store language options
   },
   locations: {
-   type: [String], // Define the location field as a String
+    type: [String], // Define the location field as a String
     // required: true, // Uncomment if location should be required
   },
+  studyReferrals: [
+    {
+      referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Referring user
+      referredUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Friend who was referred
+      status: { type: String, default: "pending" }, // Status (e.g., "applied", "hired")
+      referralDate: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Gig", gigSchema);

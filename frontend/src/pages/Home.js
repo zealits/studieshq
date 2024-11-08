@@ -25,6 +25,7 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const [expandedGigId, setExpandedGigId] = useState(null);
   const { user } = useSelector((state) => state.user);
+  const userId = useSelector((state) => state.user.user._id);
   const [referralLink, setReferralLink] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
@@ -38,7 +39,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchGigs());
+    dispatch(fetchGigs(userId));
   }, [dispatch]);
 
   const { gigs, successMessage } = useSelector((state) => ({

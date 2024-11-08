@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
-const { createGig, updateGig, deleteGig, getAllGigs, getSingleGig } = require("../controllers/gigController");
+const { createGig, updateGig, deleteGig, getAllGigs, getSingleGig, getStudiesSharedWithUser } = require("../controllers/gigController");
 
 const storage = multer.memoryStorage(); // Store files in memory
 const upload = multer({ storage: storage });
@@ -17,6 +17,10 @@ router
 
 // Public routes
 router.route("/gigs").get(getAllGigs);
+
+
+router.route("/studies/shared-with-user/:userId").get(getStudiesSharedWithUser);
+
 router.route("/gig/:id").get(getSingleGig);
 
 module.exports = router;

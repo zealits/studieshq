@@ -73,3 +73,27 @@ exports.getSingleGig = catchAsyncErrors(async (req, res, next) => {
     gig,
   });
 });
+
+exports.getStudiesSharedWithUser = async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+  try {
+    // Find all gigs where the user is listed as a referredUser
+    const gigs = await Gig.find({
+      "studyReferrals.referredUser": userId,
+    });
+    console.log(gigs);
+
+    if (!gigs.length) {
+      return res.status(404).json({ message: "No studies found shared with this user." });
+    }
+
+    res.status(200).json({
+      success: true,
+      gigs,
+    });
+  } catch (error) {
+    console.error("Error fetching studies shared with user:", error);
+    res.status(500).json({ error: "Failed to fetch studies shared with this user." });
+  }
+};
