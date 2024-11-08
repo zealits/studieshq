@@ -159,6 +159,7 @@
   }
   .sidebar li a:hover {
     background: #fff;
+
   }
   .sidebar li a .links_name {
     color: #fff;
@@ -275,4 +276,16 @@
   .sidebar .dropdown-menu a span {
     margin-left: 10px;
   }
+  
+
+  .sidebar li .linke.active {
+    background: #fff; /* White background for active link */
+    color: #000; /* Black text for active link */
+  }
+  
+  .sidebar li .linke.active .icon,
+  .sidebar li .linke.active .links_name {
+    color: #000; /* Black color for icon and links_name when active */
+  }
+  
   

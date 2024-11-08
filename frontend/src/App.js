@@ -5,6 +5,7 @@ import { loadUser } from "./Services/Actions/userAction.js";
 import Home from "./pages/Home";
 import MyGigs from "./pages/MyGigs";
 import AvailableGigs from "./pages/AvailableGigs";
+import InvitedStudy from "./pages/InvitedStudy.js";
 import Earnings from "./pages/Earnings";
 import Profile from "./pages/Profile";
 import Preferences from "./pages/Preferences";
@@ -177,7 +178,7 @@ function App() {
     <div className="app">
       <Router>
         {/* {isAuthenticated && totpVerified && user.is2FAEnabled && ( */}
-        {isAuthenticated &&  (
+        {isAuthenticated && (
           <>
             {user.role === "admin" && <AdminSidebar />}
             {user.role === "user" && <Sidebar />}
@@ -205,6 +206,7 @@ function App() {
                       <Route path="/earnings" element={<Earnings />} />
                       <Route path="/preferences" element={<Preferences />} />
                       <Route path="/message" element={<Message />} />
+                      <Route path="/invited-study" element={<InvitedStudy />} />
                       <Route path="/knowledge-bank" element={<KnowledgeBank />} />
                       <Route path="/support" element={<Support />} />
                     </>
