@@ -148,6 +148,73 @@ exports.verifyEmail = catchAsyncErrors(async (req, res, next) => {
 });
 
 // apply for gig
+
+exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next) => {
+  console.log(req.body);
+
+  const userId = req.user.id;
+  const { gigId, location, language, birthDate } = req.body; // Extract location, language, and birthdate
+
+  
+  // Find the user and gig from the database
+  const user = await User.findById(userId);
+  const gig = await Gig.findById(gigId);
+
+  if (!gig) {
+    return next(new ErrorHander("Gig not found", 404));
+  }
+
+  if (!user) {
+    return next(new ErrorHander("User not found", 404));
+  }
+
+  // Check if the user has already applied for the gig
+  const userGigIndex = user.gigs.findIndex((gigDetail) => gigDetail.gigId.equals(gigId));
+
+  if (userGigIndex !== -1) {
+    return next(new ErrorHander("You have already applied for this gig", 400));
+  }
+
+  // Update the user's dateOfBirth field if the birthDate is provided
+  if (birthDate) {
+    user.dateOfBirth = birthDate; // Store the birthDate as a string in the user profile
+    await user.save();
+  }
+
+  // Create a new gig application in the user's gigs array
+  const newGigApplication = {
+    gigId: gig._id,
+    title: gig.title,
+    description: gig.description,
+    deadline: gig.deadline,
+    budget: gig.budget,
+    status: "applied", // Set status to applied
+    appliedAt: Date.now(),
+    location: location,
+    language: language,
+    paymentStatus: "not requested", // Default payment status
+    giftCardOption: gig.giftCardOption,
+    userSelectedGiftCardOption: null, // You can set this later if needed
+  };
+
+  // Add the new gig application to the user's gigs array
+  user.gigs.push(newGigApplication);
+  await user.save();
+
+  // Add the user to the gig's applicants array
+  gig.applicants.push(userId);
+  if (gig.status === "available") {
+    gig.status = "applied"; // Update the gig's status to applied
+  }
+
+  await gig.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Applied for gig successfully",
+  });
+});
+
 // apply for gig
 exports.applyForGig = catchAsyncErrors(async (req, res, next) => {
   const userId = req.user.id;

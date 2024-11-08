@@ -52,6 +52,14 @@ const gigSchema = new mongoose.Schema({
   contractPdf: {
     type: Buffer,
   },
+  location: {
+    type: String,
+    // required: true, // Required if user must select a location
+  },
+  language: {
+    type: String,
+    // required: true, // Required if user must select a language
+  },
 
   requestGiftCardAt: Date,
   giftCardApprovedAt: Date,

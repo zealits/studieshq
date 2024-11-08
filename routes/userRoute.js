@@ -29,6 +29,7 @@ const {
   updateGigBudget,
   verifyEmail,
   sendOtp,
+  applyForGigWithLanguageLocation,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const router = express.Router();
@@ -60,6 +61,8 @@ router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admi
 
 // Gig Routes
 router.route("/gig/apply").post(isAuthenticatedUser, applyForGig);
+router.route("/gig/applyForGigWithLanguageLocation").post(isAuthenticatedUser, applyForGigWithLanguageLocation);
+
 router
   .route("/admin/gig/approve/:userId/:gigId")
   .put(isAuthenticatedUser, authorizeRoles("admin", "superadmin"), approveGig);
