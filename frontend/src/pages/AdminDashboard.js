@@ -84,10 +84,35 @@ const AdminDashboard = () => {
     return gigDetail ? gigDetail.status : "Not Applied";
   };
 
+  const getLanguage = (applicantGigs, gigId) => {
+    const gigDetail = applicantGigs.find((gigDetail) => gigDetail.gigId === gigId);
+    return gigDetail ? gigDetail.language : "Not Selected";
+  };
+
+  const getLocation = (applicantGigs, gigId) => {
+    const gigDetail = applicantGigs.find((gigDetail) => gigDetail.gigId === gigId);
+    return gigDetail ? gigDetail.location : "Not Selected";
+  };
+
   const closeModal = () => {
     setPopupMessage("");
     fetchGigs();
   };
+
+  function calculateAge(dateOfBirth) {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    const dayDifference = today.getDate() - birthDate.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+      age--;
+    }
+
+    return age;
+  }
 
   if (loading)
     return (
@@ -138,13 +163,17 @@ const AdminDashboard = () => {
                       {filteredApplicants.length > 0 ? (
                         filteredApplicants.map((applicant) => (
                           <div key={applicant._id} className="applicant-card">
-                            <h3>{applicant.firstName} {applicant.lastName} </h3>
+                            <h3>
+                              {applicant.firstName} {applicant.lastName}{" "}
+                            </h3>
                             <p>Gender : {applicant.gender} </p>
                             <p>Email: {applicant.email}</p>
-                            <p>DOB: {applicant.dateOfBirth}</p>
-                         
+                            <p>Age: {calculateAge(applicant.dateOfBirth)}</p>
+                            <p>Language : {getLanguage(applicant.gigs, gig._id)}</p>
+                            <p>Location : {getLocation(applicant.gigs, gig._id)}</p>
 
                             <p>Status: {getStatus(applicant.gigs, gig._id)}</p>
+
                             {getStatus(applicant.gigs, gig._id) === "applied" && (
                               <button onClick={() => approveGig(applicant._id, gig._id)}>Approve</button>
                             )}

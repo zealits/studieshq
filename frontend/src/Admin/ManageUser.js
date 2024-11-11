@@ -9,6 +9,7 @@ const ManageUser = () => {
   const dispatch = useDispatch();
   const { users, loading } = useSelector((state) => state.admin); // Assuming adminReducer is used for state management
 
+  console.log(users);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
@@ -21,6 +22,21 @@ const ManageUser = () => {
     }
   };
 
+  function calculateAge(dateOfBirth) {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    const dayDifference = today.getDate() - birthDate.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+      age--;
+    }
+
+    return age;
+  }
+
   return (
     <div className="manage-user">
       {loading && <Loader />}
@@ -29,8 +45,11 @@ const ManageUser = () => {
         <table className="user-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Gender</th>
+              <th>Age</th>
+              <th>Country</th>
               <th>Email</th>
               <th>Actions</th>
             </tr>
@@ -38,8 +57,11 @@ const ManageUser = () => {
           <tbody>
             {users.map((user) => (
               <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
+                <td>{user.firstName}</td>
+                <td>{user.lastName}</td>
+                <td>{user.gender}</td>
+                <td>{calculateAge(user.dateOfBirth)}</td>
+                <td>{user.country}</td>
                 <td>{user.email}</td>
                 <td>
                   <button className="btn btn-info" onClick={() => setSelectedUser(user)}>
@@ -93,10 +115,12 @@ const ManageUser = () => {
                     <strong>Applied At:</strong> {new Date(gig.appliedAt).toLocaleString()}
                   </p>
                   <p>
-                    <strong>Allocated At:</strong> {gig.allocatedAt ? new Date(gig.allocatedAt).toLocaleString() : "N/A"}
+                    <strong>Allocated At:</strong>{" "}
+                    {gig.allocatedAt ? new Date(gig.allocatedAt).toLocaleString() : "N/A"}
                   </p>
                   <p>
-                    <strong>Completed At:</strong> {gig.completedAt ? new Date(gig.completedAt).toLocaleString() : "N/A"}
+                    <strong>Completed At:</strong>{" "}
+                    {gig.completedAt ? new Date(gig.completedAt).toLocaleString() : "N/A"}
                   </p>
                 </div>
               ))}
