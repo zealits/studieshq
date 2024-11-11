@@ -75,14 +75,14 @@ exports.getSingleGig = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getStudiesSharedWithUser = async (req, res) => {
-  const { userId } = req.params;
+  // const { userId } = req.params;
   console.log(userId);
   try {
     // Find all gigs where the user is listed as a referredUser
     const gigs = await Gig.find({
       "studyReferrals.referredUser": userId,
     });
-    console.log(gigs);
+    // console.log(gigs);
 
     if (!gigs.length) {
       return res.status(404).json({ message: "No studies found shared with this user." });

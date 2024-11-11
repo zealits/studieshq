@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGigs, applyGig ,fetchSharedGigs} from "../Services/Actions/gigsActions.js"; // Adjust the import path as necessary
+import { fetchGigs, applyGig, fetchSharedGigs } from "../Services/Actions/gigsActions.js"; // Adjust the import path as necessary
 import Popup from "./Popup"; // Import the Popup component
 import "./AvailableGigs.css";
 import { loadUser } from "../Services/Actions/userAction.js";

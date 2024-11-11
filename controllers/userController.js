@@ -27,7 +27,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     referralId,
     studyId,
   } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   // console.log(firstName);
 
   const user = await User.findOne({ email });
@@ -61,10 +61,10 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   // user.contactNumber = contactNumber;
 
   await user.save();
-  console.log(user);
+  // console.log(user);
 
   if (referralId) {
-    console.log(`Referral ID: ${referralId}`);
+    // console.log(`Referral ID: ${referralId}`);
 
     // Find the project using projectId
     const study = await Gig.findById(studyId);
@@ -150,7 +150,7 @@ exports.verifyEmail = catchAsyncErrors(async (req, res, next) => {
 // apply for gig
 
 exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
 
   const userId = req.user.id;
   const { gigId, location, language, birthDate } = req.body; // Extract location, language, and birthdate
@@ -488,7 +488,7 @@ exports.completeGig = catchAsyncErrors(async (req, res, next) => {
 
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password, referralId, studyId } = req.body;
-  // console.log(req.body);
+  console.log(req.body);
   // checking if user has given password and email both
 
   if (!email || !password) {
@@ -507,11 +507,12 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander("Invalid email or password b", 401));
   }
 
-    if (referralId) {
+  if (referralId) {
     // console.log(`Referral ID: ${referralId}`);
 
     // Find the project using projectId
     const study = await Gig.findById(studyId);
+    console.log("study : ", study);
 
     if (!study) {
       return next(new ErrorHander("Project not found.", 404));
@@ -525,6 +526,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
       referralDate: new Date(),
     });
 
+    console.log(study);
     // Save the project with the updated referrals
     await study.save();
   }

@@ -10,8 +10,8 @@ const InvitedStudy = () => {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.user._id);
   const gigs = useSelector((state) => state.gig.gigs); // Adjust state path as necessary
-  const userGigs = useSelector((state) => state.user.user.gigs);
-  const filteredGigs = gigs.filter((gig) => !userGigs.some((userGig) => userGig.gigId === gig._id));
+  const userGigs = useSelector((state) => state.user.user?.gigs || []);
+  const filteredGigs = (gigs || []).filter((gig) => !userGigs.some((userGig) => userGig.gigId === gig._id));
 
   const [showModal, setShowModal] = useState(false);
   const [selectedStudy, setSelectedStudy] = useState(null);
@@ -80,7 +80,7 @@ const InvitedStudy = () => {
 
       <div>
         {filteredGigs && filteredGigs.length > 0 ? (
-            filteredGigs.map((studyDetails) => (
+          filteredGigs.map((studyDetails) => (
             <div className="" key={studyDetails._id}>
               <h1 className="">{studyDetails.title}</h1>
 
