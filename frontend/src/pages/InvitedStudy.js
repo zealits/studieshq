@@ -5,8 +5,10 @@ import axios from "axios";
 import "./InvitedStudy.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
 
 const InvitedStudy = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.user._id);
   const dob = useSelector((state) => state.user.user.dateOfBirth);
@@ -76,6 +78,8 @@ const InvitedStudy = () => {
 
       if (response.data.success) {
         setSuccessMessage("Applied successfully!");
+        navigate("/my-gigs");
+        window.location.reload();
         setShowModal(false);
       }
     } catch (error) {
