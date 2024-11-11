@@ -9,6 +9,12 @@ import "react-datepicker/dist/react-datepicker.css";
 const InvitedStudy = () => {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.user._id);
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchSharedGigs(userId));
+    }
+  }, [dispatch, userId]);
+
   const gigs = useSelector((state) => state.gig.gigs); // Adjust state path as necessary
   const userGigs = useSelector((state) => state.user.user?.gigs || []);
   const filteredGigs = (gigs || []).filter((gig) => !userGigs.some((userGig) => userGig.gigId === gig._id));
@@ -19,12 +25,6 @@ const InvitedStudy = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [userBirthDate, setUserBirthDate] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchSharedGigs(userId));
-    }
-  }, [dispatch, userId]);
 
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split("-");

@@ -75,7 +75,7 @@ exports.getSingleGig = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getStudiesSharedWithUser = async (req, res) => {
-  // const { userId } = req.params;
+  const { userId } = req.params;
   console.log(userId);
   try {
     // Find all gigs where the user is listed as a referredUser
