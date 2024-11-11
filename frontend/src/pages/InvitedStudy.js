@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSharedGigs } from "../Services/Actions/gigsActions.js";
-import axios from "axios"; // Import axios for making requests
+import axios from "axios";
 import "./InvitedStudy.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,13 +9,28 @@ import "react-datepicker/dist/react-datepicker.css";
 const InvitedStudy = () => {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.user._id);
+  const dob = useSelector((state) => state.user.user.dateOfBirth);
+
   useEffect(() => {
     if (userId) {
       dispatch(fetchSharedGigs(userId));
     }
   }, [dispatch, userId]);
 
-  const gigs = useSelector((state) => state.gig.gigs); // Adjust state path as necessary
+  const [userBirthDate, setUserBirthDate] = useState(null);
+
+  // Set initial birth date to user's date of birth
+  useEffect(() => {
+    if (dob) {
+      setUserBirthDate(new Date(dob)); // Convert "YYYY-MM-DD" format to Date object
+    }
+  }, [dob]);
+
+  const handleDateChange = (date) => {
+    setUserBirthDate(date);
+  };
+
+  const gigs = useSelector((state) => state.gig.gigs);
   const userGigs = useSelector((state) => state.user.user?.gigs || []);
   const filteredGigs = (gigs || []).filter((gig) => !userGigs.some((userGig) => userGig.gigId === gig._id));
 
@@ -23,8 +38,9 @@ const InvitedStudy = () => {
   const [selectedStudy, setSelectedStudy] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [userBirthDate, setUserBirthDate] = useState("");
+
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // New state for error message
 
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split("-");
@@ -34,14 +50,21 @@ const InvitedStudy = () => {
   const handleApplyClick = (study) => {
     setSelectedStudy(study);
     setShowModal(true);
+    setErrorMessage(""); // Reset error message when modal opens
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setSuccessMessage(""); // Reset success message when modal is closed
+    setSuccessMessage("");
+    setErrorMessage(""); // Reset error message when modal is closed
   };
 
   const handleApply = async () => {
+    if (!selectedLanguage || !selectedLocation || !userBirthDate) {
+      setErrorMessage("Please select all required fields."); // Set error message if fields are missing
+      return;
+    }
+
     try {
       const response = await axios.post("/aak/l1/gig/applyForGigWithLanguageLocation", {
         gigId: selectedStudy._id,
@@ -61,20 +84,19 @@ const InvitedStudy = () => {
     }
   };
 
-  const handleDateChange = (date) => {
-    setUserBirthDate(date);
-  };
+  // const handleDateChange = (date) => {
+  //   setUserBirthDate(date);
+  // };
 
   return (
     <div>
       <h2>Invited Studies</h2>
       <hr
         style={{
-          border: "none", // Remove default border
-          height: "1px", // Set height for the hr
-          backgroundColor: "black", // Set the color of the hr
-          margin: "20px 30px", // Adjust margins for spacing
-          //   boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", // Add shadow for a bold effect
+          border: "none",
+          height: "1px",
+          backgroundColor: "black",
+          margin: "20px 30px",
         }}
       />
 
@@ -142,6 +164,7 @@ const InvitedStudy = () => {
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
               >
+                <option value="">Select a language</option>
                 {selectedStudy.languages.map((lang) => (
                   <option key={lang} value={lang}>
                     {lang}
@@ -157,6 +180,7 @@ const InvitedStudy = () => {
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
               >
+                <option value="">Select a location</option>
                 {selectedStudy.locations.map((loc) => (
                   <option key={loc} value={loc}>
                     {loc}
@@ -168,13 +192,13 @@ const InvitedStudy = () => {
             <div className="form-group">
               <label>Birth Date:</label>
               <DatePicker
-                selected={userBirthDate} // Selected date
-                onChange={handleDateChange} // Handle date change
-                dateFormat="dd/MM/yyyy" // Customize the date format
-                maxDate={new Date()} // Prevent future dates
+                selected={userBirthDate}
+                onChange={handleDateChange}
+                dateFormat="dd/MM/yyyy"
+                maxDate={new Date()}
                 showYearDropdown
                 scrollableYearDropdown
-                className="modal-input" // custom class for styling
+                className="modal-input"
               />
             </div>
 
@@ -185,6 +209,7 @@ const InvitedStudy = () => {
               Close
             </button>
 
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
             {successMessage && <div className="success-message">{successMessage}</div>}
           </div>
         </div>

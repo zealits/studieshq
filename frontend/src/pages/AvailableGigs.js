@@ -166,7 +166,7 @@ const AvailableGigs = () => {
                   {expandedGigId === gig._id ? "Read Less" : "Read More"}
                 </button>
               )}
-              <div className="home-study-details">
+              {/* <div className="home-study-details">
                 <span className="study-location">
                   Gift Card <div></div>${gig.budget}
                 </span>
@@ -174,13 +174,13 @@ const AvailableGigs = () => {
                   <img src={calendar} alt="Calendar" className="calendar-icon" /> Last Date<div></div>
                   {formatDate(gig.deadline)}
                 </span>
-              </div>
-              <button className="apply-button" onClick={() => handleContractPDf(gig.pdf, gig._id)}>
+              </div> */}
+              {/* <button className="apply-button" onClick={() => handleContractPDf(gig.pdf, gig._id)}>
                 Sign Contract
-              </button>
-              <button className="apply-button" onClick={() => handleApply(gig._id)}>
+              </button> */}
+              {/* <button className="apply-button" onClick={() => handleApply(gig._id)}>
                 Apply Now
-              </button>
+              </button> */}
             </div>
           ))
         ) : (

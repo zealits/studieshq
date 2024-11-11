@@ -351,7 +351,11 @@ exports.getAllGigsWithApplicants = catchAsyncErrors(async (req, res, next) => {
             as: "applicant",
             in: {
               _id: "$$applicant._id", // Include user _id
-              name: "$$applicant.name",
+              firstName: "$$applicant.firstName",
+              lastName: "$$applicant.lastName",
+              gender: "$$applicant.gender",
+              dateOfBirth: "$$applicant.dateOfBirth",
+              country: "$$applicant.country",
               email: "$$applicant.email",
               gigs: {
                 $filter: {

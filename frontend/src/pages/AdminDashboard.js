@@ -9,6 +9,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const AdminDashboard = () => {
   const [gigs, setGigs] = useState([]);
+  console.log(gigs);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -39,7 +40,6 @@ const AdminDashboard = () => {
       applied: 0,
       allocated: 0,
       completed: 0,
-    
     };
 
     gigsList.forEach((gig) => {
@@ -109,7 +109,6 @@ const AdminDashboard = () => {
             cy={200}
             labelLine={false}
             label={({ name, value }) => `${name}: ${value}`}
-
             outerRadius={80}
             fill="#8884d8"
             dataKey="value"
@@ -139,8 +138,12 @@ const AdminDashboard = () => {
                       {filteredApplicants.length > 0 ? (
                         filteredApplicants.map((applicant) => (
                           <div key={applicant._id} className="applicant-card">
-                            <h3>{applicant.name}</h3>
+                            <h3>{applicant.firstName} {applicant.lastName} </h3>
+                            <p>Gender : {applicant.gender} </p>
                             <p>Email: {applicant.email}</p>
+                            <p>DOB: {applicant.dateOfBirth}</p>
+                         
+
                             <p>Status: {getStatus(applicant.gigs, gig._id)}</p>
                             {getStatus(applicant.gigs, gig._id) === "applied" && (
                               <button onClick={() => approveGig(applicant._id, gig._id)}>Approve</button>
@@ -161,7 +164,9 @@ const AdminDashboard = () => {
       {popupMessage && (
         <Modal isOpen={!!popupMessage} onRequestClose={closeModal} className="modal" overlayClassName="overlay">
           <h2>{popupMessage}</h2>
-          <button className="btn btn-info" onClick={closeModal}>Close</button>
+          <button className="btn btn-info" onClick={closeModal}>
+            Close
+          </button>
         </Modal>
       )}
     </div>
