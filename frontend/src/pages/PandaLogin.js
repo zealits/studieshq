@@ -187,13 +187,13 @@ const PandaLogin = () => {
       <Modal
         isOpen={!!popupMessage}
         onRequestClose={() => setPopupMessage("")}
-        className="popup"
-        overlayClassName="overlay"
+        className="unique-popup-modal"
+        overlayClassName="unique-popup-overlay"
       >
-        <div>
-          <h2>Notification</h2>
-          <p>{popupMessage}</p>
-          <button className="btn btn-info" onClick={() => setPopupMessage("")}>
+        <div className="unique-popup-content">
+          <h2 className="unique-popup-title">Notification</h2>
+          <p className="unique-popup-message">{popupMessage}</p>
+          <button className="unique-popup-close-btn" onClick={() => setPopupMessage("")}>
             Close
           </button>
         </div>
@@ -207,7 +207,7 @@ const Login = ({ loginName, loginPassword, setLoginName, setLoginPassword, handl
     <h1>Log In</h1>
     <hr />
     <form onSubmit={handleSubmit}>
-      <Input label="User Name" type="text" value={loginName} onChange={(e) => setLoginName(e.target.value)} />
+      <Input label="User Name (email)" type="text" value={loginName} onChange={(e) => setLoginName(e.target.value)} />
       <Input
         label="Password"
         type="password"

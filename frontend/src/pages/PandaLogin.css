@@ -376,3 +376,107 @@ margin-top: 50px;
   padding: 10px;
   margin-top: 5px;
 }
+
+
+/* Modal background overlay */
+.unique-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Darker overlay with higher opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
+
+/* Modal container */
+.unique-popup-modal {
+  background: linear-gradient(145deg, #2a2a2a, #121212); /* Dark gradient for depth */
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* Deep shadow for a floating effect */
+  width: 80%;
+  max-width: 600px;
+  padding: 30px;
+  color: #f1f1f1; /* Light text for contrast */
+  transform: translateY(-50px);
+  animation: modalFadeIn 0.4s ease-out forwards;
+}
+
+/* Modal content */
+.unique-popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  justify-content: center;
+}
+
+/* Modal title */
+.unique-popup-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 3px solid #333; /* Dark border to separate title */
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for a glowing effect */
+}
+
+/* Popup message text */
+.unique-popup-message {
+  font-size: 1.2rem;
+  color: #ccc;
+  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 25px;
+  text-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3); /* Soft shadow for text legibility */
+}
+
+/* Close button */
+.unique-popup-close-btn {
+  padding: 12px 25px;
+  background-color: #333; /* Dark background */
+  color: #f1f1f1; /* Light text */
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+  transition: background-color 0.3s, transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Light shadow for depth */
+}
+
+/* Hover and focus states for the button */
+.unique-popup-close-btn:hover {
+  background-color: #444; /* Darker shade on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+
+.unique-popup-close-btn:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); /* Focus state with stronger shadow */
+}
+
+/* Fade-in animation for modal */
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Adding smooth transition for the modal overlay */
+.unique-popup-overlay {
+  transition: opacity 0.4s ease-in-out;
+}
