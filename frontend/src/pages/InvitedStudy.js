@@ -76,6 +76,8 @@ const InvitedStudy = () => {
         birthDate: userBirthDate,
       });
 
+      console.log(response);
+
       if (response.data.success) {
         setSuccessMessage("Applied successfully!");
         navigate("/my-gigs");

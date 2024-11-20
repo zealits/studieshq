@@ -22,12 +22,12 @@ const gigSchema = new mongoose.Schema({
     type: Date,
   },
   budget: {
-    type: Number,
+    type: String,
   },
   status: {
     type: String,
     enum: ["applied", "allocated", "completed", "contractSigned"],
-    required: true,
+    // required: true,
   },
   appliedAt: {
     type: Date,
@@ -70,15 +70,15 @@ const gigSchema = new mongoose.Schema({
 const educationSchema = new mongoose.Schema({
   college: {
     type: String,
-    required: true,
+    // required: true,
   },
   year: {
     type: String,
-    required: true,
+    // required: true,
   },
   specialization: {
     type: String,
-    required: true,
+    // required: true,
   },
 });
 
@@ -101,7 +101,7 @@ const experienceSchema = new mongoose.Schema({
 const languageSchema = new mongoose.Schema({
   language: {
     type: String,
-    required: true,
+    // required: true,
   },
   proficiency: {
     type: String,

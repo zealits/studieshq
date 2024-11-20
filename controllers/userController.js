@@ -169,7 +169,7 @@ exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next
 
   // Check if the user has already applied for the gig
   const userGigIndex = user.gigs.findIndex((gigDetail) => gigDetail.gigId.equals(gigId));
-
+  console.log(userGigIndex);
   if (userGigIndex !== -1) {
     return next(new ErrorHander("You have already applied for this gig", 400));
   }
@@ -179,7 +179,7 @@ exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next
     user.dateOfBirth = birthDate; // Store the birthDate as a string in the user profile
     await user.save();
   }
-
+  console.log("dfd");
   // Create a new gig application in the user's gigs array
   const newGigApplication = {
     gigId: gig._id,
@@ -196,9 +196,18 @@ exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next
     userSelectedGiftCardOption: null, // You can set this later if needed
   };
 
+  // console.log(newGigApplication);
   // Add the new gig application to the user's gigs array
   user.gigs.push(newGigApplication);
-  await user.save();
+  console.log("dfdfe");
+  // await user.save();
+  // i am unable proceed below my code stucks abobe
+  try {
+    await user.save();
+  } catch (error) {
+    console.error("Error saving user:", error);
+    return next(new ErrorHander("Failed to save user data", 500));
+  }
 
   // Add the user to the gig's applicants array
   gig.applicants.push(userId);
