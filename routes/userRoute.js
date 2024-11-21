@@ -29,6 +29,7 @@ const {
   updateGigBudget,
   verifyEmail,
   sendOtp,
+  getFilteredProducts,
   applyForGigWithLanguageLocation,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -84,6 +85,7 @@ router
   .route("/admin/gift-card/types")
   .get(isAuthenticatedUser, authorizeRoles("user", "admin", "superadmin"), getAllGiftCardTypes);
 
+router.route("/admin/gogift/products").get(getFilteredProducts);
 // New Route: Update Budget for a Gig (Admin Only)
 router
   .route("/admin/gig/budget/:userId/:gigId")

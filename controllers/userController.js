@@ -905,6 +905,46 @@ exports.getAllGiftCardTypes = async (req, res, next) => {
   }
 };
 
+exports.getFilteredProducts = async (req, res) => {
+  try {
+    const gogiftUrl = "https://api-pre.gogift.io/products/filter";
+
+    console.log("Df");
+    // Request body as per your curl command
+    const requestData = {
+      salesChannel: "109",
+      withDeliveryMethod: "Email",
+      paging: {
+        perPage: 50,
+        page: 1,
+      },
+    };
+
+    const response = await axios.post(gogiftUrl, requestData, {
+      headers: {
+        Authorization: `Bearer ${process.env.GOGIFT_API_KEY}`, // Set API key in env
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Sending success response
+    res.status(200).json({
+      success: true,
+      message: "Filtered products retrieved successfully!",
+      data: response.data,
+    });
+  } catch (error) {
+    console.error("Error fetching filtered products:", error.message);
+
+    // Sending error response
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving filtered products. Please try again later.",
+      error: error.response ? error.response.data : error.message,
+    });
+  }
+};
+
 exports.updateGigBudget = async (req, res, next) => {
   try {
     const { userId, gigId } = req.params;

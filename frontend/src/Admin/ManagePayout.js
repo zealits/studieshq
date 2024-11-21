@@ -28,13 +28,28 @@ const ManagePayout = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+        console.log(response.data.data.brands);
         setGiftCardTypes(response.data.data.brands);
       } catch (error) {
         console.error("Error fetching gift card types:", error);
       }
     };
 
-    fetchGiftCardTypes();
+    const fetchGoGiftCards = async () => {
+      try {
+        console.log("Dfdf");
+        const response = await axios.get("aak/l1/admin/gogift/products");
+        const titles = response.data.data.products.map((product) => product.title.en);
+        console.log(response.data.data.products);
+        setGiftCardTypes(response.data.data.products);
+        console.log(response.data.data.products[0].title.en);
+      } catch (error) {
+        console.error("Error fetching gift card types:", error);
+      }
+    };
+
+    fetchGoGiftCards();
+    // fetchGiftCardTypes();
   }, [dispatch]);
 
   const handleGiftCardOptionChange = (userId, gigId, value) => {
@@ -90,6 +105,8 @@ const ManagePayout = () => {
         setPopupMessage("Please select a gift card option before approving.");
         return;
       }
+      console.log(giftCardOption);
+      console.log(budget);
 
       await axios.put(
         `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
@@ -273,9 +290,15 @@ const ManagePayout = () => {
                       onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
                     >
                       <option value="">None</option>
-                      {giftCardTypes.map((type) => (
+                      {/* {giftCardTypes.map((type) => (
                         <option key={type.brand_code} value={type.brand_code}>
                           {type.name}
+                        </option>
+                      ))} */}
+
+                      {giftCardTypes.map((type) => (
+                        <option key={type.title.en} value={type.title.en}>
+                          {type.title.en}
                         </option>
                       ))}
                     </select>
