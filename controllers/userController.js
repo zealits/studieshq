@@ -23,11 +23,14 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     gender,
     languages,
     country,
+    countryIso,
+    currency,
+    currencyIso,
     dateOfBirth,
     referralId,
     studyId,
   } = req.body;
-  // console.log(req.body);
+  console.log(req.body);
   // console.log(firstName);
 
   const user = await User.findOne({ email });
@@ -54,6 +57,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   user.gender = gender;
   user.dateOfBirth = dateOfBirth;
   user.country = country;
+  user.currency = currency;
+  user.countryIso = countryIso;
+  user.currencyIso = currencyIso;
   user.languages = updatedLanguages;
   // user.state = state;
   // user.city = city;
@@ -61,7 +67,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   // user.contactNumber = contactNumber;
 
   await user.save();
-  // console.log(user);
+  console.log(user);
 
   if (referralId) {
     // console.log(`Referral ID: ${referralId}`);
@@ -799,25 +805,55 @@ exports.approveGiftCard = async (req, res, next) => {
   try {
     const { userId, gigId } = req.params;
 
-    const { giftCardOption } = req.body; // Get giftCardOption from the request body
+    const { giftCardOption, budget } = req.body; // Get giftCardOption from the request body
     console.log(userId);
     console.log(gigId);
-    console.log(giftCardOption);
-    const user = await User.findById(userId);
+    console.log("GiftCard ID : ", giftCardOption);
+    console.log(budget);
 
-    const gig = user.gigs.id(gigId);
-    if (gig && gig.paymentStatus === "requested") {
-      gig.paymentStatus = "approved";
-      gig.giftCardApprovedAt = Date.now();
-      gig.giftCardOption = giftCardOption; // Store the giftCardOption in the gig
+    const url = `https://api-pre.gogift.io/products/${giftCardOption}`;
+    const headers = {
+      Accept: "application/json",
+      Authorization:
+        "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZGQTJCRkE5OTlBRDlFQ0VGNjQ2MDI0NTY0NTU3N0EzNTdBOTU4NUIiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJiNktfcVptdG5zNzJSZ0pGWkZWM28xZXBXRnMifQ.eyJuYmYiOjE3MzE1MTE0NTYsImV4cCI6MTczMTUxNTA1NiwiaXNzIjoiaHR0cHM6Ly9hdXRoLXByZS5nb2dpZnQuaW8iLCJhdWQiOiJodHRwczovL2F1dGgtcHJlLmdvZ2lmdC5pby9yZXNvdXJjZXMiLCJjbGllbnRfaWQiOiIwMUpDMEVLNkJFVFhCV0hSVjI5V0ZHSEJTMSIsIlBlcm1pc3Npb25zIjoiYmFza2V0LndyaXRlLmJ1eV9vbl9iZWhhbGZfb2ZfYjJiIiwiQXNzb2NpYXRlZEFjY291bnRJZCI6IjgwNzIzMjE1MDMzNTMyMDA2NCJ9.AjKaDedf_W33mZl1vetz4aOFPFBnsx-KPjpkAfP3xU3P0X4jtRMgfSwwj7Ux0NUAT5_zv7Z41hRV5cz_4rJ_V3ABa59c5IhWhCU-fuVb0BRb__PTAFkqNcvFgbbnMBoaX6UONJ2Q7NsFyyNPmWDQ5VwPktjmEYi0T62A5Lj5Z6EEGRl0maMEruqw9GNNNuAMusSq5lB7sQVCl-Rz4OAjy973OemRTw6ipcxiszt0zbQH2GG-xFPvmHTjOzY-k-DjBPpYZBjLXcRC8xIX9xQ56Tth-bq6spqkbkvMG2ma0I2s1sIj-ZRUwEoYlr2BE7nLcoap-dASTcr4vJQSp1CYGQ",
+      Cookie: "ss-id=NHxtVcH0HvMfo0CtO6cC; ss-pid=RaffXiSmGfX921ztok6P",
+    };
+
+    // Make the GET request
+    const response = await axios.get(url, { headers });
+    // console.log("Gift Card API Response: ", response.data);
+    const emailDeliveryMethod = response.data.deliveryMethods.find((method) => method.deliveryMethod === "Email");
+
+    if (emailDeliveryMethod) {
+      console.log("Email Delivery Method: ", emailDeliveryMethod);
+
+      // Log the inventory entries
+      const inventoryEntries = emailDeliveryMethod.inventory.inventoryEntries;
+      console.log("Inventory Entries: ", inventoryEntries);
+
+      // Optional: Iterate over inventoryEntries to log each entry in detail
+      inventoryEntries.forEach((entry, index) => {
+        console.log(`Inventory Entry ${index + 1}:`, entry);
+      });
+    } else {
+      console.log("No Email Delivery Method found.");
     }
 
-    await user.save();
+    // const user = await User.findById(userId);
 
-    res.status(200).json({
-      success: true,
-      message: "Gift card request approved successfully!",
-    });
+    // const gig = user.gigs.id(gigId);
+    // if (gig && gig.paymentStatus === "requested") {
+    //   gig.paymentStatus = "approved";
+    //   gig.giftCardApprovedAt = Date.now();
+    //   gig.giftCardOption = giftCardOption; // Store the giftCardOption in the gig
+    // }
+
+    // await user.save();
+
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Gift card request approved successfully!",
+    // });
   } catch (error) {
     res.status(500).json({
       success: false,

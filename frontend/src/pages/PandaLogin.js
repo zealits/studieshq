@@ -28,7 +28,8 @@ const PandaLogin = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState({ name: "", iso: "" });
+  const [currency, setCurrency] = useState({ name: "", iso: "" });
   const [languages, setLanguages] = useState([{ name: "", proficiency: "" }]);
   const [dateOfBirth, setDateOfBirth] = useState("");
 
@@ -90,15 +91,19 @@ const PandaLogin = () => {
 
       const referringUserId = localStorage.getItem("referringUserId");
       const referredStudyId = localStorage.getItem("referredStudyId");
+
       const userData = {
         firstName,
         lastName,
         email,
         password,
         gender,
-        country,
         languages,
         dateOfBirth,
+        country: country.name,
+        countryIso: country.iso,   
+        currency: currency.name,
+        currencyIso: currency.iso,
         referralId: referringUserId || null,
         studyId: referredStudyId || null,
       };
@@ -177,6 +182,7 @@ const PandaLogin = () => {
           setGender={setGender} // Add setGender prop
           country={country} // Add country prop
           setCountry={setCountry} // Add setCountry prop
+          setCurrency={setCurrency} // Add setCountry prop
           dateOfBirth={dateOfBirth} // Add dateOfBirth prop
           setDateOfBirth={setDateOfBirth} // Add setDateOfBirth prop
           handleToggle={handleToggle}
@@ -240,6 +246,8 @@ const SignUp = ({
   gender,
   setGender,
   country,
+  currency,
+  setCurrency,
   setCountry,
   languages,
   setLanguages,
@@ -266,6 +274,54 @@ const SignUp = ({
   useEffect(() => {
     console.log("Languages state updated:", languages);
   }, [languages]);
+
+  const countries = [
+    { country: "United States", iso: "US" },
+    { country: "India", iso: "IN" },
+    { country: "Iceland", iso: "IS" },
+    { country: "Iran", iso: "IR" },
+    { country: "Nigeria", iso: "NG" },
+    { country: "Sri Lanka", iso: "LK" },
+    { country: "Ethiopia", iso: "ET" },
+    { country: "Myanmar", iso: "MM" },
+    { country: "Nepal", iso: "NP" },
+    { country: "Azerbaijan", iso: "AZ" },
+    { country: "Armenia", iso: "AM" },
+    { country: "Cambodia", iso: "KH" },
+    { country: "Spain (Galicia)", iso: "ES" },
+    { country: "Laos", iso: "LA" },
+    { country: "Spain (Basque Country)", iso: "ES" },
+    { country: "Indonesia", iso: "ID" },
+    { country: "Uzbekistan", iso: "UZ" },
+    { country: "Mongolia", iso: "MN" },
+    { country: "North Macedonia", iso: "MK" },
+    { country: "South Africa", iso: "ZA" },
+    { country: "Rwanda", iso: "RW" },
+  ];
+
+  // Currency data with ISO codes
+  const currencies = [
+    { currency: "USD", iso: "USD" },
+    { currency: "INR", iso: "INR" },
+    { currency: "ISK", iso: "ISK" },
+    { currency: "IRR", iso: "IRR" },
+    { currency: "NGN", iso: "NGN" },
+    { currency: "LKR", iso: "LKR" },
+    { currency: "ETB", iso: "ETB" },
+    { currency: "MMK", iso: "MMK" },
+    { currency: "NPR", iso: "NPR" },
+    { currency: "AZN", iso: "AZN" },
+    { currency: "AMD", iso: "AMD" },
+    { currency: "KHR", iso: "KHR" },
+    { currency: "EUR", iso: "EUR" },
+    { currency: "LAK", iso: "LAK" },
+    { currency: "IDR", iso: "IDR" },
+    { currency: "UZS", iso: "UZS" },
+    { currency: "MNT", iso: "MNT" },
+    { currency: "MKD", iso: "MKD" },
+    { currency: "ZAR", iso: "ZAR" },
+    { currency: "RWF", iso: "RWF" },
+  ];
 
   return (
     <div className="sign-up-container">
@@ -321,33 +377,51 @@ const SignUp = ({
                 <option value="female">Female</option>
               </select>
             </div>
+
             <div className="sign-up-field-country">
               <label className="sign-up-label">Country</label>
-              <select value={country} onChange={(e) => setCountry(e.target.value)} className="sign-up-select-country">
+              <select
+                value={country.name}
+                onChange={(e) => {
+                  const selectedCountry = countries.find((item) => item.country === e.target.value);
+                  setCountry({
+                    name: selectedCountry?.country || "",
+                    iso: selectedCountry?.iso || "",
+                  });
+                }}
+                className="sign-up-select-country"
+              >
                 <option value="">Select Country</option>
-                <option value="United States">United States</option>
-                <option value="India">India</option>
-                <option value="Iceland">Iceland</option>
-                <option value="Iran">Iran</option>
-                <option value="Nigeria">Nigeria</option>
-                <option value="Sri Lanka">Sri Lanka</option>
-                <option value="Ethiopia">Ethiopia</option>
-                <option value="Myanmar">Myanmar</option>
-                <option value="Nepal">Nepal</option>
-                <option value="Azerbaijan">Azerbaijan</option>
-                <option value="Armenia">Armenia</option>
-                <option value="Cambodia">Cambodia</option>
-                <option value="Spain (Galicia)">Spain (Galicia)</option>
-                <option value="Laos">Laos</option>
-                <option value="Spain (Basque Country)">Spain (Basque Country)</option>
-                <option value="Indonesia">Indonesia</option>
-                <option value="Uzbekistan">Uzbekistan</option>
-                <option value="Mongolia">Mongolia</option>
-                <option value="North Macedonia">North Macedonia</option>
-                <option value="South Africa">South Africa</option>
-                <option value="Rwanda">Rwanda</option>
+                {countries.map((item) => (
+                  <option key={item.iso} value={item.country}>
+                    {item.country}
+                  </option>
+                ))}
               </select>
             </div>
+
+            <div className="sign-up-field-currency">
+              <label className="sign-up-label">Currency</label>
+              <select
+                value={currency?.name || ""} // Safely access `currency.name`
+                onChange={(e) => {
+                  const selectedCurrency = currencies.find((item) => item.currency === e.target.value);
+                  setCurrency({
+                    name: selectedCurrency?.currency || "",
+                    iso: selectedCurrency?.iso || "",
+                  });
+                }}
+                className="sign-up-select-currency"
+              >
+                <option value="">Select Currency</option>
+                {currencies.map((item) => (
+                  <option key={item.iso} value={item.currency}>
+                    {item.currency}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="sign-up-field-dob">
               <label className="sign-up-label">Date of Birth</label>
               <input

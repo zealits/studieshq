@@ -159,9 +159,15 @@ const userSchema = new mongoose.Schema({
   },
   country: {
     type: String,
-
     trim: true,
   },
+  currency: {
+    type: String,
+    trim: true,
+  },
+  countryIso: { type: String },
+  currencyIso: { type: String },
+
   state: {
     type: String,
 

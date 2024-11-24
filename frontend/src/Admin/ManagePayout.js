@@ -115,15 +115,15 @@ const ManagePayout = () => {
       console.log("email:", userEmail);
       console.log("userName:", userName);
 
-      // await axios.put(
-      //   `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
-      //   { giftCardOption, budget }, // Send the updated budget along with the gift card option
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-      //     },
-      //   }
-      // );
+      await axios.put(
+        `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
+        { giftCardOption, budget }, // Send the updated budget along with the gift card option
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       // setPopupMessage(
       //   `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
