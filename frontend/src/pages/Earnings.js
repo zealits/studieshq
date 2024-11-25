@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import "./Earnings.css";
 
 const Earnings = () => {
+  const { isAuthenticated, user, totpVerified } = useSelector((state) => state.user);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [gigs, setGigs] = useState([]);
@@ -16,23 +17,35 @@ const Earnings = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchGiftCardTypes = async () => {
+    // const fetchGiftCardTypes = async () => {
+    //   try {
+    //     const response = await axios.get("aak/l1/admin/gift-card/types", {
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //       },
+    //     });
+    //     setGiftCardTypes(response.data.data.brands);
+    //   } catch (error) {
+    //     console.error("Error fetching gift card types:", error);
+    //   }
+    // };
+
+    const fetchGiftCards = async () => {
       try {
-        const response = await axios.get("aak/l1/admin/gift-card/types", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setGiftCardTypes(response.data.data.brands);
+        const response = await axios.get("aak/l1/admin/gogift/products"); // Fetch all gift cards
+        console.log(response.data);
+        setGiftCardTypes(response.data.data.products); // Store the full list of gift cards
       } catch (error) {
-        console.error("Error fetching gift card types:", error);
+        console.error("Error fetching gift cards:", error);
       }
     };
+    fetchGiftCards();
 
-    fetchGiftCardTypes();
+    // fetchGiftCardTypes();
   }, [dispatch]);
 
   const handleGiftCardOptionChange = (gigId, value) => {
+    console.log("Updating gigId:", gigId, "with value:", value);
     setSelectedGiftCardOptions((prevOptions) => ({
       ...prevOptions,
       [gigId]: value,
@@ -85,6 +98,10 @@ const Earnings = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const filterGiftCardsByCountry = (country) => {
+    return giftCardTypes.filter((card) => card.redeemableInCountries.includes(country));
+  };
+
   const closeModal = () => {
     setModalIsOpen(false);
     window.location.reload(); // Refresh the page
@@ -110,7 +127,21 @@ const Earnings = () => {
                   ) : (
                     <div className="optionsgiftcard">
                       <label>Select Gift Card Type:</label>
+
                       <select
+                        className="custom-giftcard-dropdown"
+                        value={selectedGiftCardOptions[gig._id] || ""}
+                        onChange={(e) => handleGiftCardOptionChange(gig._id, e.target.value)}
+                      >
+                        <option value="">None</option>
+                        {filterGiftCardsByCountry(user.countryIso).map((card) => (
+                          <option key={card.id} value={card.title.en}>
+                            {card.title.en}
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* <select
                         value={selectedGiftCardOptions[gig._id] || ""}
                         onChange={(e) => handleGiftCardOptionChange(gig._id, e.target.value)}
                       >
@@ -120,7 +151,7 @@ const Earnings = () => {
                             {type.name}
                           </option>
                         ))}
-                      </select>
+                      </select> */}
                     </div>
                   )}
                 </div>

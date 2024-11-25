@@ -181,12 +181,15 @@ const PandaLogin = () => {
           gender={gender} // Add gender prop
           setGender={setGender} // Add setGender prop
           country={country} // Add country prop
+          currency={currency} // Add country prop
           setCountry={setCountry} // Add setCountry prop
           setCurrency={setCurrency} // Add setCountry prop
           dateOfBirth={dateOfBirth} // Add dateOfBirth prop
           setDateOfBirth={setDateOfBirth} // Add setDateOfBirth prop
           handleToggle={handleToggle}
           handleSubmit={handleSubmit}
+          popupMessage={popupMessage}
+          setPopupMessage={setPopupMessage}
         />
       )}
 
@@ -255,6 +258,8 @@ const SignUp = ({
   handleSubmit,
   dateOfBirth,
   setDateOfBirth, // Added setter for dateOfBirth
+  setPopupMessage,
+  popupMessage,
 }) => {
   // Handler to add a new language
   const addLanguage = () => setLanguages([...languages, { name: "", proficiency: "" }]);
@@ -543,7 +548,6 @@ const SignUp = ({
     { currency: "Falkland Islands pound", iso: "FKP" },
     { currency: "Danish krone", iso: "DKK" },
     { currency: "Fijian dollar", iso: "FJD" },
-
     { currency: "Gambian dalasi", iso: "GMD" },
     { currency: "Georgian lari", iso: "GEL" },
     { currency: "Ghanaian cedi", iso: "GHS" },
@@ -642,11 +646,9 @@ const SignUp = ({
     { currency: "Tunisian dinar", iso: "TND" },
     { currency: "Turkish lira", iso: "TRY" },
     { currency: "Turkmenistan manat", iso: "TMT" },
-
     { currency: "Ugandan shilling", iso: "UGX" },
     { currency: "Ukrainian hryvnia", iso: "UAH" },
     { currency: "United Arab Emirates dirham", iso: "AED" },
-
     { currency: "Uruguayan peso", iso: "UYU" },
     { currency: "Uzbekistani soʻm", iso: "UZS" },
     { currency: "Vanuatu vatu", iso: "VUV" },
@@ -736,10 +738,8 @@ const SignUp = ({
               </select>
             </div>
 
-            <div className="sign-up-field-currency">
-              <label className="sign-up-label">
-                Currency <h6>Gift card paid in this currency.</h6>
-              </label>
+            <div className="sign-up-field-country">
+              <label className="sign-up-label">Currency</label>
               <select
                 value={currency?.name || ""} // Safely access `currency.name`
                 onChange={(e) => {
@@ -749,8 +749,13 @@ const SignUp = ({
                     name: selectedCurrency?.currency || "",
                     iso: selectedCurrency?.iso || "",
                   });
+                  setPopupMessage(
+                    <>
+                      For GiftCard Payment, <strong>{selectedCurrency?.currency}</strong> will be used.
+                    </>
+                  );
                 }}
-                className="sign-up-select-currency"
+                className="sign-up-select-country"
               >
                 <option value="">Select Currency</option>
                 {currencies.map((item) => (
