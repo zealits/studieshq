@@ -802,58 +802,29 @@ exports.requestGiftCard = async (req, res, next) => {
 };
 
 exports.approveGiftCard = async (req, res, next) => {
+  const { userId, gigId } = req.params;
+
+  const { giftCardOption, budget, countryIso, currencyIso, userEmail, userName } = req.body;
+
   try {
-    const { userId, gigId } = req.params;
-
-    const { giftCardOption, budget } = req.body; // Get giftCardOption from the request body
-    console.log(userId);
-    console.log(gigId);
-    console.log("GiftCard ID : ", giftCardOption);
-    console.log(budget);
-
-    const url = `https://api-pre.gogift.io/products/${giftCardOption}`;
-    const headers = {
-      Accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZGQTJCRkE5OTlBRDlFQ0VGNjQ2MDI0NTY0NTU3N0EzNTdBOTU4NUIiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJiNktfcVptdG5zNzJSZ0pGWkZWM28xZXBXRnMifQ.eyJuYmYiOjE3MzE1MTE0NTYsImV4cCI6MTczMTUxNTA1NiwiaXNzIjoiaHR0cHM6Ly9hdXRoLXByZS5nb2dpZnQuaW8iLCJhdWQiOiJodHRwczovL2F1dGgtcHJlLmdvZ2lmdC5pby9yZXNvdXJjZXMiLCJjbGllbnRfaWQiOiIwMUpDMEVLNkJFVFhCV0hSVjI5V0ZHSEJTMSIsIlBlcm1pc3Npb25zIjoiYmFza2V0LndyaXRlLmJ1eV9vbl9iZWhhbGZfb2ZfYjJiIiwiQXNzb2NpYXRlZEFjY291bnRJZCI6IjgwNzIzMjE1MDMzNTMyMDA2NCJ9.AjKaDedf_W33mZl1vetz4aOFPFBnsx-KPjpkAfP3xU3P0X4jtRMgfSwwj7Ux0NUAT5_zv7Z41hRV5cz_4rJ_V3ABa59c5IhWhCU-fuVb0BRb__PTAFkqNcvFgbbnMBoaX6UONJ2Q7NsFyyNPmWDQ5VwPktjmEYi0T62A5Lj5Z6EEGRl0maMEruqw9GNNNuAMusSq5lB7sQVCl-Rz4OAjy973OemRTw6ipcxiszt0zbQH2GG-xFPvmHTjOzY-k-DjBPpYZBjLXcRC8xIX9xQ56Tth-bq6spqkbkvMG2ma0I2s1sIj-ZRUwEoYlr2BE7nLcoap-dASTcr4vJQSp1CYGQ",
-      Cookie: "ss-id=NHxtVcH0HvMfo0CtO6cC; ss-pid=RaffXiSmGfX921ztok6P",
-    };
-
-    // Make the GET request
-    const response = await axios.get(url, { headers });
-    // console.log("Gift Card API Response: ", response.data);
-    const emailDeliveryMethod = response.data.deliveryMethods.find((method) => method.deliveryMethod === "Email");
-
-    if (emailDeliveryMethod) {
-      console.log("Email Delivery Method: ", emailDeliveryMethod);
-
-      // Log the inventory entries
-      const inventoryEntries = emailDeliveryMethod.inventory.inventoryEntries;
-      console.log("Inventory Entries: ", inventoryEntries);
-
-      // Optional: Iterate over inventoryEntries to log each entry in detail
-      inventoryEntries.forEach((entry, index) => {
-        console.log(`Inventory Entry ${index + 1}:`, entry);
-      });
-    } else {
-      console.log("No Email Delivery Method found.");
+    const user = await User.findById(userId);
+    // console.log(user);
+    const gig = user.gigs.id(gigId);
+    // console.log(gig);
+    if (gig && gig.paymentStatus === "requested") {
+      gig.paymentStatus = "approved";
+      gig.giftCardApprovedAt = Date.now();
+      gig.giftCardOption = giftCardOption; // Store the giftCardOption in the gig
     }
 
-    // const user = await User.findById(userId);
+    console.log(user);
 
-    // const gig = user.gigs.id(gigId);
-    // if (gig && gig.paymentStatus === "requested") {
-    //   gig.paymentStatus = "approved";
-    //   gig.giftCardApprovedAt = Date.now();
-    //   gig.giftCardOption = giftCardOption; // Store the giftCardOption in the gig
-    // }
+    await user.save();
 
-    // await user.save();
-
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Gift card request approved successfully!",
-    // });
+    res.status(200).json({
+      success: true,
+      message: "Gift card request approved successfully!",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -863,9 +834,17 @@ exports.approveGiftCard = async (req, res, next) => {
 };
 
 exports.sendGiftCard = async (req, res, next) => {
+  console.log(req.body);
   try {
     const { userId, gigId } = req.params;
-    const { gift_template, subject, contacts, price_in_cents, brand_codes, message, expiry } = req.body;
+
+    const { giftCardOption, budget, countryIso, currencyIso, userEmail, userName } = req.body; // Get giftCardOption from the request body
+    console.log(userId);
+    console.log(gigId);
+    console.log("GiftCard ID : ", giftCardOption);
+    console.log("Country: ", countryIso);
+    console.log("Currency : ", currencyIso);
+    console.log(budget);
 
     const user = await User.findById(userId);
     const gig = user.gigs.id(gigId);
@@ -873,30 +852,179 @@ exports.sendGiftCard = async (req, res, next) => {
     if (gig && gig.paymentStatus === "approved") {
       gig.paymentStatus = "paid";
       gig.giftCardPaidAt = Date.now();
-      gig.giftCardOption = brand_codes[0];
-      // Prepare the payload according to the working format
-      const payload = {
-        gift_template: process.env.GIFTBIT_TEMPLATE_ID,
-        subject: subject,
-        contacts: contacts.map((contact) => ({
-          firstname: contact.firstname,
-          lastname: contact.lastname,
-          email: contact.email,
-        })),
-        price_in_cents: price_in_cents,
-        brand_codes: brand_codes, // Array of brand codes
-        message: message,
-        expiry: expiry,
-      };
 
-      // Send gift card using Giftbit API
-      const response = await axios.post(process.env.GIFTBIT_API_CAMPAIGN_URL, payload, {
+      // Prepare the request data to get the token
+      const tokenUrl = process.env.AUTHENTICATE_URL;
+      const tokenData = new URLSearchParams();
+      tokenData.append("grant_type", "client_credentials");
+      tokenData.append("client_id", process.env.CLIENT_ID);
+      tokenData.append("client_secret", process.env.CLIENT_SECRET);
+
+      // Send the POST request to get the access token
+      const tokenResponse = await axios.post(tokenUrl, tokenData, {
         headers: {
-          Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
       });
 
+      // Log the response from the token request
+      // console.log("Access Token Response: ", tokenResponse.data);
+      // Extract the access token from the response
+      const accessToken = tokenResponse.data.access_token;
+      // console.log("Access Token: ", accessToken);
+
+      // URL for the second POST request (your `baskets` endpoint)
+      const basketsUrl = "https://api-pre.gogift.io/baskets";
+
+      // Prepare the data to be sent in the POST request
+      const postData = {
+        salesChannelId: "109",
+      };
+
+      // Make the POST request to the second URL with Authorization header
+      const basketResponse = await axios.post(basketsUrl, postData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // Pass the access token here
+        },
+      });
+
+      // Log the response from the second POST request
+      console.log("Basket Response: ", basketResponse.data);
+      const basketID = basketResponse.data.id;
+
+      const url = `https://api-pre.gogift.io/products/${giftCardOption}`;
+      const headers = {
+        Accept: "application/json",
+        Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
+        Cookie: "ss-id=NHxtVcH0HvMfo0CtO6cC; ss-pid=RaffXiSmGfX921ztok6P",
+      };
+
+      // Make the GET request
+      const response = await axios.get(url, { headers });
+      // console.log("Gift Card API Response: ", response.data);
+      console.log("Redeemable In Countries: ", response.data.redeemableInCountries);
+      console.log("GiftCard Name: ", response.data.title.en);
+      const GiftCardName = response.data.title.en;
+      const emailDeliveryMethod = response.data.deliveryMethods.find((method) => method.deliveryMethod === "Email");
+
+      let productSKU;
+
+      if (emailDeliveryMethod) {
+        console.log("Email Delivery Method: ", emailDeliveryMethod);
+
+        // Log the inventory entries
+        const inventoryEntries = emailDeliveryMethod.inventory.inventoryEntries;
+        // console.log("Inventory Entries: ", inventoryEntries);
+
+        // in below i just wanted only currencyIso "sku" which provided in req.body
+        inventoryEntries.forEach((entry, index) => {
+          console.log("1111 : ", entry.priceCurrency);
+          // console.log("dfdf : ", currencyIso);
+          if (entry.priceCurrency === currencyIso) {
+            console.log(`Inventory Entry ${index + 1}:`);
+            productSKU = entry.sku;
+            console.log(`SKU: ${entry.sku}`);
+            console.log(`PriceCurrency: ${entry.priceCurrency}`);
+          }
+          // You can log more details if needed
+          // console.log(entry);
+        });
+        // Optional: Iterate over inventoryEntries to log each entry in detail
+        // inventoryEntries.forEach((entry, index) => {
+        //   console.log(`Inventory Entry ${index + 1}:`, entry);
+        // });
+      } else {
+        console.log("No Email Delivery Method found.");
+      }
+
+      console.log(productSKU);
+      // Prepare the data for adding products to the basket
+      const addProductData = {
+        id: basketID,
+        buyer: {
+          accountId: "807232150335320064",
+          accountType: "B2BDepartment",
+          name: "Prashant Pukale",
+          address: {
+            countryCode: "US",
+            city: "Glen Allen", // Modify as needed
+            postCode: "23060", // Modify as needed
+            line1: "VA", // Modify as needed
+            line2: "VA", // Modify as needed
+            attention: "VA", // Modify as needed
+          },
+          email: "prashant.p@agilelabs.ai",
+          phone: "+918767885748", // Modify as needed
+        },
+        addProducts: [
+          {
+            deliveryMethod: "Email",
+            recipientName: userName,
+            recipientEmail: userEmail,
+            stockKeepingUnit: productSKU,
+            productId: giftCardOption,
+            quantity: 1,
+            valueCurrency: currencyIso,
+            giftcardValue: budget,
+          },
+        ],
+      };
+
+      // Make the PUT request to update the basket with the product
+      const updateBasketResponse = await axios.put(basketsUrl, addProductData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // Pass the access token here
+        },
+      });
+
+      console.log("Updated Basket Response: ", updateBasketResponse.data);
+
+      // add here update basket use "basketID", after that in addProuduts recipientName = "userName", recipientName = "userEmail"
+      // stockKeepingUnit = "productSKU", productId = "giftCardOption",valueCurrency = "currencyIso",giftcardValue= "budget"
+      //keep buyer details same as in curl
+
+      // Update the basket
+      // await axios.put(basketsUrl, updateBasketData, {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      // });
+
+      // Finalize the basket
+      console.log("finalizing basket ...");
+      const finalizeUrl = "https://api-pre.gogift.io/baskets/finalize";
+      const finalizeData = {
+        basketId: basketID,
+        paymentMethod: "InvoiceByFinance",
+      };
+
+      console.log("sending finalizing basket ...");
+      // Make the POST request to finalize the basket
+      const finalizeResponse = await axios.post(finalizeUrl, finalizeData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("response waiting ...");
+
+      // Log the response from the finalize request
+      console.log("Finalize Response: ", finalizeResponse.data);
+
+      // const user = await User.findById(userId);
+
+      // const gig = user.gigs.id(gigId);
+      // if (gig && gig.paymentStatus === "requested") {
+      //   gig.paymentStatus = "approved";
+      //   gig.giftCardApprovedAt = Date.now();
+      //   gig.giftCardOption = giftCardOption; // Store the giftCardOption in the gig
+      // }
+      gig.giftCardOption = GiftCardName;
+
+      // console.log("USER ::: ", user);
       await user.save();
       res.status(200).json({
         success: true,
@@ -916,6 +1044,61 @@ exports.sendGiftCard = async (req, res, next) => {
     });
   }
 };
+
+// exports.sendGiftCard = async (req, res, next) => {
+//   try {
+//     const { userId, gigId } = req.params;
+//     const { gift_template, subject, contacts, price_in_cents, brand_codes, message, expiry } = req.body;
+
+//     const user = await User.findById(userId);
+//     const gig = user.gigs.id(gigId);
+
+//     if (gig && gig.paymentStatus === "approved") {
+//       gig.paymentStatus = "paid";
+//       gig.giftCardPaidAt = Date.now();
+//       gig.giftCardOption = brand_codes[0];
+//       // Prepare the payload according to the working format
+//       const payload = {
+//         gift_template: process.env.GIFTBIT_TEMPLATE_ID,
+//         subject: subject,
+//         contacts: contacts.map((contact) => ({
+//           firstname: contact.firstname,
+//           lastname: contact.lastname,
+//           email: contact.email,
+//         })),
+//         price_in_cents: price_in_cents,
+//         brand_codes: brand_codes, // Array of brand codes
+//         message: message,
+//         expiry: expiry,
+//       };
+
+//       // Send gift card using Giftbit API
+//       const response = await axios.post(process.env.GIFTBIT_API_CAMPAIGN_URL, payload, {
+//         headers: {
+//           Authorization: `Bearer ${process.env.GIFTBIT_API_KEY}`,
+//           "Content-Type": "application/json",
+//         },
+//       });
+
+//       await user.save();
+//       res.status(200).json({
+//         success: true,
+//         message: "Gift card sent successfully!",
+//         data: response.data,
+//       });
+//     } else {
+//       res.status(400).json({
+//         success: false,
+//         message: "Gig not approved or invalid gig ID.",
+//       });
+//     }
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Error sending gift card. Please try again later.",
+//     });
+//   }
+// };
 
 exports.getAllGiftCardTypes = async (req, res, next) => {
   try {
@@ -945,13 +1128,13 @@ exports.getFilteredProducts = async (req, res) => {
   try {
     const gogiftUrl = "https://api-pre.gogift.io/products/filter";
 
-    console.log("Df");
+    // console.log("Df");
     // Request body as per your curl command
     const requestData = {
       salesChannel: "109",
       withDeliveryMethod: "Email",
       paging: {
-        perPage: 50,
+        perPage: 5000,
         page: 1,
       },
     };
@@ -963,6 +1146,40 @@ exports.getFilteredProducts = async (req, res) => {
       },
     });
 
+    const products = response.data.products;
+
+    // Get country filter from request query
+    // const { country } = req.query;
+    const countryFilter = "IN";
+
+    // Filter products based on the redeemableInCountries array
+    const filteredProducts = products.filter((product) => product.redeemableInCountries.includes(countryFilter));
+
+    // Map filtered products to return only the required fields
+    const result = filteredProducts.map((product) => ({
+      id: product.id,
+      redeemableInCountries: product.redeemableInCountries,
+      title: product.title.en,
+    }));
+
+    console.log("Filtered Gift Cards for Country:", countryFilter);
+    // console.log(filteredProducts);
+    // result.forEach((product) => {
+    //   // console.log(`Product ID: ${product.id}`);
+    //   // console.log(`Redeemable In Countries: ${product.redeemableInCountries.join(", ")}`);
+    //   console.log(`Title: ${product.title}`);
+    // });
+    // console.log("sdfdsfdsf : ", response.data);
+    // Loop through each product and log the required fields
+    // products.forEach((product) => {
+    //   const productId = product.id;
+    //   const redeemableInCountries = product.redeemableInCountries; // This is an array
+    //   const title = product.title.en; // Access the 'en' field in title object
+
+    //   console.log(`Product ID: ${productId}`);
+    //   console.log(`Redeemable In Countries: ${redeemableInCountries.join(", ")}`);
+    //   console.log(`Title: ${title}`);
+    // });
     // Sending success response
     res.status(200).json({
       success: true,

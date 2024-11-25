@@ -22,20 +22,30 @@ const SuperAdminDashboard = () => {
   useEffect(() => {
     dispatch(loadAllUsers());
 
-    const fetchGiftCardTypes = async () => {
+    // const fetchGiftCardTypes = async () => {
+    //   try {
+    //     const response = await axios.get("aak/l1/admin/gift-card/types", {
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //       },
+    //     });
+    //     setGiftCardTypes(response.data.data.brands);
+    //   } catch (error) {
+    //     console.error("Error fetching gift card types:", error);
+    //   }
+    // };
+    const fetchGiftCards = async () => {
       try {
-        const response = await axios.get("aak/l1/admin/gift-card/types", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setGiftCardTypes(response.data.data.brands);
+        const response = await axios.get("aak/l1/admin/gogift/products"); // Fetch all gift cards
+        console.log(response.data);
+        setGiftCardTypes(response.data.data.products); // Store the full list of gift cards
       } catch (error) {
-        console.error("Error fetching gift card types:", error);
+        console.error("Error fetching gift cards:", error);
       }
     };
+    fetchGiftCards();
 
-    fetchGiftCardTypes();
+    // fetchGiftCardTypes();
   }, [dispatch]);
 
   const handleGiftCardOptionChange = (userId, gigId, value) => {
@@ -43,6 +53,10 @@ const SuperAdminDashboard = () => {
       ...prevOptions,
       [`${userId}-${gigId}`]: value,
     }));
+  };
+
+  const filterGiftCardsByCountry = (country) => {
+    return giftCardTypes.filter((card) => card.redeemableInCountries.includes(country));
   };
 
   const handleSendEmail = async () => {
@@ -112,10 +126,8 @@ const SuperAdminDashboard = () => {
   //   }
   // };
 
-  const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget) => {
+  const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget, countryIso, currencyIso) => {
     try {
-      console.log("i have clicked");
-
       const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
       // const budget = editableBudgets[`${userId}-${gigId}`];
 
@@ -123,27 +135,23 @@ const SuperAdminDashboard = () => {
         setPopupMessage("Please select a gift card option before approving.");
         return;
       }
+      if (!budget || budget === "") {
+        setPopupMessage("Please specify a budget before approving.");
+        return;
+      }
 
-      // Construct the payload
-      const payload = {
-        gift_template: "this_will_not_work_you_know_why", // Using the selected gift card option as the template ID
-        subject: "This gift card is sent through frontend", // Adjust the subject as needed
-        contacts: [
-          {
-            firstname: userName, // Use the user's name for both firstname and lastname
-            lastname: userName,
-            email: userEmail,
-          },
-        ],
-        price_in_cents: budget * 100, // Assuming budget is in dollars, convert to cents
-        brand_codes: [giftCardOption], // Replace with actual brand codes
-        message: "Thank you for your hard work!", // Customize the message
-        expiry: "2024-12-31", // Set the expiry date as needed
-      };
+      console.log("Gift Card Option:", giftCardOption);
+      console.log("Budget:", budget);
+      console.log("email:", userEmail);
+      console.log("userName:", userName);
+      console.log("country Iso:", countryIso);
+      console.log("currency Iso:", currencyIso);
+      console.log("currency Iso:", userId);
+      console.log("currency Iso:", gigId);
 
       await axios.post(
-        `/aak/l1/admin/gift-card/send/${userId}/${gigId}`,
-        payload, // Send the payload
+        `aak/l1/admin/gift-card/send/${userId}/${gigId}`,
+        { giftCardOption, budget, countryIso, currencyIso, userEmail, userName }, // Send the updated budget along with the gift card option
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -151,12 +159,62 @@ const SuperAdminDashboard = () => {
         }
       );
 
-      setPopupMessage("Gift card Send successfully!");
+      setPopupMessage(
+        `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
+      );
+      dispatch(loadAllUsers());
     } catch (error) {
-      console.error("Error Sending gift card:", error);
-      setPopupMessage("Failed to Send gift card. Please try again.");
+      console.error("Error approving gift card:", error);
+      setPopupMessage("Failed to approve gift card.");
     }
   };
+
+  // use below for giftbit
+  // const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget) => {
+  //   try {
+  //     console.log("i have clicked");
+
+  //     const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
+  //     // const budget = editableBudgets[`${userId}-${gigId}`];
+
+  //     if (!giftCardOption || giftCardOption === "") {
+  //       setPopupMessage("Please select a gift card option before approving.");
+  //       return;
+  //     }
+
+  //     // Construct the payload
+  //     const payload = {
+  //       gift_template: "this_will_not_work_you_know_why", // Using the selected gift card option as the template ID
+  //       subject: "This gift card is sent through frontend", // Adjust the subject as needed
+  //       contacts: [
+  //         {
+  //           firstname: userName, // Use the user's name for both firstname and lastname
+  //           lastname: userName,
+  //           email: userEmail,
+  //         },
+  //       ],
+  //       price_in_cents: budget * 100, // Assuming budget is in dollars, convert to cents
+  //       brand_codes: [giftCardOption], // Replace with actual brand codes
+  //       message: "Thank you for your hard work!", // Customize the message
+  //       expiry: "2024-12-31", // Set the expiry date as needed
+  //     };
+
+  //     await axios.post(
+  //       `/aak/l1/admin/gift-card/send/${userId}/${gigId}`,
+  //       payload, // Send the payload
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     setPopupMessage("Gift card Send successfully!");
+  //   } catch (error) {
+  //     console.error("Error Sending gift card:", error);
+  //     setPopupMessage("Failed to Send gift card. Please try again.");
+  //   }
+  // };
 
   const handleBudgetEdit = (userId, gigId) => {
     setEditingBudget({ userId, gigId });
@@ -262,7 +320,8 @@ const SuperAdminDashboard = () => {
                   </td>
 
                   <td>
-                    <select
+                    <h6>Admin : {gig.giftCardOption}</h6>
+                    {/* <select
                       className="payment-select"
                       value={selectedGiftCardOptions[`${user._id}-${gig._id}`] || gig.giftCardOption || ""}
                       onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
@@ -273,14 +332,42 @@ const SuperAdminDashboard = () => {
                           {type.name}
                         </option>
                       ))}
+                    </select> */}
+                    <select
+                      className="custom-giftcard-dropdown"
+                      value={
+                        selectedGiftCardOptions[`${user._id}-${gig._id}`] ||
+                        gig.giftCardOption ||
+                        gig.userSelectedGiftCardOption ||
+                        ""
+                      }
+                      onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
+                    >
+                      <option value="">None</option>
+                      {filterGiftCardsByCountry(user.countryIso).map((card) => (
+                        <option key={card.id} value={card.id}>
+                          {card.title.en}
+                        </option>
+                      ))}
                     </select>
+                    <h6>User : {gig.userSelectedGiftCardOption}</h6>
                   </td>
 
                   <td>
                     {gig.paymentStatus === "approved" && (
                       <button
                         className="btn btn-info"
-                        onClick={() => handleApproveGiftCard(user._id, gig._id, user.name, user.email, gig.budget)}
+                        onClick={() =>
+                          handleApproveGiftCard(
+                            user._id,
+                            gig._id,
+                            user.name,
+                            user.email,
+                            gig.budget,
+                            user.countryIso,
+                            user.currencyIso
+                          )
+                        }
                       >
                         Send ${editableBudgets[`${user._id}-${gig._id}`] || gig.budget}
                       </button>

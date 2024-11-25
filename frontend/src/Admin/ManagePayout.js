@@ -17,42 +17,86 @@ const ManagePayout = () => {
   const [giftCardTypes, setGiftCardTypes] = useState([]);
   const [editableBudgets, setEditableBudgets] = useState({});
   const [editingBudget, setEditingBudget] = useState({}); // Store editing states
+  const [userGiftCards, setUserGiftCards] = useState({});
 
   useEffect(() => {
     dispatch(loadAllUsers());
 
-    const fetchGiftCardTypes = async () => {
+    // const fetchGiftCardTypes = async () => {
+    //   try {
+    //     const response = await axios.get("aak/l1/admin/gift-card/types", {
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //       },
+    //     });
+    //     console.log(response.data.data.brands);
+    //     setGiftCardTypes(response.data.data.brands);
+    //   } catch (error) {
+    //     console.error("Error fetching gift card types:", error);
+    //   }
+    // };
+
+    // const fetchGoGiftCards = async () => {
+    //   try {
+    //     console.log("Dfdf");
+    //     const response = await axios.get("aak/l1/admin/gogift/products");
+    //     console.log(response.data);
+    //     const titles = response.data.data.map((product) => product.title.en);
+
+    //     setGiftCardTypes(response.data.data);
+    //     console.log(response.data.data[0].title.en);
+    //   } catch (error) {
+    //     console.error("Error fetching gift card types:", error);
+    //   }
+    // };
+
+    // const fetchAndStoreGiftCards = async (userId, countryIso) => {
+    //   if (!userGiftCards[userId]) {
+    //     try {
+    //       const response = await axios.get(`aak/l1/admin/gogift/products?country=${countryIso}`);
+    //       const giftCards = response.data.filteredProducts || []; // Handle case where no gift cards are returned
+    //       setUserGiftCards((prevState) => ({
+    //         ...prevState,
+    //         [userId]: giftCards, // Store the fetched gift cards for this user
+    //       }));
+    //     } catch (error) {
+    //       console.error(`Error fetching gift cards for user ${userId} with country ${countryIso}:`, error);
+    //     }
+    //   }
+    // };
+
+    const fetchGiftCards = async () => {
       try {
-        const response = await axios.get("aak/l1/admin/gift-card/types", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        console.log(response.data.data.brands);
-        setGiftCardTypes(response.data.data.brands);
+        const response = await axios.get("aak/l1/admin/gogift/products"); // Fetch all gift cards
+        console.log(response.data);
+        setGiftCardTypes(response.data.data.products); // Store the full list of gift cards
       } catch (error) {
-        console.error("Error fetching gift card types:", error);
+        console.error("Error fetching gift cards:", error);
       }
     };
-
-    const fetchGoGiftCards = async () => {
-      try {
-        console.log("Dfdf");
-        const response = await axios.get("aak/l1/admin/gogift/products");
-        const titles = response.data.data.products.map((product) => product.title.en);
-        console.log(response.data.data.products);
-        setGiftCardTypes(response.data.data.products);
-        console.log(response.data.data.products[0].title.en);
-      } catch (error) {
-        console.error("Error fetching gift card types:", error);
-      }
-    };
-
-    fetchGoGiftCards();
+    fetchGiftCards();
+    // fetchAndStoreGiftCards();
     // fetchGiftCardTypes();
   }, [dispatch]);
 
+  // const fetchAndStoreGiftCards = async (userId, countryIso) => {
+  //   if (!userGiftCards[userId]) {
+  //     try {
+  //       const response = await axios.get(`aak/l1/admin/gogift/products?country=${countryIso}`);
+  //       const giftCards = response.data.data || []; // Handle case where no gift cards are returned
+  //       console.log(giftCards);
+  //       setUserGiftCards((prevState) => ({
+  //         ...prevState,
+  //         [userId]: giftCards, // Store the fetched gift cards for this user
+  //       }));
+  //     } catch (error) {
+  //       console.error(`Error fetching gift cards for user ${userId} with country ${countryIso}:`, error);
+  //     }
+  //   }
+  // };
+
   const handleGiftCardOptionChange = (userId, gigId, value) => {
+    console.log(value);
     setSelectedGiftCardOptions((prevOptions) => ({
       ...prevOptions,
       [`${userId}-${gigId}`]: value,
@@ -96,7 +140,7 @@ const ManagePayout = () => {
     }
   };
 
-  const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget) => {
+  const handleApproveGiftCard = async (userId, gigId, userName, userEmail, budget, countryIso, currencyIso) => {
     try {
       const giftCardOption = selectedGiftCardOptions[`${userId}-${gigId}`];
       // const budget = editableBudgets[`${userId}-${gigId}`];
@@ -114,10 +158,12 @@ const ManagePayout = () => {
       console.log("Budget:", budget);
       console.log("email:", userEmail);
       console.log("userName:", userName);
+      console.log("country Iso:", countryIso);
+      console.log("currency Iso:", currencyIso);
 
       await axios.put(
         `aak/l1/admin/gift-card/approve/${userId}/${gigId}`,
-        { giftCardOption, budget }, // Send the updated budget along with the gift card option
+        { giftCardOption, budget, countryIso, currencyIso, userEmail, userName }, // Send the updated budget along with the gift card option
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -125,10 +171,10 @@ const ManagePayout = () => {
         }
       );
 
-      // setPopupMessage(
-      //   `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
-      // );
-      // dispatch(loadAllUsers());
+      setPopupMessage(
+        `Payout request for ${userName} has been approved, and the payout has been sent to ${userEmail}.`
+      );
+      dispatch(loadAllUsers());
     } catch (error) {
       console.error("Error approving gift card:", error);
       setPopupMessage("Failed to approve gift card.");
@@ -174,6 +220,10 @@ const ManagePayout = () => {
     }
   };
 
+  const filterGiftCardsByCountry = (country) => {
+    return giftCardTypes.filter((card) => card.redeemableInCountries.includes(country));
+  };
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -187,11 +237,13 @@ const ManagePayout = () => {
             <tr>
               <th>Name</th>
               <th>Email</th>
+              <th>Currency</th>
               <th>Study Title</th>
               <th>Study Status</th>
               <th>Payment Status</th>
               <th>Budget</th>
               <th>Payout Option</th>
+
               <th>Actions</th>
             </tr>
           </thead>
@@ -203,6 +255,9 @@ const ManagePayout = () => {
                     <>
                       <td rowSpan={user.gigs.length}>{user.name}</td>
                       <td rowSpan={user.gigs.length}>{user.email}</td>
+                      <td rowSpan={user.gigs.length}>
+                        {user.countryIso}-{user.currencyIso}
+                      </td>
                     </>
                   )}
                   <td>{gig.title}</td>
@@ -241,7 +296,7 @@ const ManagePayout = () => {
                   <td>
                     <h6>{gig.userSelectedGiftCardOption}</h6>
                     <select
-                      className="payment-select"
+                      className="custom-giftcard-dropdown"
                       value={
                         selectedGiftCardOptions[`${user._id}-${gig._id}`] ||
                         gig.giftCardOption ||
@@ -251,15 +306,9 @@ const ManagePayout = () => {
                       onChange={(e) => handleGiftCardOptionChange(user._id, gig._id, e.target.value)}
                     >
                       <option value="">None</option>
-                      {/* {giftCardTypes.map((type) => (
-                        <option key={type.brand_code} value={type.brand_code}>
-                          {type.name}
-                        </option>
-                      ))} */}
-
-                      {giftCardTypes.map((type) => (
-                        <option key={type.id} value={type.id}>
-                          {type.title.en}
+                      {filterGiftCardsByCountry(user.countryIso).map((card) => (
+                        <option key={card.id} value={card.title.en}>
+                          {card.title.en}
                         </option>
                       ))}
                     </select>
@@ -269,7 +318,17 @@ const ManagePayout = () => {
                     {gig.paymentStatus === "requested" && (
                       <button
                         className="btn btn-info"
-                        onClick={() => handleApproveGiftCard(user._id, gig._id, user.name, user.email, gig.budget)}
+                        onClick={() =>
+                          handleApproveGiftCard(
+                            user._id,
+                            gig._id,
+                            user.name,
+                            user.email,
+                            gig.budget,
+                            user.countryIso,
+                            user.currencyIso
+                          )
+                        }
                       >
                         Approve ${editableBudgets[`${user._id}-${gig._id}`] || gig.budget}
                       </button>
