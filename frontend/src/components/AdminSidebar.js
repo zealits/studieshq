@@ -42,7 +42,7 @@ const AdminSidebar = () => {
       </div>
       <ul className="nav-list">
         <li>
-          <Link to="/admin-dashboard" className={`linke ${isActive("/admin-dashboard") ? "active" : ""}`}>
+          <Link to="/admin-dashboard" className={`linke ${isActive("/") ? "active" : ""}`}>
             <i>
               <FaHome className="icon" />
             </i>
