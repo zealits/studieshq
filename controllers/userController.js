@@ -91,6 +91,36 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     await study.save();
   }
 
+  // Send a notification email
+  const notificationEmail = "rohit.bhandari@agilelabs.ai";
+  const emailSubject = "New User Registered";
+  const emailMessage = `
+     A new user has been registered:
+     Name: ${user.firstName} ${user.lastName}
+     Email: ${user.email}
+     Gender: ${user.gender}
+     Date of Birth: ${user.dateOfBirth}
+     Country: ${user.country}
+   `;
+  try {
+    await sendEmail({
+      email: notificationEmail,
+      subject: emailSubject,
+      message: emailMessage,
+      html: `
+         <h1>New User Registration</h1>
+         <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+         <p><strong>Email:</strong> ${user.email}</p>
+         <p><strong>Gender:</strong> ${user.gender}</p>
+         <p><strong>Date of Birth:</strong> ${user.dateOfBirth}</p>
+         <p><strong>Country:</strong> ${user.country}</p>
+       `,
+    });
+    console.log("Notification email sent successfully");
+  } catch (error) {
+    console.error("Error sending notification email:", error);
+  }
+
   sendToken(user, 200, res);
 });
 
@@ -222,6 +252,38 @@ exports.applyForGigWithLanguageLocation = catchAsyncErrors(async (req, res, next
   }
 
   await gig.save();
+
+  // Send a notification email
+  const notificationEmail = "rohit.bhandari@agilelabs.ai"; // Email to notify
+  const emailSubject = "New Gig Application Submitted";
+  const emailMessage = `
+    A user has applied for a gig:
+    Name: ${user.firstName} ${user.lastName}
+    Email: ${user.email}
+    Gig Title: ${gig.title}
+    Location: ${location}
+    Language: ${language}
+    Date of Birth: ${birthDate || user.dateOfBirth}
+  `;
+  try {
+    await sendEmail({
+      email: notificationEmail,
+      subject: emailSubject,
+      message: emailMessage,
+      html: `
+        <h1>New Gig Application</h1>
+        <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Gig Title:</strong> ${gig.title}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        <p><strong>Language:</strong> ${language}</p>
+        <p><strong>Date of Birth:</strong> ${birthDate || user.dateOfBirth}</p>
+      `,
+    });
+    console.log("Notification email sent successfully");
+  } catch (error) {
+    console.error("Error sending notification email:", error);
+  }
 
   res.status(200).json({
     success: true,
